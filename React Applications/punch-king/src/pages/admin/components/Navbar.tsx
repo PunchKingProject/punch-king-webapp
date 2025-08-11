@@ -87,12 +87,14 @@ const Navbar = () => {
         />
       </Box>
 
+
+          
       <Box
         ref={containerRef}
         sx={{
           display: 'flex',
           border: '2px solid red',
-          overflow: 'scroll',
+          overflow: 'auto',
           flexDirection: 'row',
           width: '100%',
           gap: '40px    ',

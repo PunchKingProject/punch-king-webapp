@@ -18,7 +18,7 @@ type PrimitiveRenderable =
   | undefined
   | React.ReactNode;
 
-type Field<T> = {
+export type Field<T> = {
   /** Must be a key on T that resolves to something renderable */
   key: Extract<keyof T, string>;
   label: string;
