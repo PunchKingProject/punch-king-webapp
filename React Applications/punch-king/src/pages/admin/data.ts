@@ -1,5 +1,5 @@
 import type { Field } from './components/ScrollableSection';
-import type { Team, UserSponsorship } from './DashboardPage';
+import type { Team, UserSponsorship } from './Dashboard/DashboardPage';
 
 export const teamData = [
   {
@@ -94,7 +94,7 @@ export const userSponsorshipData = [
   },
 ];
 
-export const userSponsorshipFieldData:Field<UserSponsorship>[] = [
+export const userSponsorshipFieldData: Field<UserSponsorship>[] = [
   { key: 'user_name', label: 'User name' },
   { key: 'phone_number', label: 'Phone number' },
   { key: 'sponsors_purchased', label: 'Sponsors purchased' },

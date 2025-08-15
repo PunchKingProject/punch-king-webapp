@@ -1,18 +1,18 @@
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import { useEffect, useRef } from 'react';
-import { colors } from '../../theme/colors';
-import { ScrollableSection } from './components/ScrollableSection';
+import { colors } from '../../../theme/colors';
+import { ScrollableSection } from '../components/ScrollableSection';
 import {
   teamData,
   teamFieldData,
   userSponsorshipData,
   userSponsorshipFieldData,
-} from './data';
-import AdminSection from './components/AdminSection';
+} from '../data';
+import AdminSection from '../components/AdminSection';
 import PaginatedTable, {
   type TableColumn,
-} from '../../components/tables/PaginatedTable';
-import type { MetricCard } from './components/CardGrid';
+} from '../../../components/tables/PaginatedTable';
+import type { MetricCard } from '../components/CardGrid';
 
 const data = [
   { title: 'All Users', total: 200, percentage: '30', status: true },
@@ -198,12 +198,12 @@ const DesktopDashboardPage = () => {
           padding: '1.56em 6.98em',
           '@media (min-width:910px) and (max-width:1000px)': {
             padding: '1.56em 2em', // override between 900px and 1000px
-            pl: '3em'
+            pl: '3em',
           },
           '@media (min-width:1000px) and (max-width:1100px)': {
             // height: '200px',
             paddingX: '1em', // override between 900px and 1000px
-            pl: '2rem'
+            pl: '2rem',
           },
         }}
       >

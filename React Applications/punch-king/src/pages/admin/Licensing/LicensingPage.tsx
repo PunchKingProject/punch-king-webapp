@@ -2,11 +2,15 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton, useMediaQuery } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../components/tables/PaginatedTable';
-import AdminSection from './components/AdminSection';
+} from '../../../components/tables/PaginatedTable';
+import AdminSection from '../components/AdminSection';
 
-import StatusChip, { type StatusType } from '../../components/chips/StatusChip';
-import type { MetricCard } from './components/CardGrid';
+import StatusChip, {
+  type StatusType,
+} from '../../../components/chips/StatusChip';
+import type { MetricCard } from '../components/CardGrid';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 
 export type LicenseRequests = {
   team_name: string;
@@ -39,9 +43,14 @@ const LicensingPage = () => {
 export default LicensingPage;
 
 const DesktopLicensingPage = () => {
+  const navigate = useNavigate()
   const handleView = (row: LicenseRequests) => {
     // TODO: open modal / navigate to details page
+
     console.log('view row', row);
+    navigate(ROUTES.LICENSING_DETAILS)
+
+
   };
   return (
     <>
@@ -169,8 +178,6 @@ const LicenseRequestsData: LicenseRequests[] = [
     licensing_status: 'Processing',
   },
 ];
-
-
 
 const licensingCards: MetricCard[] = [
   { title: 'All Licensed Teams', total: 200, deltaPct: 30, trendingUp: false },

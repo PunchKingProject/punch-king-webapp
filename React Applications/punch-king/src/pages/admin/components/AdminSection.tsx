@@ -5,7 +5,7 @@ import type { MetricCard } from './CardGrid';
 import CardGrid from './CardGrid';
 
 interface AdminSectionProps {
-  title: string;
+  title: ReactNode;
   toolbar?: ReactNode;
   children?: ReactNode;
   cards?: MetricCard[];
@@ -24,12 +24,21 @@ const AdminSection = ({
           gridTemplateColumns: '356px 1fr',
           gap: 3,
           mt: 3,
-          // border:'2px solid red',
-          '@media (min-width:900px) and (max-width:1100px)': {
+          // border: '2px solid red',
+          paddingRight: '5.38em',
+
+          '@media (min-width:910px) and (max-width:1000px)': {
             // height: '200px',
             // paddingLeft: '2em', // override between 900px and 1000px
-            border: '2px solid yellow',
-             gridTemplateColumns: 'max-content 1fr',
+            paddingRight: '2em',
+            // border: '2px solid yellow',
+            gridTemplateColumns: 'max-content 1fr',
+          },
+          '@media (min-width:1000px) and (max-width:1100px)': {
+            // height: '200px',
+            // paddingLeft: '2em', // override between 900px and 1000px
+            paddingRight: '1em',
+            // border: '2px solid green',
           },
         }}
       >
@@ -39,11 +48,13 @@ const AdminSection = ({
         {/* Right Content */}
         <Box>
           {/* Page Header */}
-          <Box sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Typography>{title}</Typography>
             {toolbar}
           </Box>

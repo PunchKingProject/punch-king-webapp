@@ -2,9 +2,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton, useMediaQuery } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../components/tables/PaginatedTable';
-import AdminSection from './components/AdminSection';
-import type { MetricCard } from './components/CardGrid';
+} from '../../../components/tables/PaginatedTable';
+import AdminSection from '../components/AdminSection';
+import type { MetricCard } from '../components/CardGrid';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 
 export type UserRow = {
   user_name: string;
@@ -38,8 +40,12 @@ const MobileUsersPage = () => {
 };
 
 const DesktopUsersPage = () => {
+    const navigate = useNavigate()
+  
   const handleView = (row: UserRow) => {
     console.log('view user', row);
+        navigate(ROUTES.LICENSING_DETAILS);
+
   };
 
   return (
@@ -58,9 +64,7 @@ const DesktopUsersPage = () => {
             Filter by time frame ⚙️
           </span>
         }
-      >
-
-      </AdminSection>
+      ></AdminSection>
       <Box
         sx={{
           padding: '1.56em 6.98em',

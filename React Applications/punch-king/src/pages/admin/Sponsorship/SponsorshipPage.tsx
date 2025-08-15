@@ -1,11 +1,15 @@
 // pages/admin/SponsorshipPage.tsx
 import { Box, IconButton, useMediaQuery } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AdminSection from './components/AdminSection';
+import AdminSection from '../components/AdminSection';
 import PaginatedTable, {
   type TableColumn,
-} from '../../components/tables/PaginatedTable';
-import StatusChip, { type StatusType } from '../../components/chips/StatusChip';
+} from '../../../components/tables/PaginatedTable';
+import StatusChip, {
+  type StatusType,
+} from '../../../components/chips/StatusChip';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 type MetricCard = {
   title: string;
   total: number | string;
@@ -39,9 +43,12 @@ export default SponsorshipPage;
 /* ---------------- Desktop ---------------- */
 
 const DesktopSponsorshipPage = () => {
+  const navigate = useNavigate()
   const handleView = (row: SponsorshipRequest) => {
     // TODO: open modal / navigate to details
     console.log('view sponsorship row', row);
+        navigate(ROUTES.LICENSING_DETAILS);
+
   };
 
   return (
@@ -54,9 +61,7 @@ const DesktopSponsorshipPage = () => {
             Filter by time frame ⚙️
           </span>
         }
-      >
-
-      </AdminSection>
+      ></AdminSection>
       <Box
         sx={{
           padding: '1.56em 6.98em',

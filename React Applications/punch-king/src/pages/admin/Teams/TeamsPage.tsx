@@ -1,10 +1,12 @@
 // pages/admin/TeamsPage.tsx
 import { Box, IconButton, useMediaQuery } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AdminSection from './components/AdminSection';
+import AdminSection from '../components/AdminSection';
 import PaginatedTable, {
   type TableColumn,
-} from '../../components/tables/PaginatedTable';
+} from '../../../components/tables/PaginatedTable';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 
 type MetricCard = {
   title: string;
@@ -38,9 +40,13 @@ export default TeamsPage;
 /* ---------------- Desktop ---------------- */
 
 const DesktopTeamsPage = () => {
+  const navigate = useNavigate();
+
   const handleView = (row: TeamRow) => {
+    console.log('Heyyyy')
     // TODO: open modal / navigate to team details
     console.log('view team', row);
+    navigate(ROUTES.TEAMS_DETAILS);
   };
 
   return (
@@ -53,9 +59,7 @@ const DesktopTeamsPage = () => {
             Filter by time frame ⚙️
           </span>
         }
-      >
-  
-      </AdminSection>
+      ></AdminSection>
       <Box
         sx={{
           padding: '1.56em 6.98em',

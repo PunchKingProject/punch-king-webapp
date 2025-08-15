@@ -1,14 +1,16 @@
 import { useMediaQuery } from '@mui/material';
-import StatusChip from '../../components/chips/StatusChip';
+import StatusChip from '../../../components/chips/StatusChip';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../components/tables/PaginatedTable';
-import AdminSection from './components/AdminSection';
+} from '../../../components/tables/PaginatedTable';
+import AdminSection from '../components/AdminSection';
 
-import { type StatusType } from '../../components/chips/StatusChip';
+import { type StatusType } from '../../../components/chips/StatusChip';
+import ROUTES from '../../../routes/routePath';
+import { useNavigate } from 'react-router-dom';
 
 type MetricCard = {
   title: string;
@@ -42,9 +44,13 @@ export default SubscriptionPage;
 /* ---------------- Desktop ---------------- */
 
 const DesktopSubscriptionPage = () => {
+    const navigate = useNavigate()
+  
   const handleView = (row: SubscriptionRequest) => {
     // TODO: open modal or navigate to details page
     console.log('view subscription row', row);
+        navigate(ROUTES.LICENSING_DETAILS);
+
   };
 
   return (
@@ -57,9 +63,7 @@ const DesktopSubscriptionPage = () => {
             Filter by time frame ⚙️
           </span>
         }
-      >
-
-      </AdminSection>
+      ></AdminSection>
       <Box
         sx={{
           padding: '1.56em 6.98em',
