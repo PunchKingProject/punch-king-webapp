@@ -1,12 +1,17 @@
-import { Box, Button, Typography } from '@mui/material';
-import { punchKingLogoSignIn } from '../../assets';
-import * as Yup from 'yup';
+import { Box, Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
-import FormikTextField from '../../components/form/FormikTextField';
-import Footer from '../landing/components/Footer';
-import CustomButton from '../../components/buttons/CustomButton';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import { punchKingLogoSignIn } from '../../assets';
+import CustomAuthButton from '../../components/buttons/CustomAuthButton';
+import CustomButton from '../../components/buttons/CustomButton';
+import FormikTextField from '../../components/form/FormikTextField';
 import ROUTES from '../../routes/routePath';
+import Footer from '../landing/components/Footer';
+import { useMutation } from '@tanstack/react-query';
+import { forgotPassword } from './api/forgotpassword.api';
+import { toast } from 'react-toastify';
+import { showError } from '../../utils/error/toastError';
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -21,7 +26,20 @@ const ForgotPasswordPage = () => {
 
   const handleSubmit = (values: typeof initialValues) => {
     console.log('Login values:', values);
+    mutation.mutate({
+      email: values.email
+    })
   };
+
+  const mutation = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: (res) => {
+      if (res?.meta?.code === 200) {
+        toast.success('Email successfully sent please check');
+      }
+    },
+    onError: showError
+  });
   return (
     <Box
       sx={{
@@ -45,7 +63,7 @@ const ForgotPasswordPage = () => {
           justifyContent: 'center',
           alignItems: 'center',
           py: 6,
-        //   border: '2px solid green',
+          border: '2px solid green',
           minWidth: '350px',
           width: '50vw',
           maxWidth: '500px',
@@ -105,11 +123,9 @@ const ForgotPasswordPage = () => {
                   placeholder='Username'
                   type='email'
                   showSuccessStyle
-                  sx={
-                    {
-                      mb: 0,
-                    }
-                  }
+                  sx={{
+                    mb: 0,
+                  }}
                 />
 
                 <Typography
@@ -124,36 +140,34 @@ const ForgotPasswordPage = () => {
                   }}
                   onClick={() => navigate(ROUTES.SIGN_IN)}
                 >
-                  Login?
+                  Sign In?
                 </Typography>
 
                 <Box
-                  sx={{
-                    // border: '2px solid red',
-                  }}
+                  sx={
+                    {
+                      // border: '2px solid red',
+                    }
+                  }
                 >
-                  <Button
-                    fullWidth
+                  <CustomAuthButton
+                    fullWidth={false}
                     type='submit'
                     variant='contained'
                     disabled={!(formik.isValid && formik.dirty)}
+                    loading={mutation.isPending}
+                    loadingLabel='Sending…'
                     sx={{
                       backgroundColor: '#FFC107',
-                      color: '#000',
-                      fontWeight: 'bold',
-                      textTransform: 'none',
+
                       width: '90%',
                       display: 'block',
                       marginLeft: 'auto',
                       marginRight: 'auto',
-                      '&:disabled': {
-                        backgroundColor: '#888',
-                        color: '#3B3B3B',
-                      },
                     }}
                   >
                     Login
-                  </Button>
+                  </CustomAuthButton>
                 </Box>
               </Form>
             );
@@ -163,7 +177,7 @@ const ForgotPasswordPage = () => {
 
       <Box
         sx={{
-        //   border: '2px solid red',
+          //   border: '2px solid red',
           width: '100%',
           marginTop: 'auto',
         }}

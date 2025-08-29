@@ -25,7 +25,11 @@ const MobileNavbar = () => {
           padding: '0 1.88em',
         }}
       >
-        <CustomButton color='primary' variant='text'>
+        <CustomButton
+          color='primary'
+          variant='text'
+          onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
+        >
           Register
         </CustomButton>
         <Box
@@ -37,7 +41,11 @@ const MobileNavbar = () => {
             objectFit: 'cover',
           }}
         />
-        <CustomButton textColor='white' variant='text' onClick={() => navigate(ROUTES.SIGN_IN)}>
+        <CustomButton
+          textColor='white'
+          variant='text'
+          onClick={() => navigate(ROUTES.SIGN_IN)}
+        >
           Login
         </CustomButton>
       </Box>
@@ -66,7 +74,7 @@ const DesktopNavbar = () => {
           },
         }}
       >
-        <CustomButton variant='text' color='primary'>
+        <CustomButton variant='text' color='primary' onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}>
           Register
         </CustomButton>
         <CustomButton

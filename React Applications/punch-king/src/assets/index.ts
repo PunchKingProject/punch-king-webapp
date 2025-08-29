@@ -44,5 +44,6 @@ export {
   openProfileIcon,
   newHeroImage,
   arrowUp,
-  arrowDown
+  arrowDown,
+
 };

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Skeleton, Typography, type SxProps } from '@mui/material';
 import SideBar from './SideBar';
 import type { ReactNode } from 'react';
 import type { MetricCard } from './CardGrid';
@@ -9,12 +9,16 @@ interface AdminSectionProps {
   toolbar?: ReactNode;
   children?: ReactNode;
   cards?: MetricCard[];
+  loading?: boolean;
+  sx?: SxProps;
 }
 const AdminSection = ({
   title,
   toolbar,
   cards,
   children,
+  loading = false,
+  sx,
 }: AdminSectionProps) => {
   return (
     <>
@@ -40,6 +44,7 @@ const AdminSection = ({
             paddingRight: '1em',
             // border: '2px solid green',
           },
+          ...sx,
         }}
       >
         {/* Left Sidebar */}
@@ -59,7 +64,12 @@ const AdminSection = ({
             {toolbar}
           </Box>
 
-          <CardGrid metricCards={cards} />
+          {/* Cards (or skeletons) */}
+          {loading ? (
+            <CardSkeletons count={cards?.length ?? 5} />
+          ) : (
+            cards && <CardGrid metricCards={cards} />
+          )}
 
           {/* page body (tables, section) */}
           {children}
@@ -69,3 +79,34 @@ const AdminSection = ({
   );
 };
 export default AdminSection;
+
+function CardSkeletons({ count = 5 }: { count?: number }) {
+  return (
+    <Box sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 2,
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+        }}
+      >
+        {Array.from({ length: count }).map((_, i) => (
+          <Box
+            key={i}
+            sx={{
+              bgcolor: '#1b1b1b',
+              border: '1px solid #3B3B3B',
+              borderRadius: '10px',
+              p: 2,
+              minHeight: 120,
+            }}
+          >
+            <Skeleton variant='text' width='60%' />
+            <Skeleton variant='text' width='30%' />
+            <Skeleton variant='rectangular' height={48} sx={{ mt: 1 }} />
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}

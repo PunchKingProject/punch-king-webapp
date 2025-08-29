@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { punchKingLogoSignIn } from '../../assets';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
@@ -6,22 +6,70 @@ import FormikTextField from '../../components/form/FormikTextField';
 import Footer from '../landing/components/Footer';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../../routes/routePath';
+import { useAppDispatch } from '../../hooks';
+import { useMutation } from '@tanstack/react-query';
+import { loginUser } from '../sign-up/api/registration';
+import { setRid } from '../../store/registration.slice';
+import{ jwtDecode} from 'jwt-decode';
+import { showError } from '../../utils/error/toastError';
+
+
+type Decoded = {
+  email?: string;
+  exp: number;
+  iat?: number;
+  name: string;
+  role: 'admin' | 'sponsor' | 'team' 
+};
 
 const SignInPage = () => {
   const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
   const initialValues = {
-    email: '',
+    name: '',
     password: '',
   };
 
   const validationSchema = Yup.object({
-    email: Yup.string().email('Invalid email').required('Required'),
-    password: Yup.string().min(6, 'Too short').required('Required'),
+    name: Yup.string().required('Required'),
+    password: Yup.string().min(4, 'Too short').required('Required'),
   });
+
+   const mutation = useMutation({
+     mutationFn: loginUser,
+     onSuccess: (res) => {
+       if (res?.meta?.code !== 200 || !res?.data) return;
+
+       const token = res.data; // JWT string
+       // persist
+       // if you want redux too (keeps the rest of your flow consistent)
+
+       // decode and route
+       let decoded: Decoded | null = null;
+       try {
+         decoded = jwtDecode<Decoded>(token);
+         dispatch(setRid({ token: token, flow: decoded?.role })); // flow here isn’t used for admin routing
+       } catch {
+         // fallback if decode fails
+       }
+
+       if (decoded?.role === 'admin') {
+         navigate('/admin', { replace: true });
+       } else if (decoded?.role === 'team') {
+         // go to your user landing/home/dashboard
+         navigate('/', { replace: true });
+       } else {
+          // default to user
+          navigate('/user', { replace: true });
+       }
+     },
+     onError:showError
+   });
 
   const handleSubmit = (values: typeof initialValues) => {
     console.log('Login values:', values);
+    mutation.mutate(values);
   };
   return (
     <Box
@@ -72,6 +120,7 @@ const SignInPage = () => {
           onSubmit={handleSubmit}
         >
           {(formik) => {
+            console.log(formik)
             return (
               <Form
                 style={{
@@ -81,9 +130,9 @@ const SignInPage = () => {
                 }}
               >
                 <FormikTextField
-                  name='email'
+                  name='name'
                   placeholder='Username'
-                  type='email'
+                  type='text'
                 />
                 <FormikTextField
                   name='password'
@@ -109,15 +158,19 @@ const SignInPage = () => {
                 </Typography>
 
                 <Box
-                  sx={{
-                    // border: '2px solid red',
-                  }}
+                  sx={
+                    {
+                      // border: '2px solid red',
+                    }
+                  }
                 >
                   <Button
                     fullWidth
                     type='submit'
                     variant='contained'
-                    disabled={!(formik.isValid && formik.dirty)}
+                    disabled={
+                      !(formik.isValid && formik.dirty) || mutation.isPending
+                    }
                     sx={{
                       backgroundColor: '#FFC107',
                       color: '#000',
@@ -133,7 +186,11 @@ const SignInPage = () => {
                       },
                     }}
                   >
-                    Login
+                    {mutation.isPending ? (
+                      <CircularProgress size={18} sx={{ color: '#000' }} />
+                    ) : (
+                      'Login'
+                    )}
                   </Button>
                 </Box>
               </Form>

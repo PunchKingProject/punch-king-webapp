@@ -18,3 +18,28 @@ export function displayValue(v: unknown): React.ReactNode {
     ? v
     : String(v);
 }
+
+// utils/openInbox.ts
+export function openInbox(email?: string) {
+  const domain = (email?.split('@')[1] || '').toLowerCase();
+
+  const providers: Record<string, string> = {
+    'gmail.com': 'https://mail.google.com/mail/u/0/#inbox',
+    'googlemail.com': 'https://mail.google.com/mail/u/0/#inbox',
+    'yahoo.com': 'https://mail.yahoo.com/',
+    'outlook.com': 'https://outlook.live.com/mail/0/inbox',
+    'hotmail.com': 'https://outlook.live.com/mail/0/inbox',
+    'live.com': 'https://outlook.live.com/mail/0/inbox',
+    'icloud.com': 'https://www.icloud.com/mail',
+    'proton.me': 'https://mail.proton.me/u/0/inbox',
+  };
+
+  const url = providers[domain];
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  // Fallback: open default mail app (compose window)
+  window.location.href = 'mailto:';
+}

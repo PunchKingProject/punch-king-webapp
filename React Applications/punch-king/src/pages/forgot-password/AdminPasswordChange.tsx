@@ -1,19 +1,27 @@
 import {
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   Link,
-  Typography,
+  Typography
 } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import { Form, Formik } from 'formik';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../assets';
+import CustomAuthButton from '../../components/buttons/CustomAuthButton';
 import CustomButton from '../../components/buttons/CustomButton';
 import FormikTextField from '../../components/form/FormikTextField';
+import { showError } from '../../utils/error/toastError';
 import Footer from '../landing/components/Footer';
+import { resetPassword } from './api/forgotpassword.api';
 
 const AdminPasswordChangePage = () => {
+  const [sp] = useSearchParams()
+  const navigate = useNavigate()
+  const token = sp.get('token') || ''
   const initialValues = {
     password: '',
     confirmPassword: '',
@@ -36,7 +44,23 @@ const AdminPasswordChangePage = () => {
 
   const handleSubmit = (values: typeof initialValues) => {
     console.log('Login values:', values);
+       mutation.mutate({
+         token,
+         password: values.password,
+       });
   };
+
+    const mutation = useMutation({
+      mutationFn: resetPassword,
+      onSuccess: (res) => {
+        if (res?.meta?.code === 200) {
+          toast.success('Password reset successful!');
+          navigate("/sign-in");
+        }
+      },
+      onError: showError,
+    });
+
   return (
     <Box
       sx={{
@@ -180,30 +204,25 @@ const AdminPasswordChangePage = () => {
                     // border: '2px solid red',
                   }}
                 >
-                  <Button
+                  <CustomAuthButton
                     fullWidth
                     type='submit'
                     variant='contained'
                     disabled={
                       !(formik.isValid && formik.dirty && values.agreedToTerms)
                     }
+                    loading={mutation.isPending}
                     sx={{
-                      backgroundColor: '#FFC107',
-                      color: '#000',
-                      fontWeight: 'bold',
-                      textTransform: 'none',
+                     
                       width: '90%',
                       display: 'block',
                       marginLeft: 'auto',
                       marginRight: 'auto',
-                      '&:disabled': {
-                        backgroundColor: '#888',
-                        color: '#3B3B3B',
-                      },
+                    
                     }}
                   >
                     Continue
-                  </Button>
+                  </CustomAuthButton>
                 </Box>
               </Form>
             );
@@ -213,7 +232,7 @@ const AdminPasswordChangePage = () => {
 
       <Box
         sx={{
-          border: '2px solid red',
+          // border: '2px solid red',
           width: '100%',
           marginTop: 'auto',
         }}

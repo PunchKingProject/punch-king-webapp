@@ -47,6 +47,7 @@ const FormikTextField = ({
         '& .MuiOutlinedInput-root': {
           borderRadius: '4px',
           backgroundColor: 'transparent',
+          height: 50,
           '& fieldset': {
             borderColor: hasError
               ? 'error.main'
