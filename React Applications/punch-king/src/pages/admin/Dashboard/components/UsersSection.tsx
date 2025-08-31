@@ -1,23 +1,16 @@
 import PaginatedTable, {
   type TableColumn,
-} from '../../../components/tables/PaginatedTable';
+} from '../../../../components/tables/PaginatedTable';
+import type { UserSponsorship } from '../api/dashboard.types';
+// import type { UserSponsorship } from '../DashboardPageCopy';
 
-export type UserRow = {
-  name: string;
-  email: string;
-  phone_number: string;
-  total_points_purchased: number;
-  total_amount_sponsored: number;
-};
 
 type UsersSectionProps = {
-  columns: TableColumn<UserRow>[];
+  columns: TableColumn<UserSponsorship>[];
   mode: 'client' | 'server';
   loading?: boolean;
-
-  rows: UserRow[];
+  rows: UserSponsorship[];
   totalCount: number;
-
   pageIndex: number; // 0-based for UI
   rowsPerPage: number;
   onPageChange: (newPage: number) => void;
@@ -43,7 +36,7 @@ export default function UsersSection(props: UsersSectionProps) {
   } = props;
 
   return (
-    <PaginatedTable<UserRow>
+    <PaginatedTable<UserSponsorship>
       title='USERS by sponsorships'
       columns={columns}
       rows={rows}

@@ -63,7 +63,7 @@ const ForgotPasswordPage = () => {
           justifyContent: 'center',
           alignItems: 'center',
           py: 6,
-          border: '2px solid green',
+          // border: '2px solid green',
           minWidth: '350px',
           width: '50vw',
           maxWidth: '500px',
@@ -80,7 +80,7 @@ const ForgotPasswordPage = () => {
             right: 24,
           }}
         >
-          <CustomButton color='primary' variant='text'>
+          <CustomButton color='primary' variant='text' onClick={() => navigate(ROUTES.SIGN_UP)}>
             Register
           </CustomButton>
         </Box>
@@ -160,7 +160,7 @@ const ForgotPasswordPage = () => {
                     sx={{
                       backgroundColor: '#FFC107',
 
-                      width: '90%',
+                      width: '100%',
                       display: 'block',
                       marginLeft: 'auto',
                       marginRight: 'auto',

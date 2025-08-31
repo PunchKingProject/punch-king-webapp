@@ -58,7 +58,7 @@ const SignInPage = () => {
          navigate('/admin', { replace: true });
        } else if (decoded?.role === 'team') {
          // go to your user landing/home/dashboard
-         navigate('/', { replace: true });
+         navigate('/team', { replace: true });
        } else {
           // default to user
           navigate('/user', { replace: true });
@@ -176,8 +176,9 @@ const SignInPage = () => {
                       color: '#000',
                       fontWeight: 'bold',
                       textTransform: 'none',
-                      width: '90%',
+                      width: '100%',
                       display: 'block',
+                      height: '50px',
                       marginLeft: 'auto',
                       marginRight: 'auto',
                       '&:disabled': {

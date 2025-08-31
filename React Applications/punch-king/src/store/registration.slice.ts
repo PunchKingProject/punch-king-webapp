@@ -1,5 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { clearDraftFromStorage, loadDraftFromStorage } from './registration.persist';
+import {
+  clearDraftFromStorage,
+  loadDraftFromStorage,
+} from './registration.persist';
 
 export type Draft = {
   step1?: { email?: string; username?: string };
@@ -26,7 +29,6 @@ type State = {
 
 const hydratedDraft = loadDraftFromStorage<Draft>() || {};
 
-
 const initialState: State = {
   token: localStorage.getItem('token') || null,
   flow: 'sponsor',
@@ -39,13 +41,19 @@ const slice = createSlice({
   reducers: {
     setRid(
       state,
-      action: PayloadAction<{ token: string; flow: 'sponsor' | 'team' | 'admin' }>,
+      action: PayloadAction<{
+        token: string;
+        flow: 'sponsor' | 'team' | 'admin';
+      }>
     ) {
       state.token = action.payload.token;
       state.flow = action.payload.flow;
       localStorage.setItem('token', action.payload.token);
     },
-    setFlow(state, action: PayloadAction<{flow:'sponsor' | 'team' | 'admin'}>) {
+    setFlow(
+      state,
+      action: PayloadAction<{ flow: 'sponsor' | 'team' | 'admin' }>
+    ) {
       state.flow = action.payload.flow;
       localStorage.setItem('flow', action.payload.flow);
     },
@@ -56,16 +64,26 @@ const slice = createSlice({
       };
     },
     resetRegistration: (state) => {
-
       clearDraftFromStorage();
       localStorage.removeItem('pk_registration_draft'); // 👈 clear draft
-      localStorage.removeItem('flow')
-      state.draft={}
-    
+      localStorage.removeItem('flow');
+      state.draft = {};
+    },
+    // 👇 The real logout: clear everything relevant
+    logout(state) {
+      state.token = null;
+      state.flow = 'sponsor';
+      state.draft = {};
+      // storage
+      localStorage.removeItem('token');
+      localStorage.removeItem('flow');
+      localStorage.removeItem('pk_registration_draft');
+      clearDraftFromStorage();
     },
   },
 });
 
 export default slice.reducer;
 
-export const { setRid, setFlow, mergeDraft, resetRegistration } = slice.actions;
+export const { setRid, setFlow, mergeDraft, resetRegistration, logout } =
+  slice.actions;

@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   fetchRankedUsers,
-  type RankedUsersParams,
-  type RankedUsersResponse,
-} from '../api/dashboard';
+
+} from '../api/dashboard.api';
+import type { Envelope, Paged, RankedUser, RankedUsersParams } from '../api/dashboard.types';
 
 export function useRankedUsers(params: RankedUsersParams) {
-  return useQuery({
+  return useQuery<Envelope<Paged<RankedUser>>>({
     queryKey: [
       'ranked-users',
       params.page,
@@ -15,9 +15,5 @@ export function useRankedUsers(params: RankedUsersParams) {
     ],
     queryFn: () => fetchRankedUsers(params),
     staleTime: 60_000,
-    select: (resp: RankedUsersResponse) => ({
-      rows: resp.data.data,
-      meta: resp.data.metadata,
-    }),
   });
 }

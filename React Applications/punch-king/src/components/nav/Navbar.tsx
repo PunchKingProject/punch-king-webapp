@@ -1,9 +1,13 @@
-import { Box, List, ListItem, useMediaQuery } from '@mui/material';
+import { Box, List, ListItem, useMediaQuery, IconButton } from '@mui/material';
 import { punchKingLogo } from '../../assets';
 import { colors } from '../../theme/colors';
 import CustomButton from '../buttons/CustomButton';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ROUTES from '../../routes/routePath';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { useAppDispatch } from '../../hooks';
+import { logout } from '../../store/registration.slice';
 
 const navList = [
   { text: 'About', color: colors.Milk },
@@ -12,8 +16,29 @@ const navList = [
   { text: 'Posts', color: colors.Milk },
   { text: 'Contacts', color: colors.Milk },
 ];
+
+
+function useIsHome() {
+  const { pathname } = useLocation();
+  return pathname === '/';
+}
+
+function useLogout() {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  return () => {
+        dispatch(logout());
+
+    // TODO: clear tokens/session here
+    // e.g. localStorage.removeItem('auth'); queryClient.clear(); etc.
+    navigate(ROUTES.SIGN_IN, { replace: true });
+  };
+}
 const MobileNavbar = () => {
   const navigate = useNavigate();
+   const isHome = useIsHome();
+   const logout = useLogout();
 
   return (
     <>
@@ -25,13 +50,19 @@ const MobileNavbar = () => {
           padding: '0 1.88em',
         }}
       >
-        <CustomButton
-          color='primary'
-          variant='text'
-          onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
-        >
-          Register
-        </CustomButton>
+        {isHome ? (
+          <CustomButton
+            color='primary'
+            variant='text'
+            onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
+          >
+            Register
+          </CustomButton>
+        ) : (
+          <CustomButton variant='contained' color='primary' onClick={logout}>
+            Logout
+          </CustomButton>
+        )}
         <Box
           component='img'
           src={punchKingLogo}
@@ -41,13 +72,20 @@ const MobileNavbar = () => {
             objectFit: 'cover',
           }}
         />
-        <CustomButton
-          textColor='white'
-          variant='text'
-          onClick={() => navigate(ROUTES.SIGN_IN)}
-        >
-          Login
-        </CustomButton>
+        {isHome ? (
+          <CustomButton
+            textColor='white'
+            variant='text'
+            onClick={() => navigate(ROUTES.SIGN_IN)}
+          >
+            Login
+          </CustomButton>
+        ) : (
+          <IconButton sx={{ color: colors.Accent }} aria-label='account'>
+            <AccountCircleIcon />
+            <ArrowDropDownIcon />
+          </IconButton>
+        )}
       </Box>
     </>
   );
@@ -55,6 +93,8 @@ const MobileNavbar = () => {
 
 const DesktopNavbar = () => {
     const navigate = useNavigate();
+      const isHome = useIsHome();
+      const logout = useLogout();
   return (
     <>
       <Box
@@ -74,17 +114,40 @@ const DesktopNavbar = () => {
           },
         }}
       >
-        <CustomButton variant='text' color='primary' onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}>
-          Register
-        </CustomButton>
-        <CustomButton
-          variant='contained'
-          color='primary'
-          textColor={colors.AccentDark}
-          onClick={() => navigate(ROUTES.SIGN_IN)}
-        >
-          Login
-        </CustomButton>
+        {isHome ? (
+          <>
+            <CustomButton
+              variant='text'
+              color='primary'
+              onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
+            >
+              Register
+            </CustomButton>
+            <CustomButton
+              variant='contained'
+              color='primary'
+              textColor={colors.AccentDark}
+              onClick={() => navigate(ROUTES.SIGN_IN)}
+            >
+              Login
+            </CustomButton>
+          </>
+        ) : (
+          <>
+            <CustomButton
+              variant='contained'
+              color='primary'
+              textColor={colors.AccentDark}
+              onClick={logout}
+            >
+              Logout
+            </CustomButton>
+            <IconButton sx={{ color: colors.Accent }} aria-label='account'>
+              <AccountCircleIcon />
+              <ArrowDropDownIcon />
+            </IconButton>
+          </>
+        )}
       </Box>
       <Box
         display={'flex'}

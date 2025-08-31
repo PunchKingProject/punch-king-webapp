@@ -30,6 +30,7 @@ export default function CustomAuthButton({
       sx={{
         fontWeight: 700,
         textTransform: 'none',
+        height: '50px',
         py: 0.8,
         ...(props.variant === 'contained' && {
           backgroundColor: '#F6C10A',

@@ -1,19 +1,16 @@
 import { Box } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../components/tables/PaginatedTable';
+} from '../../../../components/tables/PaginatedTable';
+import type { Team } from '../api/dashboard.types';
 
-export type TeamRow = {
-  team_name: string;
-  license_no: string;
-  sponsors_accrued: number;
-  ranking: string | number;
-};
+
+
 
 export type TeamsSectionProps = {
   title?: string;
-  rows: TeamRow[];
-  columns: TableColumn<TeamRow>[];
+  rows: Team[];
+  columns: TableColumn<Team>[];
   // pass-throughs (so this section can work in client or server mode)
   mode?: 'client' | 'server';
   loading?: boolean;
@@ -44,7 +41,7 @@ export default function TeamsSection({
 }: TeamsSectionProps) {
   return (
     <Box sx={{ mt: 4 }}>
-      <PaginatedTable<TeamRow>
+      <PaginatedTable<Team>
         title={title}
         rows={rows}
         columns={columns}

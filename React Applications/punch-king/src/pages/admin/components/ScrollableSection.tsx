@@ -5,6 +5,7 @@ import {
   Box,
   IconButton,
   InputAdornment,
+  Skeleton,
   TextField,
   Typography,
 } from '@mui/material';
@@ -32,6 +33,13 @@ type ScrollableSectionProps<T extends Record<string, PrimitiveRenderable>> = {
   searchKeys?: Array<Extract<keyof T, string>>;
   /** Optional placeholder for the search input */
   searchPlaceholder?: string;
+
+  // NEW for server integration:
+  serverSearch?: boolean; // if true, don't locally filter
+  loading?: boolean; // controls skeleton/loader row
+  hasMore?: boolean; // show "Load more" affordance
+  onSearchChange?: (q: string) => void; // bubble query up
+  onLoadMore?: () => void; // trigger next page
 };
 
 export const ScrollableSection = <
@@ -42,6 +50,11 @@ export const ScrollableSection = <
   fields,
   searchKeys,
   searchPlaceholder = 'Search...',
+  serverSearch = false,
+  loading = false,
+  hasMore = false,
+  onSearchChange,
+  onLoadMore,
 }: ScrollableSectionProps<T>) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showUp, setShowUp] = useState(false);
@@ -60,8 +73,23 @@ export const ScrollableSection = <
     checkScroll();
   }, [items]);
 
-  const filtered = useMemo(() => {
+  // Toggle search; closing clears the query and notifies parent (server mode)
+  const toggleSearch = () => {
+    setSearchOpen((prev) => {
+      const next = !prev;
+
+      if (!next) {
+        setQuery('');
+        if (serverSearch && onSearchChange) onSearchChange('');
+      }
+      return next;
+    });
+  };
+
+  const listToRender = useMemo(() => {
+    if (serverSearch) return items;
     if (!query.trim() || !searchKeys?.length) return items;
+
     const q = query.trim().toLowerCase();
     return items.filter((it) =>
       searchKeys.some((k) => {
@@ -71,19 +99,29 @@ export const ScrollableSection = <
         return text.includes(q);
       })
     );
-  }, [items, query, searchKeys]);
+  }, [items, query, searchKeys, serverSearch]);
 
-  // Close search resets query
-  const toggleSearch = () => {
-    setSearchOpen((prev) => {
-      const next = !prev;
-      if (!next) setQuery('');
-      return next;
-    });
-  };
+  // Lightweight skeleton card for first-load state
+  const SkeletonCard = () => (
+    <Box
+      mb={3}
+      sx={{
+        backgroundColor: '#222',
+        borderRadius: 2,
+        p: 2,
+        color: 'white',
+      }}
+    >
+      <Skeleton width='40%' />
+      <Skeleton width='70%' />
+      <Skeleton width='55%' />
+      <Skeleton width='30%' />
+    </Box>
+  );
 
   return (
     <Box mb={4} px={2}>
+      {/* Header */}
       <Box
         display='flex'
         alignItems='center'
@@ -108,13 +146,18 @@ export const ScrollableSection = <
         ) : null}
       </Box>
 
+      {/* Search bar (collapsible) */}
       {searchOpen && (
         <Box mb={1}>
           <TextField
             size='small'
             fullWidth
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              const next = e.target.value;
+              setQuery(next);
+              if (serverSearch && onSearchChange) onSearchChange(next);
+            }}
             placeholder={searchPlaceholder}
             InputProps={{
               startAdornment: (
@@ -133,6 +176,8 @@ export const ScrollableSection = <
         </Box>
       )}
 
+      {/* Scroll container + up/down affordances
+       */}
       <Box
         sx={{
           position: 'relative',
@@ -162,33 +207,60 @@ export const ScrollableSection = <
             pr: 1,
           }}
         >
-          {filtered.map((item, idx) => (
-            <Box
-              key={idx}
-              mb={3}
-              sx={{
-                backgroundColor: '#222',
-                borderRadius: 2,
-                p: 2,
-                color: 'white',
-              }}
-            >
-              {fields.map((field) => (
-                <Box key={field.key} mb={1}>
-                  <Typography fontWeight={700} color='gray'>
-                    {field.label}
-                  </Typography>
-                  <Typography>{item[field.key]}</Typography>
+          {/* First-load skeletons (only when no items yet) */}
+
+          {loading && items.length === 0 ? (
+            <>
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </>
+          ) : (
+            <>
+              {/* Cards */}
+              {listToRender.map((item, idx) => (
+                <Box
+                  key={idx}
+                  mb={3}
+                  sx={{
+                    backgroundColor: '#222',
+                    borderRadius: 2,
+                    p: 2,
+                    color: 'white',
+                  }}
+                >
+                  {fields.map((field) => (
+                    <Box key={field.key} mb={1}>
+                      <Typography fontWeight={700} color='gray'>
+                        {field.label}
+                      </Typography>
+                      <Typography>{item[field.key]}</Typography>
+                    </Box>
+                  ))}
                 </Box>
               ))}
-            </Box>
-          ))}
 
-          {/* Empty state when search yields nothing */}
-          {filtered.length === 0 && (
-            <Box py={4} textAlign='center' color='#bbb'>
-              <Typography>No results</Typography>
-            </Box>
+              {/* Empty state (client-mode only; server mode should control items) */}
+
+              {!serverSearch && listToRender.length === 0 && (
+                <Box py={4} textAlign='center' color='#bbb'>
+                  <Typography>No results</Typography>
+                </Box>
+              )}
+
+              {/* Load more (server mode) */}
+              {serverSearch && hasMore && !loading && onLoadMore && (
+                <Box py={1} textAlign='center'>
+                  <Typography
+                    sx={{ cursor: 'pointer', color: 'yellow' }}
+                    onClick={onLoadMore}
+                  >
+                    Load more
+                  </Typography>
+                </Box>
+              )}
+            </>
           )}
         </Box>
 

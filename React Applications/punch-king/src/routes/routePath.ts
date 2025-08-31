@@ -1,7 +1,7 @@
 const ROUTES = {
   HOME: '/',
   SIGN_IN: '/sign-in',
-  SIGN_UP: '/sign-up',
+  SIGN_UP: '/sign-up?flow=sponsor',
   FORGOT_PASSWORD: '/forgot-password',
   PASSWORD_CHANGE: '/password-change',
 
