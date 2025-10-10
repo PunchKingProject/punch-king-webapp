@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import CustomAuthButton from '../../../components/buttons/CustomAuthButton';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { resetRegistration } from '../../../store/registration.slice';
+import { clearRegistrationDraft } from '../../../store/registration.slice';
 import { showError } from '../../../utils/error/toastError';
 import { updateUser, type UpdateUserPayload } from '../api/registration';
 
@@ -15,36 +15,60 @@ export default function Preview() {
 
   const navigate = useNavigate();
   const [sp] = useSearchParams();
-  const rid = sp.get('rid') || localStorage.getItem('pk_rid') || '';
-  const flow = (sp.get('flow') || 'user') as 'user' | 'team';
+ const rid = sp.get('rid') || localStorage.getItem('pk_rid') || '';
+ // Resolve flow from qs → redux → localStorage (fallback 'sponsor')
+ const reduxFlow = useAppSelector((s) => s.registration.flow) as 'sponsor' | 'team' | 'admin';
+ const storedFlow = (localStorage.getItem('flow') as 'sponsor' | 'team' | 'admin' | null) ?? null;
+ const flow = ((sp.get('flow') as 'sponsor' | 'team' | null)
+   || (reduxFlow as 'sponsor' | 'team' | null)
+   || (storedFlow as 'sponsor' | 'team' | null)
+   || 'sponsor') as 'sponsor' | 'team';
+ const isTeam = flow === 'team';
 
   const params = new URLSearchParams();
   if (rid) params.set('rid', rid);
   params.set('flow', flow);
 
+
+   // helper to avoid sending empty strings
+ const defined = (v?: string | null) => (v && v.trim().length ? v : undefined);
+
+
   // Build the exact payload the API wants from your step3 draft
   const payload: UpdateUserPayload = useMemo(
-    () => ({
-      phone_number: draft.step3?.phone || '',
-      address: draft.step3?.address || '',
-      country: draft.step3?.country || '',
-      state: draft.step3?.state || '',
-      dob: draft.step3?.dob || '', // keep the format your API expects
-      gender: draft.step3?.gender || '',
-      bio: draft.step3?.bio || '',
-      profile_picture: draft.step4?.profile_picture || '',
-    }),
-    [draft.step3]
+   () => {
+     const s3 = draft.step3 ?? {};
+     const base: UpdateUserPayload = {
+       phone_number: defined(s3.phone),
+       address: defined(s3.address),
+       country: defined(s3.country),
+       state: defined(s3.state),
+       bio: defined(s3.bio),
+       profile_picture: defined(draft.step4?.profile_picture),
+     };
+     return isTeam
+       ? {
+           ...base,
+           coach_1: defined(s3.coach_1),
+           coach_2: defined(s3.coach_2),
+           license_number: defined(s3.license_number),
+         }
+       : {
+           ...base,
+           dob: defined(s3.dob),
+           gender: defined(s3.gender),
+         };
+   },
+   [draft.step3, draft.step4, isTeam]
   );
 
-  // Simple guard: disable if any required field is missing
-  const canFinish =
-    payload.phone_number &&
-    payload.address &&
-    payload.country &&
-    payload.state &&
-    payload.dob &&
-    payload.gender;
+  // Required set depends on flow
+ const canFinish = useMemo(() => {
+   const baseOk =
+     !!payload.phone_number && !!payload.address && !!payload.country && !!payload.state;
+   if (!baseOk) return false;
+   return isTeam ? true : !!payload.dob && !!payload.gender;
+ }, [payload, isTeam]);
 
   const mutation = useMutation({
     mutationFn: updateUser,
@@ -52,7 +76,10 @@ export default function Preview() {
       // go wherever your flow ends (dashboard / success screen)
       // or stay and show a toast—your call.
       localStorage.removeItem('pk_registration_draft'); // 👈 clear draft
-      dispatch(resetRegistration())
+ 
+    /** ✅ Clear ONLY the registration draft (keep token & flow) */
+        dispatch(clearRegistrationDraft()); 
+
       navigate(`/welcome?${params.toString()}`, { replace: true });
     },
     onError: showError,
@@ -63,15 +90,27 @@ export default function Preview() {
     mutation.mutate(payload);
   };
 
-  const rows = [
-    { label: 'Phone number', value: draft.step3?.phone },
-    { label: 'Address', value: draft.step3?.address },
-    { label: 'Country', value: draft.step3?.country },
-    { label: 'State', value: draft.step3?.state },
-    { label: 'DOB', value: draft.step3?.dob },
-    { label: 'Gender', value: draft.step3?.gender },
-    { label: 'Bio', value: draft.step3?.bio },
-  ];
+ const rows = useMemo(() => {
+   const base = [
+     { label: 'Phone number', value: draft.step3?.phone },
+     { label: 'Address', value: draft.step3?.address },
+     { label: 'Country', value: draft.step3?.country },
+     { label: 'State', value: draft.step3?.state },
+     { label: 'Bio', value: draft.step3?.bio },
+   ];
+   return isTeam
+     ? [
+         ...base,
+         { label: 'Coach 1', value: draft.step3?.coach_1 },
+         { label: 'Coach 2', value: draft.step3?.coach_2 },
+         { label: 'License number', value: draft.step3?.license_number },
+       ]
+     : [
+         ...base,
+         { label: 'DOB', value: draft.step3?.dob },
+         { label: 'Gender', value: draft.step3?.gender },
+       ];
+ }, [draft.step3, isTeam]);
   return (
     <Box
       sx={{
@@ -178,6 +217,7 @@ export default function Preview() {
           fullWidth
           variant='contained'
           onClick={onFinish}
+ disabled={!canFinish || mutation.isPending}
 
           sx={{
             // backgroundColor: '#F6C10A',

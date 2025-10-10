@@ -21,6 +21,17 @@ import openProfileIcon from './openProfileIcon.svg';
 import newHeroImage from './newHeroImage.svg';
 import arrowUp from './arrowUp.svg';
 import arrowDown from './arrowDown.svg';
+import modalImage from './modalImage.svg';
+import img1 from './img1.svg';
+import img2 from './img2.svg';
+import img3 from './img3.svg';
+import img4 from './img4.svg';
+import img5 from './img5.svg';
+import teamImg1 from './teamImg1.svg';
+import teamImg2 from './teamImg2.svg';
+import teamImg3 from './teamImg3.svg';
+import teamImg4 from './teamImg4.svg';
+import teamImg5 from './teamImg5.svg';
 export {
   punchKingLogo,
   heroBoxer,
@@ -45,5 +56,15 @@ export {
   newHeroImage,
   arrowUp,
   arrowDown,
-
+  modalImage,
+  img1,
+  img2,
+  img3,
+  img4,
+  img5,
+  teamImg1,
+  teamImg2,
+  teamImg3,
+  teamImg4,
+  teamImg5,
 };

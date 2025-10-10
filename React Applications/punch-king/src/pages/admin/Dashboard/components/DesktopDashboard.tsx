@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 import DateFilterIcon from '../../../../assets/filterTimeFrameIcon.svg?react';
-
 import DateRangeFilter from '../../../../components/filters/DateRangeFilter';
 import AdminSection from '../../components/AdminSection';
 import type { MetricCard } from '../../components/CardGrid';
@@ -73,7 +72,7 @@ export const DesktopDashboard = () => {
           trendingUp: true,
         },
         {
-          title: 'Sponsorship Volume',
+          title: 'Chips Volume',
           total: 0,
           deltaPct: 0,
           trendingUp: true,
@@ -107,7 +106,7 @@ export const DesktopDashboard = () => {
         trendingUp: true,
       },
       {
-        title: 'Sponsorship Volume',
+        title: 'Chip Volume',
         total: statsData.sponsorship_purchases_range,
         deltaPct: 0,
         trendingUp: true,

@@ -17,6 +17,9 @@ import NoticeModal from '../../../components/modal/NoticeModal';
 import { useAppDispatch } from '../../../hooks';
 import { mergeDraft, setRid } from '../../../store/registration.slice';
 import { createUser } from '../api/registration';
+import { Link as MLink /* ... */ } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 
 // --- Validation: >=7 chars, includes letter, digit, special ---
 const passwordRules =
@@ -177,6 +180,7 @@ function Step2() {
                     mb: -1,
                   }}
                 />
+                <Box mb={1} />
 
                 <FormikTextField
                   name='confirmPassword'
@@ -218,7 +222,16 @@ function Step2() {
                             }}
                           >
                             {' '}
-                            terms of use
+                            <MLink
+                              component={RouterLink}
+                              to={ROUTES.TERMS}
+                              target='_blank'
+                              rel='noopener'
+                              underline='hover'
+                              sx={{ color: '#EFAF00', fontWeight: 700 }}
+                            >
+                              Terms of Use
+                            </MLink>
                           </span>{' '}
                           of this platform
                         </Typography>

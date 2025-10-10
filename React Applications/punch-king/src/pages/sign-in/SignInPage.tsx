@@ -1,30 +1,29 @@
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
-import { punchKingLogoSignIn } from '../../assets';
-import * as Yup from 'yup';
-import { Form, Formik } from 'formik';
-import FormikTextField from '../../components/form/FormikTextField';
-import Footer from '../landing/components/Footer';
-import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../routes/routePath';
-import { useAppDispatch } from '../../hooks';
 import { useMutation } from '@tanstack/react-query';
-import { loginUser } from '../sign-up/api/registration';
+import { Form, Formik } from 'formik';
+import { jwtDecode } from 'jwt-decode';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import { punchKingLogoSignIn } from '../../assets';
+import FormikTextField from '../../components/form/FormikTextField';
+import { useAppDispatch } from '../../hooks';
+import ROUTES from '../../routes/routePath';
 import { setRid } from '../../store/registration.slice';
-import{ jwtDecode} from 'jwt-decode';
 import { showError } from '../../utils/error/toastError';
-
+import Footer from '../landing/components/Footer';
+import { loginUser } from '../sign-up/api/registration';
 
 type Decoded = {
   email?: string;
   exp: number;
   iat?: number;
   name: string;
-  role: 'admin' | 'sponsor' | 'team' 
+  role: 'admin' | 'sponsor' | 'team';
 };
 
 const SignInPage = () => {
   const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const initialValues = {
     name: '',
@@ -36,36 +35,36 @@ const SignInPage = () => {
     password: Yup.string().min(4, 'Too short').required('Required'),
   });
 
-   const mutation = useMutation({
-     mutationFn: loginUser,
-     onSuccess: (res) => {
-       if (res?.meta?.code !== 200 || !res?.data) return;
+  const mutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (res) => {
+      if (res?.meta?.code !== 200 || !res?.data) return;
 
-       const token = res.data; // JWT string
-       // persist
-       // if you want redux too (keeps the rest of your flow consistent)
+      const token = res.data; // JWT string
+      // persist
+      // if you want redux too (keeps the rest of your flow consistent)
 
-       // decode and route
-       let decoded: Decoded | null = null;
-       try {
-         decoded = jwtDecode<Decoded>(token);
-         dispatch(setRid({ token: token, flow: decoded?.role })); // flow here isn’t used for admin routing
-       } catch {
-         // fallback if decode fails
-       }
+      // decode and route
+      let decoded: Decoded | null = null;
+      try {
+        decoded = jwtDecode<Decoded>(token);
+        dispatch(setRid({ token: token, flow: decoded?.role })); // flow here isn’t used for admin routing
+      } catch {
+        // fallback if decode fails
+      }
 
-       if (decoded?.role === 'admin') {
-         navigate('/admin', { replace: true });
-       } else if (decoded?.role === 'team') {
-         // go to your user landing/home/dashboard
-         navigate('/team', { replace: true });
-       } else {
-          // default to user
-          navigate('/user', { replace: true });
-       }
-     },
-     onError:showError
-   });
+      if (decoded?.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else if (decoded?.role === 'team') {
+        // go to your user landing/home/dashboard
+        navigate('/team', { replace: true });
+      } else {
+        // default to user
+        navigate('/user', { replace: true });
+      }
+    },
+    onError: showError,
+  });
 
   const handleSubmit = (values: typeof initialValues) => {
     console.log('Login values:', values);
@@ -96,11 +95,14 @@ const SignInPage = () => {
         }}
       >
         <Box
+          component={RouterLink}
+          to='/'
+          aria-label='Go to landing page'
           sx={{
             width: '209px',
-            // border: '2px solid red',
-            margin: '0px auto',
-            marginBottom: '-50px',
+            display: 'block',
+            mx: 'auto',
+            mb: '-50px',
           }}
         >
           <Box
@@ -111,6 +113,7 @@ const SignInPage = () => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
+              display: 'block',
             }}
           />
         </Box>
@@ -120,7 +123,7 @@ const SignInPage = () => {
           onSubmit={handleSubmit}
         >
           {(formik) => {
-            console.log(formik)
+            console.log(formik);
             return (
               <Form
                 style={{
@@ -134,6 +137,7 @@ const SignInPage = () => {
                   placeholder='Username'
                   type='text'
                 />
+            
                 <FormikTextField
                   name='password'
                   placeholder='Password'

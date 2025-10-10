@@ -1,19 +1,7 @@
 // pages/admin/TeamsPage.tsx
-import { Box, IconButton, useMediaQuery } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import AdminSection from '../components/AdminSection';
-import PaginatedTable, {
-  type TableColumn,
-} from '../../../components/tables/PaginatedTable';
-import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
-
-type MetricCard = {
-  title: string;
-  total: number | string;
-  deltaPct?: number;
-  trendingUp?: boolean;
-};
+import { Box, useMediaQuery } from '@mui/material';
+import DesktopTeamDashboard from './components/DesktopTeamDashboard';
+import MobileTeamsHome from './MobileTeamsHome';
 
 export type TeamRow = {
   team_name: string;
@@ -27,149 +15,12 @@ const TeamsPage = () => {
   return (
     <>
       <Box sx={{ display: isDesktop ? 'block' : 'none' }}>
-        <DesktopTeamsPage />
+        <DesktopTeamDashboard />
       </Box>
       <Box sx={{ display: isDesktop ? 'none' : 'block' }}>
-        <MobileTeamsPage />
+        <MobileTeamsHome />
       </Box>
     </>
   );
 };
 export default TeamsPage;
-
-/* ---------------- Desktop ---------------- */
-
-const DesktopTeamsPage = () => {
-  const navigate = useNavigate();
-
-  const handleView = (row: TeamRow) => {
-    console.log('Heyyyy')
-    // TODO: open modal / navigate to team details
-    console.log('view team', row);
-    navigate(ROUTES.TEAMS_DETAILS);
-  };
-
-  return (
-    <>
-      <AdminSection
-        title='TEAMS DASHBOARD'
-        cards={teamCards}
-        toolbar={
-          <span style={{ color: '#f0c040', fontWeight: 600 }}>
-            Filter by time frame ⚙️
-          </span>
-        }
-      ></AdminSection>
-      <Box
-        sx={{
-          padding: '1.56em 6.98em',
-          '@media (min-width:910px) and (max-width:1000px)': {
-            padding: '1.56em 2em',
-            pl: '3em',
-          },
-          '@media (min-width:1000px) and (max-width:1100px)': {
-            px: '1em',
-            pl: '2rem',
-          },
-        }}
-      >
-        <PaginatedTable<TeamRow>
-          title='TEAMS TABLE'
-          rows={teamsData}
-          columns={teamColumns(handleView)}
-          searchFields={['team_name', 'license_number']}
-          searchPlaceholder='Search'
-          initialRowsPerPage={6}
-          maxBodyHeight={420}
-          getRowKey={(r, i) => `${r.team_name}-${r.license_number}-${i}`}
-        />
-      </Box>
-    </>
-  );
-};
-
-/* ---------------- Mobile ---------------- */
-
-const MobileTeamsPage = () => {
-  // Build your mobile-first list/cards (you already have a mobile pattern)
-  return <>Mobile Teams Page</>;
-};
-
-/* ---------------- Config: cards + columns + data ---------------- */
-
-const teamCards: MetricCard[] = [
-  { title: 'All Teams', total: 200, deltaPct: 30, trendingUp: false },
-  { title: 'All Subscribed Team', total: 200, deltaPct: 30, trendingUp: true },
-  { title: 'All Licensed Teams', total: 200, deltaPct: 30, trendingUp: true },
-  {
-    title: 'Teams Without Subscri.',
-    total: 200,
-    deltaPct: 30,
-    trendingUp: false,
-  },
-  {
-    title: 'Teams Without License',
-    total: 200,
-    deltaPct: 30,
-    trendingUp: false,
-  },
-];
-
-const teamColumns = (
-  onView: (row: TeamRow) => void
-): TableColumn<TeamRow>[] => [
-  { field: 'team_name', header: 'Team name' },
-  { field: 'license_number', header: 'License number' },
-  { field: 'sponsors_accrued', header: 'Sponsors accrued', align: 'right' },
-  { field: 'ranking', header: 'Ranking', align: 'right' },
-  {
-    field: 'view',
-    header: 'View',
-    align: 'center',
-    width: 80,
-    render: (_value, row) => (
-      <IconButton onClick={() => onView(row)} aria-label='view'>
-        <VisibilityIcon sx={{ color: '#f0c040' }} />
-      </IconButton>
-    ),
-  },
-];
-
-const teamsData: TeamRow[] = [
-  {
-    team_name: 'King of the jungle',
-    license_number: 'LC738262378',
-    sponsors_accrued: 2000,
-    ranking: '1ST',
-  },
-  {
-    team_name: 'King of the jungle',
-    license_number: 'NIL',
-    sponsors_accrued: 2000,
-    ranking: '2ND',
-  },
-  {
-    team_name: 'King of the jungle',
-    license_number: 'LC738262378',
-    sponsors_accrued: 2000,
-    ranking: '3RD',
-  },
-  {
-    team_name: 'King of the jungle',
-    license_number: 'LC738262378',
-    sponsors_accrued: 2000,
-    ranking: '4TH',
-  },
-  {
-    team_name: 'King of the jungle',
-    license_number: 'NIL',
-    sponsors_accrued: 2000,
-    ranking: '5TH',
-  },
-  {
-    team_name: 'King of the jungle',
-    license_number: 'LC738262378',
-    sponsors_accrued: 2000,
-    ranking: '6TH',
-  },
-];

@@ -67,6 +67,7 @@ export type Team = {
   license_no: string;
   sponsors_accrued: number;
   ranking: number | string;
+  team_id?: number; // <- add (optional) so we can navigate
 };
 
 

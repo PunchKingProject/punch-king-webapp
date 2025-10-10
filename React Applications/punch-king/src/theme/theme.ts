@@ -1,4 +1,7 @@
 import { createTheme } from '@mui/material';
+import '@mui/x-date-pickers/themeAugmentation';
+
+
 
 const theme = createTheme({
   palette: {
@@ -189,6 +192,64 @@ const theme = createTheme({
           },
         },
       ],
+    },
+    MuiPickersLayout: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.primary, // text inside picker
+          backgroundColor: theme.palette.background.paper, // popup surface
+        }),
+      },
+    },
+
+    MuiPickersCalendarHeader: {
+      styleOverrides: {
+        label: ({ theme }) => ({
+          color: theme.palette.text.primary,
+          fontWeight: 700,
+        }),
+        switchViewButton: ({ theme }) => ({
+          color: theme.palette.text.primary,
+        }),
+      },
+    },
+
+    MuiPickersArrowSwitcher: {
+      styleOverrides: {
+        button: ({ theme }) => ({
+          color: theme.palette.text.primary,
+          '&.Mui-disabled': { color: theme.palette.text.disabled },
+        }),
+      },
+    },
+
+    MuiDayCalendar: {
+      styleOverrides: {
+        weekDayLabel: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+          opacity: 0.9,
+        }),
+      },
+    },
+
+     MuiPickersDay: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.primary,
+          '&.Mui-disabled': { color: theme.palette.text.disabled },
+          '&.MuiPickersDay-today': {
+            borderColor: theme.palette.text.secondary,
+          },
+          '&.Mui-selected': {
+            backgroundColor: theme.palette.primary.main, // your #FFC107
+            color: theme.palette.getContrastText(theme.palette.primary.main),
+            '&:hover': {
+              backgroundColor: theme.palette.primary.main,
+              opacity: 0.9,
+            },
+          },
+        }),
+      },
     },
   },
 });

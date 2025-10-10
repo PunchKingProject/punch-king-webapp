@@ -1,11 +1,16 @@
 import { Box, Typography } from '@mui/material';
 import { consortiumLogo, punchKingLogoFooter } from '../../../assets';
 import { colors } from '../../../theme/colors';
+import { useLocation } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 
 const Footer = () => {
+  const { pathname } = useLocation();
+  const isHome = pathname === '/' || pathname === ROUTES.HOME;
   return (
     <>
       <Box
+        id='contacts'
         textAlign={'center'}
         sx={{
           display: 'flex',
@@ -32,22 +37,19 @@ const Footer = () => {
         >
           License No: NBBofC/24/030
         </Typography>
-        <Typography
-          sx={{
-            color: colors.TextGrey,
-          }}
-        >
-          powered by: consortium
-        </Typography>
-        <Box
-          component={'img'}
-          src={consortiumLogo}
-          sx={{
-            width: '1.75rem',
-            objectFit: 'cover',
-            display: 'block',
-          }}
-        />
+        {isHome && (
+          <>
+            <Typography sx={{ color: colors.TextGrey }}>
+              Technology partners, consortium
+            </Typography>
+            <Box
+              component='img'
+              src={consortiumLogo}
+              alt='Technology partner consortium'
+              sx={{ width: '1.75rem', objectFit: 'cover', display: 'block' }}
+            />
+          </>
+        )}
       </Box>
     </>
   );

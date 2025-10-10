@@ -18,6 +18,7 @@ const images = [
 const TeamPost = () => {
   return (
     <Box
+      id='posts'
       sx={{
         width: '100%',
         py: 4,

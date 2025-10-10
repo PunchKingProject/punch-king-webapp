@@ -40,7 +40,7 @@ const TeamRanking = () => {
       //   },
       // }}
       >
-        <Box sx={{}}>
+        <Box id='ranking' sx={{}}>
           {/* Team Ranking */}
           <Typography
             component={'h1'}
@@ -319,9 +319,11 @@ const TeamRanking = () => {
                           }}
                         >
                           <Box
-                            sx={{
-                              border: '2px solid green',
-                            }}
+                            sx={
+                              {
+                                // border: '2px solid green',
+                              }
+                            }
                           >
                             <Typography
                               variant='bodyTextMilkDefault'

@@ -96,6 +96,7 @@ export default function Step4() {
       toast.success('Image url generated and stored');
             navigate(`/sign-up/complete`);
     } catch (e) {
+      console.log(e)
       toast.error('Upload failed. Please try again.');
       setError('Upload failed. Please try again.');
     } finally {

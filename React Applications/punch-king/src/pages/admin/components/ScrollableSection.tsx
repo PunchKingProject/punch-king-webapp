@@ -9,7 +9,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  isValidElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Key,
+  type ReactNode,
+} from 'react';
 
 type PrimitiveRenderable =
   | string
@@ -23,6 +31,7 @@ export type Field<T> = {
   /** Must be a key on T that resolves to something renderable */
   key: Extract<keyof T, string>;
   label: string;
+  render?: (item: T) => PrimitiveRenderable;
 };
 
 type ScrollableSectionProps<T extends Record<string, PrimitiveRenderable>> = {
@@ -40,6 +49,10 @@ type ScrollableSectionProps<T extends Record<string, PrimitiveRenderable>> = {
   hasMore?: boolean; // show "Load more" affordance
   onSearchChange?: (q: string) => void; // bubble query up
   onLoadMore?: () => void; // trigger next page
+
+  getItemKey?: (item: T, index: number) => Key; // optional stable key
+  renderRight?: (item: T) => ReactNode; // optional trailing action (e.g., eye icon)
+  emptyText?: string;
 };
 
 export const ScrollableSection = <
@@ -55,7 +68,10 @@ export const ScrollableSection = <
   hasMore = false,
   onSearchChange,
   onLoadMore,
+  getItemKey,
+  renderRight,
 }: ScrollableSectionProps<T>) => {
+  
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showUp, setShowUp] = useState(false);
   const [showDown, setShowDown] = useState(false);
@@ -118,6 +134,7 @@ export const ScrollableSection = <
       <Skeleton width='30%' />
     </Box>
   );
+   if (!loading && items.length === 0) return null;
 
   return (
     <Box mb={4} px={2}>
@@ -219,27 +236,55 @@ export const ScrollableSection = <
           ) : (
             <>
               {/* Cards */}
-              {listToRender.map((item, idx) => (
-                <Box
-                  key={idx}
-                  mb={3}
-                  sx={{
-                    backgroundColor: '#222',
-                    borderRadius: 2,
-                    p: 2,
-                    color: 'white',
-                  }}
-                >
-                  {fields.map((field) => (
-                    <Box key={field.key} mb={1}>
-                      <Typography fontWeight={700} color='gray'>
-                        {field.label}
-                      </Typography>
-                      <Typography>{item[field.key]}</Typography>
-                    </Box>
-                  ))}
-                </Box>
-              ))}
+              {listToRender.map((item, idx) => {
+                const key = getItemKey ? getItemKey(item, idx) : idx;
+                return (
+                  <Box
+                    key={key}
+                    mb={3}
+                    sx={{
+                      backgroundColor: '#222',
+                      borderRadius: 2,
+                      p: 2,
+                      color: 'white',
+                    }}
+                  >
+                    
+                    {fields.map((field) => {
+                      const value =
+                        typeof field.render === 'function'
+                          ? field.render(item)
+                          : item[field.key];
+
+                          return (
+                            <Box key={field.key} mb={1}>
+                              {field.label && (
+                                <Typography fontWeight={700} color='gray'>
+                                  {field.label}
+                                </Typography>
+                              )}
+                              {isValidElement(value) ? (
+                                value
+                              ) : (
+                                <Typography>{value ?? '-'}</Typography>
+                              )}
+                            </Box>
+                          );
+                    })}
+                    {renderRight && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {renderRight(item)}
+                      </Box>
+                    )}
+                  </Box>
+                );
+              })}
 
               {/* Empty state (client-mode only; server mode should control items) */}
 

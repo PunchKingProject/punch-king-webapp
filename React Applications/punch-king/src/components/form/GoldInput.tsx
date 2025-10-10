@@ -1,6 +1,8 @@
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
 import {
+  Autocomplete,
   Box,
+  createFilterOptions,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -162,22 +164,83 @@ export function GoldTextField({
   );
 }
 
+type Option = { label: string; value: string };
+
 export function GoldSelect({
   name,
   placeholder,
   options,
   sx,
+  searchable = false,
+  disableClearable = true,
+  getOptionLabel, // optional override for label
+  filterOptions, // optional custom filter
 }: {
   name: string;
   placeholder: string;
   options: Array<{ label: string; value: string }>;
   sx?: object;
+  searchable?: boolean;
+  disableClearable?: boolean;
+  getOptionLabel?: (o: Option) => string;
+  filterOptions?: (opts: Option[], state: { inputValue: string }) => Option[];
 }) {
   const [field, meta, helpers] = useField(name);
   const touched = meta.touched ?? false;
   const hasValue = Boolean(field.value);
   const error = Boolean(meta.error);
   const status = getStatus(touched, error, hasValue);
+
+   const valueObj =
+    options.find((o) => o.value === field.value) ?? null;
+
+  if (searchable) {
+    const _getOptionLabel = getOptionLabel ?? ((o: Option) => o?.label ?? '');
+    const _filterOptions =
+      filterOptions ?? createFilterOptions<Option>({ stringify: (o) => `${o.label} ${o.value}` });
+return (
+      <Box sx={{ mb: 2, ...sx }}>
+        <Autocomplete
+          disablePortal
+          options={options}
+          value={valueObj}
+          onChange={(_, newVal) => helpers.setValue(newVal?.value ?? '')}
+          onBlur={() => helpers.setTouched(true)}
+          isOptionEqualToValue={(opt, val) => opt.value === val.value}
+          getOptionLabel={_getOptionLabel}
+          filterOptions={_filterOptions}
+          disableClearable={disableClearable}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={placeholder}
+              placeholder={placeholder}
+              size="small"
+              variant="outlined"
+              sx={outlineStylesFor(status)}
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    <ValidityAdornment status={status} />
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              }}
+              helperText={touched && meta.error ? meta.error : ''}
+              error={touched && Boolean(meta.error)}
+            />
+          )}
+          renderOption={(props, option) => (
+            <MenuItem {...props} key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          )}
+        />
+      </Box>
+    );
+  }
+
 
   return (
     <Box sx={{ mb: 2, ...sx }}>

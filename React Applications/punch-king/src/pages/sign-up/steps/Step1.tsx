@@ -26,7 +26,10 @@ function Step1() {
   const [lastEmail, setLastEmail] = useState<string>('');
   const [sp] = useSearchParams();
 
-  const flow = (sp.get('flow') || 'sponsor') as 'sponsor' | 'team';
+
+const raw = sp.get('flow') ?? '';
+const token = raw.split(/[?&]/)[0].toLowerCase();
+const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
 
   const initialValues = {
     email: '',

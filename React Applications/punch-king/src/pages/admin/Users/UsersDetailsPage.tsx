@@ -1,6 +1,19 @@
+import { Box, useMediaQuery } from '@mui/material';
+import DesktopUsersDetailsPage from './DesktopUsersDetailsPage';
+import MobileUsersDetailsPage from './MobileUsersDetailsPage';
+
 const UsersDetailsPage = () => {
+  const isDesktop = useMediaQuery('(min-width:910px)');
+
   return (
-    <div>UsersDetailsPage</div>
-  )
-}
-export default UsersDetailsPage
+    <>
+      <Box sx={{ display: isDesktop ? 'block' : 'none' }}>
+        <DesktopUsersDetailsPage />
+      </Box>
+      <Box sx={{ display: isDesktop ? 'none' : 'block' }}>
+        <MobileUsersDetailsPage />
+      </Box>
+    </>
+  );
+};
+export default UsersDetailsPage;

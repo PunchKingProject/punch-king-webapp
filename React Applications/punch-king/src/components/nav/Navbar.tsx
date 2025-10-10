@@ -1,21 +1,31 @@
-import { Box, List, ListItem, useMediaQuery, IconButton } from '@mui/material';
-import { punchKingLogo } from '../../assets';
-import { colors } from '../../theme/colors';
-import CustomButton from '../buttons/CustomButton';
-import { useLocation, useNavigate } from 'react-router-dom';
-import ROUTES from '../../routes/routePath';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Box, IconButton, List, ListItem, Menu, MenuItem, useMediaQuery } from '@mui/material';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { punchKingLogo } from '../../assets';
 import { useAppDispatch } from '../../hooks';
+import ROUTES from '../../routes/routePath';
 import { logout } from '../../store/registration.slice';
+import { colors } from '../../theme/colors';
+import CustomButton from '../buttons/CustomButton';
 
-const navList = [
-  { text: 'About', color: colors.Milk },
-  { text: 'Subscriptions', color: colors.Milk },
-  { text: 'Ranking', color: colors.Milk },
-  { text: 'Posts', color: colors.Milk },
-  { text: 'Contacts', color: colors.Milk },
+
+type SectionKey = 'about' | 'subscriptions' | 'ranking' | 'posts' | 'contacts';
+type NavProps = { onNav?: (key: SectionKey) => void };
+
+const navList: Array<{ text: string; color: string; key: SectionKey }> = [
+  { text: 'About', color: colors.Milk, key: 'about' },
+  { text: 'Subscriptions', color: colors.Milk, key: 'subscriptions' },
+  { text: 'Ranking', color: colors.Milk, key: 'ranking' },
+  { text: 'Posts', color: colors.Milk, key: 'posts' },
+  { text: 'Contacts', color: colors.Milk, key: 'contacts' }, // footer
 ];
+
+const GOLD = '#EFAF00';
+const CREAM = '#FFFCF4';
+const OVERLAY = '#1F1F1F';
+const BTN_H = 44; 
 
 
 function useIsHome() {
@@ -35,66 +45,85 @@ function useLogout() {
     navigate(ROUTES.SIGN_IN, { replace: true });
   };
 }
-const MobileNavbar = () => {
+// const MobileNavbar = () => {
+//   const navigate = useNavigate();
+//    const isHome = useIsHome();
+//    const logout = useLogout();
+
+//   return (
+//     <>
+//       <Box
+//         sx={{
+//           display: 'flex',
+//           alignItems: 'center',
+//           justifyContent: 'space-between',
+//           padding: '0 1.88em',
+//         }}
+//       >
+//         {isHome ? (
+//           <CustomButton
+//             color='primary'
+//             variant='text'
+//             onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
+//           >
+//             Register
+//           </CustomButton>
+//         ) : (
+//           <CustomButton variant='contained' color='primary' onClick={logout}>
+//             Logout
+//           </CustomButton>
+//         )}
+//         <Box
+//           component='img'
+//           src={punchKingLogo}
+//           alt='A Boxer with fist clenched'
+//           sx={{
+//             height: '105px',
+//             objectFit: 'cover',
+//           }}
+//         />
+//         {isHome ? (
+//           <CustomButton
+//             textColor='white'
+//             variant='text'
+//             onClick={() => navigate(ROUTES.SIGN_IN)}
+//           >
+//             Login
+//           </CustomButton>
+//         ) : (
+//           <IconButton sx={{ color: colors.Accent }} aria-label='account'>
+//             <AccountCircleIcon />
+//             <ArrowDropDownIcon />
+//           </IconButton>
+//         )}
+//       </Box>
+//     </>
+//   );
+// };
+
+
+const DesktopNavbar: React.FC<NavProps>  = ({ onNav}) => {
   const navigate = useNavigate();
-   const isHome = useIsHome();
-   const logout = useLogout();
+  const isHome = useIsHome();
+  const logout = useLogout();
 
-  return (
-    <>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 1.88em',
-        }}
-      >
-        {isHome ? (
-          <CustomButton
-            color='primary'
-            variant='text'
-            onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
-          >
-            Register
-          </CustomButton>
-        ) : (
-          <CustomButton variant='contained' color='primary' onClick={logout}>
-            Logout
-          </CustomButton>
-        )}
-        <Box
-          component='img'
-          src={punchKingLogo}
-          alt='A Boxer with fist clenched'
-          sx={{
-            height: '105px',
-            objectFit: 'cover',
-          }}
-        />
-        {isHome ? (
-          <CustomButton
-            textColor='white'
-            variant='text'
-            onClick={() => navigate(ROUTES.SIGN_IN)}
-          >
-            Login
-          </CustomButton>
-        ) : (
-          <IconButton sx={{ color: colors.Accent }} aria-label='account'>
-            <AccountCircleIcon />
-            <ArrowDropDownIcon />
-          </IconButton>
-        )}
-      </Box>
-    </>
-  );
-};
+  const HOME = ROUTES.HOME ?? '/';
+  const goHome = () => navigate(HOME);
 
-const DesktopNavbar = () => {
-    const navigate = useNavigate();
-      const isHome = useIsHome();
-      const logout = useLogout();
+  // NEW: register menu state
+  const [regAnchor, setRegAnchor] = useState<HTMLElement | null>(null);
+  const regOpen = Boolean(regAnchor);
+  const handleOpenRegister = (e: React.MouseEvent<HTMLElement>) =>
+    setRegAnchor(e.currentTarget);
+  const handleCloseRegister = () => setRegAnchor(null);
+
+  const goToRegister = (flow: 'team' | 'sponsor') => {
+    const url =
+      flow === 'team'
+        ? `${ROUTES.SIGN_UP}?flow=team`
+        : `${ROUTES.SIGN_UP}?flow=sponsor`;
+    navigate(url);
+  };
   return (
     <>
       <Box
@@ -119,10 +148,16 @@ const DesktopNavbar = () => {
             <CustomButton
               variant='text'
               color='primary'
-              onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
+              onClick={handleOpenRegister}
             >
               Register
             </CustomButton>
+            <RegisterMenu
+              anchorEl={regAnchor}
+              open={regOpen}
+              onClose={handleCloseRegister}
+              onChoose={goToRegister}
+            />
             <CustomButton
               variant='contained'
               color='primary'
@@ -193,6 +228,10 @@ const DesktopNavbar = () => {
                 // padding: '0px 2em', // override between 900px and 1000px
               },
             }}
+            onClick={goHome}
+            role='button'
+            tabIndex={0}
+            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && goHome()}
           />
         </Box>
 
@@ -215,7 +254,11 @@ const DesktopNavbar = () => {
                     padding: '0',
                   }}
                 >
-                  <CustomButton textColor={item.color} variant='text'>
+                  <CustomButton
+                    textColor={item.color}
+                    variant='text'
+                    onClick={() => onNav?.(item.key)}
+                  >
                     {item.text}
                   </CustomButton>
                 </ListItem>
@@ -227,8 +270,191 @@ const DesktopNavbar = () => {
     </>
   );
 };
-const Navbar = () => {
-  const isTabletUp = useMediaQuery('(min-width:910px)'); // md = 768px by default
-  return <>{isTabletUp ? <DesktopNavbar /> : <MobileNavbar />}</>;
+
+
+// Reusable register menu
+type RegisterMenuProps = {
+  anchorEl: HTMLElement | null;
+  open: boolean;
+  onClose: () => void;
+  onChoose: (flow: 'team' | 'sponsor') => void;
+};
+
+function RegisterMenu({
+  anchorEl,
+  open,
+  onClose,
+  onChoose,
+}: RegisterMenuProps) {
+  return (
+    <Menu
+      anchorEl={anchorEl}
+      open={open}
+      onClose={onClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+      PaperProps={{
+        sx: {
+          bgcolor: OVERLAY,
+          borderRadius: 3, // more rounded like the mock
+          overflow: 'visible',
+          boxShadow: '0 12px 36px rgba(0,0,0,0.55)',
+          p: { xs: 2, md: 3 },
+          // minWidth: { xs: 300, md: 420 },
+        },
+      }}
+      MenuListProps={{
+        disablePadding: true,
+        sx: { display: 'grid', gap: 2 },
+      }}
+    >
+      {/* Gold pill: Register as Boxing team */}
+      <MenuItem
+        disableRipple
+        onClick={() => {
+          onClose();
+          onChoose('team');
+        }}
+        sx={{
+          bgcolor: GOLD,
+          color: '#C28E02',
+          fontWeight: 600,
+          fontSize: { xs: 16, md: 18 },
+          borderRadius: 2,
+          py: { xs: 1.75, md: 2 },
+          height: BTN_H, // ⬅️ same height as Login
+          minHeight: BTN_H, // override MUI default MenuItem minHeight
+          // px: 0,
+          justifyContent: 'center',
+          '&:hover': { bgcolor: GOLD }, // keep flat (no hover color shift)
+          '&.Mui-focusVisible': { bgcolor: GOLD },
+        }}
+      >
+        Register as Boxing team
+      </MenuItem>
+
+      {/* Cream pill: Register as sponsor */}
+      <MenuItem
+        disableRipple
+        onClick={() => {
+          onClose();
+          onChoose('sponsor');
+        }}
+        sx={{
+          bgcolor: CREAM,
+          color: GOLD,
+          fontWeight: 600,
+          fontSize: { xs: 16, md: 18 },
+          borderRadius: 2,
+          height: BTN_H, // ⬅️ same height as Login
+          minHeight: BTN_H, // override MUI default MenuItem minHeight
+          py: { xs: 1.75, md: 2 },
+          // px: 3,
+          justifyContent: 'center',
+          '&:hover': { bgcolor: CREAM },
+          '&.Mui-focusVisible': { bgcolor: CREAM },
+        }}
+      >
+        Register as sponsor
+      </MenuItem>
+    </Menu>
+  );
+}
+
+
+const MobileNavbar: React.FC<NavProps> = () => {
+  const navigate = useNavigate();
+  const isHome = useIsHome();
+  const logout = useLogout();
+  const HOME = ROUTES.HOME ?? '/';
+  const goHome = () => navigate(HOME);
+
+  // NEW: register menu state
+  const [regAnchor, setRegAnchor] = useState<HTMLElement | null>(null);
+  const regOpen = Boolean(regAnchor);
+  const handleOpenRegister = (e: React.MouseEvent<HTMLElement>) =>
+    setRegAnchor(e.currentTarget);
+  const handleCloseRegister = () => setRegAnchor(null);
+
+  // One place to decide the URLs
+  const goToRegister = (flow: 'team' | 'sponsor') => {
+    const url =
+      flow === 'team'
+        ? `${ROUTES.SIGN_UP}?flow=team`
+        : `${ROUTES.SIGN_UP}?flow=sponsor`;
+    navigate(url);
+  };
+
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 1.88em',
+        }}
+      >
+        {isHome ? (
+          <>
+            <CustomButton
+              color='primary'
+              variant='text'
+              onClick={handleOpenRegister}
+            >
+              Register
+            </CustomButton>
+            <RegisterMenu
+              anchorEl={regAnchor}
+              open={regOpen}
+              onClose={handleCloseRegister}
+              onChoose={goToRegister}
+            />
+          </>
+        ) : (
+          <CustomButton variant='contained' color='primary' onClick={logout}>
+            Logout
+          </CustomButton>
+        )}
+
+        <Box
+          component='img'
+          src={punchKingLogo}
+          alt='A Boxer with fist clenched'
+          sx={{ height: '105px', objectFit: 'cover' }}
+          onClick={goHome}
+          role='button'
+          tabIndex={0}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && goHome()}
+        />
+
+        {isHome ? (
+          <CustomButton
+            textColor='white'
+            variant='text'
+            onClick={() => navigate(ROUTES.SIGN_IN)}
+          >
+            Login
+          </CustomButton>
+        ) : (
+          <IconButton sx={{ color: colors.Accent }} aria-label='account'>
+            <AccountCircleIcon />
+            <ArrowDropDownIcon />
+          </IconButton>
+        )}
+      </Box>
+    </>
+  );
+};
+
+
+
+const Navbar: React.FC<NavProps> = (props) => {
+  const isTabletUp = useMediaQuery('(min-width:910px)');
+  return (
+    <>
+      {isTabletUp ? <DesktopNavbar {...props} /> : <MobileNavbar {...props} />}
+    </>
+  );
 };
 export default Navbar;

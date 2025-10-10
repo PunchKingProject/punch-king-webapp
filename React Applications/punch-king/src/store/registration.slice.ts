@@ -12,9 +12,12 @@ export type Draft = {
     address?: string;
     country?: string;
     state?: string;
-    gender?: string;
-    dob?: string;
+    gender?: string; // sponsor
+    dob?: string; // sponsor
     bio?: string;
+    coach_1?: string; // team
+    coach_2?: string; // team
+    license_number?: string; // team
   };
   step4?: {
     profile_picture?: string;
@@ -67,8 +70,18 @@ const slice = createSlice({
       clearDraftFromStorage();
       localStorage.removeItem('pk_registration_draft'); // 👈 clear draft
       localStorage.removeItem('flow');
+      localStorage.removeItem('token');
+      console.log("You' be logged out");
       state.draft = {};
     },
+
+    /** ✅ Clear ONLY the registration draft (keep token & flow) */
+    clearRegistrationDraft(state) {
+      clearDraftFromStorage();
+      localStorage.removeItem('pk_registration_draft');
+      state.draft = {};
+    },
+    
     // 👇 The real logout: clear everything relevant
     logout(state) {
       state.token = null;
@@ -78,6 +91,7 @@ const slice = createSlice({
       localStorage.removeItem('token');
       localStorage.removeItem('flow');
       localStorage.removeItem('pk_registration_draft');
+      localStorage.removeItem('pk_seen_onboarding_team');
       clearDraftFromStorage();
     },
   },
@@ -85,5 +99,5 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export const { setRid, setFlow, mergeDraft, resetRegistration, logout } =
+export const { setRid, setFlow, mergeDraft, resetRegistration, logout, clearRegistrationDraft } =
   slice.actions;
