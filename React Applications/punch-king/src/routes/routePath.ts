@@ -38,7 +38,7 @@ const ROUTES = {
   USERS_DETAILS: '/admin/users/details/:sponsor_id',
   LICENSING_DETAILS: '/admin/licensing/details/:team_id',
   SUBSCRIPTION_DETAILS: '/admin/subscription/details/:team_id',
-  SPONSORSHIP_DETAILS: '/admin/sponsorship/details/:sponsor_id',
+  SPONSORSHIP_DETAILS: '/admin/sponsorship/details/:purchase_id',
 };
 
 export default ROUTES

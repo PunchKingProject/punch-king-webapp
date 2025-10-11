@@ -1,4 +1,6 @@
 // src/pages/admin/Teams/components/catalogue/TeamPostCarousel.tsx
+import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
 import {
   Box,
   IconButton,
@@ -6,14 +8,12 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
-import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
 import { useEffect, useRef, useState } from 'react';
 
-import TeamPostModal from './DesktopTeamPostModal';
-import { useTeamPosts } from '../../../hooks/useTeamPosts';
 import type { TeamPost } from '../../../api/teams.types';
+import { useTeamPosts } from '../../../hooks/useTeamPosts';
 import TeamPostCard from './DesktopTeamPostCard';
+import TeamPostModal from './DesktopTeamPostModal';
 
 type Props = { teamId: number; title?: string };
 
@@ -91,7 +91,7 @@ export default function TeamPostCarousel({
   return (
     <Box
       sx={{
-        border: '2px solid green',
+        // border: '2px solid green',
         padding: '1.56em 6.98em',
         '@media (min-width:910px) and (max-width:1000px)': {
           padding: '1.56em 2em',

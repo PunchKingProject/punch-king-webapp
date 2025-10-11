@@ -1,11 +1,11 @@
 // src/pages/admin/Teams/components/catalogue/TeamPostCard.tsx
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton, Typography } from '@mui/material';
 import RankingIcon from '../../../../../../assets/rankingSmallbox1.svg?react';
 import NeutronIcon from '../../../../../../assets/rankingSmallbox3.svg?react';
 import { isVideo } from '../../../../../../utils/helpers';
 import type { TeamPost } from '../../../api/teams.types';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 
 type Props = { item: TeamPost; onOpen: (item: TeamPost) => void };
 
@@ -182,7 +182,7 @@ export default function TeamPostCard({ item, onOpen }: Props) {
               width: 100,
               display: 'flex',
               flexDirection: 'column',
-              border: '2px solid red',
+              // border: '2px solid red',
               justifyContent: 'space-evenly',
               gap: 1,
               // alignItems: 'center',
@@ -220,7 +220,7 @@ export default function TeamPostCard({ item, onOpen }: Props) {
         >
           <Typography
             variant='body2'
-            sx={{ color: '#EFAF00', fontWeight: 700, border: '2px solid red' }}
+            sx={{ color: '#EFAF00', fontWeight: 700,  }}
           >
             Title:
           </Typography>
@@ -236,10 +236,10 @@ export default function TeamPostCard({ item, onOpen }: Props) {
             variant='body2'
             sx={{ color: '#EFAF00', fontWeight: 700 }}
           >
-            Views:
+            Comments:
           </Typography>
           <Typography variant='body2' sx={{ color: '#fff' }}>
-            {item.comments}
+            {item.comments_count}
           </Typography>
         </Box>
       </Box>

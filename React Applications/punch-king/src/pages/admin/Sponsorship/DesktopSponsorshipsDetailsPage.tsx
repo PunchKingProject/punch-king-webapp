@@ -1,24 +1,23 @@
-// src/pages/admin/Sponsorships/DesktopSponsorshipDetailsPage.tsx
+import { Box } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useQueryClient } from '@tanstack/react-query';
-import { Box } from '@mui/material';
 
-import AdminSection from '../components/AdminSection';
-import AdminBreadCrumbs from '../components/AdminBreadcrumbs';
 import ROUTES from '../../../routes/routePath';
+import AdminBreadCrumbs from '../components/AdminBreadcrumbs';
+import AdminSection from '../components/AdminSection';
 
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
 import type { DateRange } from 'react-day-picker';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter';
 
-import PKImageDialog from '../../../components/modal/PkImageDialog';
-import NoticeModal from '../../../components/modal/NoticeModal';
 import WarningIcon from '../../../assets/modalQuestionIcon.svg?react';
 import SuccessIcon from '../../../assets/modalSuccess.svg?react';
+import NoticeModal from '../../../components/modal/NoticeModal';
+import PKImageDialog from '../../../components/modal/PkImageDialog';
 
 import { useDisclosure } from '../../../hooks/useDisclosure';
 import { useUpdateSponsorshipStatus } from './hooks/useUpdateSponsorshipStatus';
@@ -28,29 +27,51 @@ import {
   normalizePurchaseStatus,
 } from '../../../utils/helpers';
 
-import type { PaymentStatus, PurchaseStatus, SponsorVoteRow } from './api/sponsorships.types';
+import type {
+  PaymentStatus,
+  PurchaseStatus,
+  SponsorVoteRow,
+  SponsorshipApiRow,
+} from './api/sponsorships.types';
 
-import DesktopSponsorshipPaymentDetailsSection from './components/DesktopSponsorshipPaymentDetailsSection';
 import DesktopSponsorshipConfirmationSection from './components/DesktopSponsorshipConfirmationSection';
-import DesktopSponsorshipTeamDetailsSection from './components/DesktopSponsorshipTeamDetailsSection';
-import { useSponsorPurchaseHistory } from './hooks/useSponsorPurchaseHistory';
 import DesktopSponsorshipHistoryTable from './components/DesktopSponsorshipHistoryTable';
+import DesktopSponsorshipPaymentDetailsSection from './components/DesktopSponsorshipPaymentDetailsSection';
+import DesktopSponsorshipPaymentHistoryTable from './components/DesktopSponsorshipPaymentHistoryTable';
+import DesktopSponsorshipTeamDetailsSection from './components/DesktopSponsorshipTeamDetailsSection';
+
+import { useSponsorPurchaseHistory } from './hooks/useSponsorPurchaseHistory';
+import { useSponsorshipPurchase } from './hooks/useSponsorshipPurchase';
 import { useSponsorVoteHistory } from './hooks/useSponsorVoteHistory';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
+type TeamSnapshot = {
+  team_name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  address: string | null;
+  country: string | null;
+  state: string | null;
+};
+
+type LocationState = {
+  teamSnapshot?: TeamSnapshot;
+  sponsorId?: number | null;
+};
+
 export default function DesktopSponsorshipDetailsPage() {
-  // Expect route like: /admin/sponsorships/:sponsor_id/:purchase_id?  (purchase_id is optional)
-  const { sponsor_id, purchase_id } = useParams<{
-    sponsor_id?: string;
-    purchase_id?: string;
-  }>();
-  const sponsorId = sponsor_id ? Number(sponsor_id) : 0;
-  const purchaseId = purchase_id ? Number(purchase_id) : null;
+  // Route uses purchase (object) id
+  const { purchase_id } = useParams<{ purchase_id: string }>();
+  const pid = Number(purchase_id);
+
+  const { state } = useLocation();
+  const { teamSnapshot, sponsorId } = (state as LocationState) || {};
+
 
   const qc = useQueryClient();
 
-  // date range (mirrors subscription)
+  // date range (kept to match design + feed server tables)
   const [range, setRange] = useState<[Dayjs, Dayjs]>([
     dayjs().subtract(30, 'day'),
     dayjs(),
@@ -59,41 +80,16 @@ export default function DesktopSponsorshipDetailsPage() {
   const start_date = useMemo(() => fmt(start), [start]);
   const end_date = useMemo(() => fmt(end), [end]);
 
-  // fetch list-by-sponsor (source of truth for details)
-  const page = 1; // 1-based
-  const page_size = 10; // tweak as needed
-  const { data, isLoading, isError } = useSponsorPurchaseHistory({
-    sponsor_id: sponsorId,
-    start_date,
-    end_date,
-    page,
-    page_size,
-  });
+  // ---- fetch the single purchase by id (NEW endpoint) ----
+  const {
+    data: entry,
+    isLoading: purchaseLoading,
+    isError: purchaseError,
+  } = useSponsorshipPurchase(Number.isFinite(pid) ? pid : null);
 
   useEffect(() => {
-    if (isError) toast.error('Failed to fetch sponsorship history.');
-  }, [isError]);
-
-  // select entry (first or one matching :purchase_id if provided)
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  useEffect(() => {
-    const rows = data?.data ?? [];
-    if (!rows.length) {
-      setSelectedId(null);
-      return;
-    }
-    if (purchaseId != null) {
-      const match = rows.find((r) => r.id === purchaseId);
-      setSelectedId(match ? purchaseId : rows[0].id);
-    } else {
-      setSelectedId(rows[0].id);
-    }
-  }, [data, purchaseId]);
-
-  const entry = useMemo(() => {
-    const rows = data?.data ?? [];
-    return rows.find((r) => r.id === selectedId) ?? null;
-  }, [data, selectedId]);
+    if (purchaseError) toast.error('Failed to fetch sponsorship details.');
+  }, [purchaseError]);
 
   // dialogs
   const view = useDisclosure(false);
@@ -104,7 +100,7 @@ export default function DesktopSponsorshipDetailsPage() {
   const [draftPayment, setDraftPayment] = useState<PaymentStatus>('pending');
   const [draftPurchase, setDraftPurchase] = useState<PurchaseStatus>('pending');
 
-  // sync drafts when entry changes
+  // sync drafts when entry loads/changes
   useEffect(() => {
     if (!entry) return;
     setDraftPayment(normalizePaymentStatus(entry.payment_status));
@@ -129,18 +125,10 @@ export default function DesktopSponsorshipDetailsPage() {
       },
       {
         onSuccess: () => {
-          // Invalidate the same key used by useSponsorPurchaseHistory
-          qc.invalidateQueries({
-            queryKey: [
-              'sponsor-purchase-history',
-              sponsorId,
-              start_date,
-              end_date,
-              page,
-              page_size,
-            ],
-          });
-          qc.invalidateQueries({ queryKey: ['sponsorships'] }); // dashboard list, if visible elsewhere
+          qc.invalidateQueries({ queryKey: ['sponsorships'] });
+          qc.invalidateQueries({ queryKey: ['sponsorship', 'purchase'] });
+          qc.invalidateQueries({ queryKey: ['sponsor-purchase-history'] });
+          qc.invalidateQueries({ queryKey: ['sponsor-vote-history'] });
         },
       }
     );
@@ -148,32 +136,83 @@ export default function DesktopSponsorshipDetailsPage() {
     success.onOpen();
   };
 
+  // ---------- Team card ----------
   const team = useMemo(() => {
+    // Prefer snapshot (from previous page) for instant UI; fall back to entry.team
+    if (teamSnapshot) return teamSnapshot;
+
     const t = entry?.team;
     if (!t) return null;
     return {
-      team_name: t.team_name ?? t.username ?? null, // fall back to username per payload
+      team_name: t.team_name ?? t.username ?? null,
       email: t.email ?? null,
       phone_number: t.phone_number ?? null,
       address: t.address ?? null,
       country: t.country ?? null,
       state: t.state ?? null,
     };
-  }, [entry]);
+  }, [teamSnapshot, entry]);
 
-  // server list state for history
-  const [histPage, setHistPage] = useState(0); // UI 0-based
+  // ---------- TABLE 1: Sponsorship PAYMENT history (users-purchase-history) ----------
+  const [payPage, setPayPage] = useState(0); // UI 0-based
+  const [payPageSize, setPayPageSize] = useState(10);
+  const [paySearch, setPaySearch] = useState(''); // client-only search in PaginatedTable
+
+  const {
+    data: purchasePayload,
+    isLoading: purchaseListLoading,
+    isError: purchaseListError,
+  } = useSponsorPurchaseHistory({
+    sponsor_id: sponsorId ?? 0, // requires sponsor id from state
+    start_date,
+    end_date,
+    page: payPage + 1,
+    page_size: payPageSize,
+  });
+
+  useEffect(() => {
+    if (purchaseListError && sponsorId) {
+      toast.error('Failed to fetch sponsorship payment history.');
+    }
+  }, [purchaseListError, sponsorId]);
+
+  const nf = useMemo(
+    () =>
+      new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: 'NGN',
+        maximumFractionDigits: 2,
+      }),
+    []
+  );
+
+  // Map API -> Payment table row
+  const paymentRows = useMemo(() => {
+    const rows = (purchasePayload?.data ?? []) as SponsorshipApiRow[];
+    return rows.map((r) => ({
+      id: r.id,
+      username: r.team?.team_name ?? r.team?.username ?? '—',
+      payment_date: dayjs(r.payment_date).format('M/D/YYYY'),
+      amount_paid: nf.format(r.payment_amount ?? 0),
+      units: r.sponsorship_points ?? 0,
+      slip: r.payment_slip ?? null,
+    }));
+  }, [purchasePayload, nf]);
+
+  const paymentTotal = purchasePayload?.metadata?.total_count ?? 0;
+
+  // ---------- TABLE 2: Sponsorship HISTORY (sponsor-vote-history) ----------
+  const [histPage, setHistPage] = useState(0);
   const [histPageSize, setHistPageSize] = useState(10);
-  const [histSearch, setHistSearch] = useState(''); // if backend ignores, still ok
+  const [histSearch, setHistSearch] = useState('');
 
-  // fetch sponsor vote history (endpoint you shared)
   const {
     data: voteData,
     isLoading: voteLoading,
     isError: voteError,
   } = useSponsorVoteHistory({
-    sponsor_id: sponsorId,
-    page: histPage + 1, // API 1-based
+    sponsor_id: sponsorId ?? 0,
+    page: histPage + 1,
     page_size: histPageSize,
     start_date,
     end_date,
@@ -181,20 +220,16 @@ export default function DesktopSponsorshipDetailsPage() {
   });
 
   useEffect(() => {
-    if (voteError) toast.error('Failed to fetch sponsorship history.');
-  }, [voteError]);
+    if (voteError && sponsorId) {
+      toast.error('Failed to fetch sponsorship history.');
+    }
+  }, [voteError, sponsorId]);
 
-  // map API -> table rows
   const voteRows: SponsorVoteRow[] = useMemo(() => {
     const list = voteData?.data ?? [];
     return list.map((it) => {
       const d = dayjs(it.created_at);
-      const value = new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency: 'NGN',
-        maximumFractionDigits: 2,
-      }).format(it.equivalent_amount ?? 0);
-
+      const value = nf.format(it.equivalent_amount ?? 0);
       return {
         id: it.id,
         team_name: it.team_name,
@@ -204,13 +239,21 @@ export default function DesktopSponsorshipDetailsPage() {
         time: d.format('h:mma'),
       };
     });
-  }, [voteData]);
+  }, [voteData, nf]);
 
   const voteTotal = voteData?.metadata?.total_count ?? 0;
 
   useEffect(() => {
+    setPayPage(0);
     setHistPage(0);
   }, [start_date, end_date]);
+
+  // ---- slip preview ----
+  const [slipSrc, setSlipSrc] = useState<string | undefined>(undefined);
+  const openSlip = (row: { slip?: string | null }) => {
+    setSlipSrc(row.slip ?? undefined);
+    view.onOpen();
+  };
 
   return (
     <>
@@ -218,7 +261,7 @@ export default function DesktopSponsorshipDetailsPage() {
         title={
           <AdminBreadCrumbs
             rootLabel='SPONSORSHIPS'
-            rootTo={ROUTES.SPONSORSHIP} // go back to sponsorship list page
+            rootTo={ROUTES.SPONSORSHIP}
             currentLabel='SPONSORSHIP DETAILS PAGE'
           />
         }
@@ -233,7 +276,10 @@ export default function DesktopSponsorshipDetailsPage() {
           />
         }
       >
-        <DesktopSponsorshipTeamDetailsSection loading={isLoading} team={team} />
+        <DesktopSponsorshipTeamDetailsSection
+          loading={purchaseLoading}
+          team={team}
+        />
       </AdminSection>
 
       <Box
@@ -250,9 +296,9 @@ export default function DesktopSponsorshipDetailsPage() {
         }}
       >
         <DesktopSponsorshipPaymentDetailsSection
-          loading={isLoading}
+          loading={purchaseLoading}
           entry={entry ?? undefined}
-          onViewSlip={view.onOpen}
+          onViewSlip={() => openSlip({ slip: entry?.payment_slip })}
         />
 
         <DesktopSponsorshipConfirmationSection
@@ -271,25 +317,47 @@ export default function DesktopSponsorshipDetailsPage() {
           }}
         />
 
-        <DesktopSponsorshipHistoryTable
-          rows={voteRows}
-          mode='server'
-          loading={voteLoading}
-          totalCount={voteTotal}
-          pageIndex={histPage}
-          rowsPerPage={histPageSize}
-          onPageChange={setHistPage}
-          onRowsPerPageChange={setHistPageSize}
-          // if you want a search box in the header:
-          searchValue={histSearch}
-          onSearchChange={setHistSearch}
-        />
+        {/* Table 1: Sponsorship PAYMENT history */}
+        
+          <DesktopSponsorshipPaymentHistoryTable
+            rows={paymentRows}
+            mode='server'
+            loading={purchaseListLoading}
+            totalCount={paymentTotal}
+            pageIndex={payPage}
+            rowsPerPage={payPageSize}
+            onPageChange={setPayPage}
+            onRowsPerPageChange={setPayPageSize}
+            searchValue={paySearch}
+            onSearchChange={setPaySearch}
+            onViewSlip={openSlip}
+          />
+
+
+        {/* Table 2: Sponsorship HISTORY */}
+
+          <DesktopSponsorshipHistoryTable
+            rows={voteRows}
+            mode='server'
+            loading={voteLoading}
+            totalCount={voteTotal}
+            pageIndex={histPage}
+            rowsPerPage={histPageSize}
+            onPageChange={setHistPage}
+            onRowsPerPageChange={setHistPageSize}
+            searchValue={histSearch}
+            onSearchChange={setHistSearch}
+          />
+    
 
         <PKImageDialog
           open={view.open}
-          onClose={view.onClose}
+          onClose={() => {
+            view.onClose();
+            setSlipSrc(undefined);
+          }}
           title='Payment slip'
-          src={entry?.payment_slip ?? undefined}
+          src={slipSrc ?? entry?.payment_slip ?? undefined}
         />
 
         <NoticeModal
@@ -298,9 +366,7 @@ export default function DesktopSponsorshipDetailsPage() {
           onContinue={handleConfirmUpdate}
           onSecondary={confirm.onClose}
           title='NOTICE!!!'
-          message={`Are you sure you want to update ${
-            entry?.team?.team_name ?? entry?.team?.username ?? 'this team'
-          } sponsorship payment status?`}
+          message='Are you sure you want to update this sponsorship payment status?'
           continueLabel={isUpdating ? 'Please wait…' : 'Update'}
           secondaryLabel='Cancel'
           icon={<WarningIcon />}
@@ -311,9 +377,7 @@ export default function DesktopSponsorshipDetailsPage() {
           onClose={success.onClose}
           onContinue={success.onClose}
           title='NOTICE!!!'
-          message={`You have successfully updated ${
-            entry?.team?.team_name ?? entry?.team?.username ?? 'this team'
-          } sponsorship status.`}
+          message='You have successfully updated the sponsorship status.'
           continueLabel='Finish'
           icon={<SuccessIcon />}
         />

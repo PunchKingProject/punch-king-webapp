@@ -28,6 +28,7 @@ export type SponsorshipApiRow = {
   payment_from?: BankInfo | null;
   purchase_status?: string | null; // pending | processing | processed | failed
   payment_status?: string | null; // pending | confirmed | failed
+  sponsor_id?: number | null;
   team?: {
     id: number;
     username: string;
@@ -149,3 +150,4 @@ export type SponsorVoteRow = {
   date: string;    // M/D/YYYY
   time: string;    // h:mma
 };
+

@@ -17,14 +17,18 @@ import DateRangeFilter from '../../../components/filters/DateRangeFilter';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
 import TeamDetailsSection from './components/DesktopTeamDetailsSection';
 import TeamPostCarousel from './components/modal/desktop/DesktopTeamPostCarousel';
+import debounce from 'lodash.debounce';
+import { useTeamVoteHistory } from './hooks/useTeamVoteHistory';
 
+/** Row for the sponsors table */
 type SponsorRow = {
+  id: number;
   sponsor_name: string;
-  value: number;
+  value: string; // formatted currency
   volume: number;
   date: string; // e.g. "6/16/2025"
   time: string; // e.g. "10:38pm"
-  source: 'Bank transfer' | 'card' | 'cash';
+  source: string; // API does not provide; keep '—' for now
 };
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
@@ -89,19 +93,91 @@ export const DesktopTeamsDetailsPage = () => {
     ];
   }, [stats]);
 
+  // ===================== SPONSORS TABLE (API) =====================
+
+  // server-mode state
+  const [page, setPage] = useState(0); // UI 0-based
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState<string>('');
+
+  // debounce search like elsewhere
+  const applySearch = useMemo(
+    () => debounce((v: string) => setSearch(v), 400),
+    []
+  );
+  useEffect(() => () => applySearch.cancel(), [applySearch]);
+
+  // reset page when date range changes
+  useEffect(() => {
+    setPage(0);
+  }, [start, end]);
+
+  // fetch sponsors history for this team_id
+  const {
+    data: voteResp,
+    isLoading: sponsorsLoading,
+    isError: sponsorsError,
+  } = useTeamVoteHistory({
+    team_id,
+    page: page + 1, // API is 1-based
+    page_size: rowsPerPage,
+    start_date: fmt(start),
+    end_date: fmt(end),
+    search: search || undefined,
+  });
+
+  useEffect(() => {
+    if (sponsorsError) toast.error('Failed to fetch sponsors.');
+  }, [sponsorsError]);
+
+  // map API → table rows
+  const sponsorRows: SponsorRow[] = useMemo(() => {
+    const list = voteResp?.data?.data ?? [];
+    return list.map((it) => {
+      const d = dayjs(it.created_at);
+      const value = new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: 'NGN',
+        maximumFractionDigits: 2,
+      }).format(it.equivalent_amount ?? 0);
+
+      return {
+        id: it.id,
+        sponsor_name: it.sponsor_name,
+        value,
+        volume: it.units,
+        date: d.format('M/D/YYYY'),
+        time: d.format('h:mma'),
+        source: '—', // API does not provide payment source
+      };
+    });
+  }, [voteResp]);
+
+  const sponsorTotal = voteResp?.data?.metadata?.total_count ?? 0;
+
+  const sponsorColumns: TableColumn<SponsorRow>[] = [
+    { field: 'sponsor_name', header: 'Sponsor name' },
+    { field: 'value', header: 'Value', align: 'right' },
+    { field: 'volume', header: 'Volume', align: 'right' },
+    { field: 'date', header: 'Date' },
+    { field: 'time', header: 'Time' },
+    { field: 'source', header: 'Source' },
+  ];
+
+  // ===============================================================
+
   return (
     <>
       <AdminSection
         title={
-          <>
-            <AdminBreadCrumbs
-              rootLabel='TEAMS DASHBOARD'
-              rootTo={ROUTES.TEAMS}
-              currentLabel={
-                stats?.team_name ? `TEAM: ${stats.team_name}` : 'TEAM DETAILS'
-              }
-            />
-          </>
+          <AdminBreadCrumbs
+            rootLabel='TEAMS DASHBOARD'
+            rootTo={ROUTES.TEAMS}
+            currentLabel={
+              stats?.team_name ? `TEAM: ${stats.team_name}` : 'TEAM DETAILS'
+            }
+          />
         }
         toolbar={
           <DateRangeFilter
@@ -134,83 +210,33 @@ export const DesktopTeamsDetailsPage = () => {
           title='SPONSORS'
           rows={sponsorRows}
           columns={sponsorColumns}
-          searchFields={['sponsor_name', 'source', 'date']}
+          // ----- server mode wiring -----
+          mode='server'
+          loading={sponsorsLoading}
+          totalCount={sponsorTotal}
+          pageIndex={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={setPage}
+          onRowsPerPageChange={setRowsPerPage}
+          searchValue={searchInput}
+          onSearchChange={(val) => {
+            setSearchInput(val);
+            applySearch(val);
+          }}
+          // fields to search on (server hints; still OK for client fallback)
+          searchFields={['sponsor_name', 'date']}
           searchPlaceholder='Search'
-          initialRowsPerPage={6}
+          initialRowsPerPage={10}
           maxBodyHeight={420}
-          getRowKey={(r, i) => `${r.sponsor_name}-${r.date}-${r.time}-${i}`}
+          getRowKey={(r) => String(r.id)}
         />
       </Box>
 
       <TeamDetailsSection teamId={team_id} />
 
-      <Box
-      // sx={{ mt: 6, px: 0, maxWidth: '1100px', mx: 'auto' }}
-      >
+      <Box>
         <TeamPostCarousel teamId={team_id} />
       </Box>
     </>
   );
 };
-
-/* ------------ Table config & mock data ------------ */
-
-const sponsorColumns: TableColumn<SponsorRow>[] = [
-  { field: 'sponsor_name', header: 'Sponsor name' },
-  { field: 'value', header: 'Value', align: 'right' },
-  { field: 'volume', header: 'Volume', align: 'right' },
-  { field: 'date', header: 'Date' },
-  { field: 'time', header: 'Time' },
-  { field: 'source', header: 'Source' },
-];
-
-const sponsorRows: SponsorRow[] = [
-  {
-    sponsor_name: 'Tijjani babangidad',
-    value: 5000,
-    volume: 5,
-    date: '6/16/2025',
-    time: '10:38pm',
-    source: 'Bank transfer',
-  },
-  {
-    sponsor_name: 'Tijjani babangidad',
-    value: 5000,
-    volume: 5,
-    date: '6/16/2025',
-    time: '10:38pm',
-    source: 'card',
-  },
-  {
-    sponsor_name: 'Tijjani babangidad',
-    value: 5000,
-    volume: 5,
-    date: '6/16/2025',
-    time: '10:38pm',
-    source: 'cash',
-  },
-  {
-    sponsor_name: 'Tijjani babangidad',
-    value: 5000,
-    volume: 5,
-    date: '6/16/2025',
-    time: '10:38pm',
-    source: 'Bank transfer',
-  },
-  {
-    sponsor_name: 'Tijjani babangidad',
-    value: 5000,
-    volume: 5,
-    date: '6/16/2025',
-    time: '10:38pm',
-    source: 'Bank transfer',
-  },
-  {
-    sponsor_name: 'Tijjani babangidad',
-    value: 5000,
-    volume: 5,
-    date: '6/16/2025',
-    time: '10:38pm',
-    source: 'Bank transfer',
-  },
-];

@@ -85,7 +85,6 @@ export default function TeamPostModal({ open, onClose, item }: Props) {
         {!!item && (
           <Box sx={{ display: 'grid', gap: 1 }}>
             <L label='Title' v={item.title} />
-            <L label='Views' v={String(item.comments)} />
             <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
               <Pill label='Sponsorships' value={item.sponsorships} />
               <Pill label='Sponsors' value={item.sponsors} />

@@ -85,9 +85,9 @@ function MobileTeamPostCard({ item, onOpen }: Props) {
         </Typography>
 
         <Typography sx={{ color: colors.Accent, fontWeight: 700, mt: 1 }}>
-          Views:
+        Comments:
         </Typography>
-        <Typography sx={{ color: '#fff' }}>{item.comments}</Typography>
+        <Typography sx={{ color: '#fff' }}>{item.comments_count}</Typography>
       </Box>
 
       <Box sx={{ display: 'flex', gap: 4, mt: 2 }}>

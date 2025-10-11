@@ -146,9 +146,9 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
               <Typography>{selected.title}</Typography>
 
               <Typography sx={{ color: colors.Accent, fontWeight: 700, mt: 1 }}>
-                Views:
+                Comments:
               </Typography>
-              <Typography>{selected.comments}</Typography>
+              <Typography>{selected.comments_count}</Typography>
 
               <Box sx={{ display: 'flex', gap: 6, mt: 2 }}>
                 <Box>

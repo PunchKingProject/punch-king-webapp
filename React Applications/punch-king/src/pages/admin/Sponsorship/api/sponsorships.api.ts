@@ -29,7 +29,7 @@ export async function fetchSponsorships(
 // GET details for a single purchase (adjust path if yours differs)
 export async function getSponsorshipPurchase(purchase_id: number): Promise<SponsorshipDetails> {
   const { data } = await customFetch.get<ApiEnvelope<SponsorshipDetails>>(
-    `/sponsorship/users-purchase-history/${purchase_id}`
+    `/sponsorship/purchase-history/${purchase_id}`
   );
   return data.data;
 }

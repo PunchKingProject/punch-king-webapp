@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   Typography
 } from '@mui/material';
+import Collapse from '@mui/material/Collapse';
 import { useMutation } from '@tanstack/react-query';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
@@ -17,11 +18,11 @@ import NoticeModal from '../../../components/modal/NoticeModal';
 import { useAppDispatch } from '../../../hooks';
 import { mergeDraft, setRid } from '../../../store/registration.slice';
 import { createUser } from '../api/registration';
-import { Link as MLink /* ... */ } from '@mui/material';
+import { Link as MLink } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import ROUTES from '../../../routes/routePath';
 
-// --- Validation: >=7 chars, includes letter, digit, special ---
+// --- Validation (UNCHANGED)
 const passwordRules =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
 
@@ -45,13 +46,15 @@ const validationSchema = Yup.object({
       };
       const matches =
         !!password && !!confirmPassword && password === confirmPassword;
-      // Only require the checkbox if the passwords match
       return !matches || value === true;
     }
   ),
 });
 
 type Values = { password: string; confirmPassword: string; agree: boolean };
+
+// display-only (does NOT affect validation)
+const DISPLAY_SYMBOLS = '!#$%^&*+,-./:;<=>?@^_~';
 
 function Step2() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -66,49 +69,30 @@ function Step2() {
   if (token) params.set('token', token);
   params.set('flow', flow);
 
-  const initialValues: Values = {
-    password: '',
-    confirmPassword: '',
-    agree: false,
-  };
-
-  const handleSubmit = async (values: Values) => {
-    // TODO: call your API to set password, e.g.:
-    // await api.post('/auth/register/set-password', { password: values.password });
-    dispatch(mergeDraft({ step2: { passwordSet: true } }));
-
-    // call backend to create user and queue verification email
-    mutation.mutate({
-      token: token || '',
-      password: values.password,
-    });
-  };
-
-  const handleContinueFromModal = () => {
-    // Try to open their inbox
-
-    // Optional: also navigate to step2 right away OR leave them on step1
-    // If your flow requires email verification link to continue, don't navigate.
-    // If you want to let them proceed and guard with SignupGuard on reload, do:
-    // navigate(`/sign-up/step2?${params.toString()}`);
-    dispatch(mergeDraft({ step2: { passwordSet: true } }));
-    navigate(`/sign-up/step3?${params.toString()}`);
-  };
+  const initialValues: Values = { password: '', confirmPassword: '', agree: false };
 
   const mutation = useMutation({
     mutationFn: createUser,
     onSuccess: (res) => {
       if (res?.meta?.code === 200) {
-        console.log('Verification email sent successfully');
-        dispatch(setRid({ token: res.data, flow })); // persist rid in redux + storage
+        dispatch(setRid({ token: res.data, flow }));
         setModalOpen(true);
       }
     },
-    // optional: show a toast / set form error on failure
   });
+
+  const handleSubmit = (values: Values) => {
+    dispatch(mergeDraft({ step2: { passwordSet: true } }));
+    mutation.mutate({ token: token || '', password: values.password });
+  };
+
+  const handleContinueFromModal = () => {
+    dispatch(mergeDraft({ step2: { passwordSet: true } }));
+    navigate(`/sign-up/step3?${params.toString()}`);
+  };
+
   return (
     <>
-      {/* Modal */}
       <NoticeModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -129,58 +113,65 @@ function Step2() {
           mt: '-30px',
         }}
       >
-        <Box
-          sx={{
-            width: '209px',
-            // border: '2px solid red',
-            margin: '0px auto',
-            marginBottom: '-50px',
-          }}
-        >
+        <Box sx={{ width: '209px', margin: '0 auto', mb: '-50px' }}>
           <Box
             component='img'
             src={punchKingLogoSignIn}
             alt='A Boxer with fist clenched'
-            sx={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
+            sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </Box>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
+
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {(formik) => {
             const passwordsMatch =
               !!formik.values.password &&
               formik.values.confirmPassword &&
               formik.values.password === formik.values.confirmPassword;
 
-            // const passwordValid =
-            //   formik.touched.password &&
-            //   !formik.errors.password &&
-            //   !!formik.values.password;
+            // hide rules once the current password value satisfies the regex
+            const passwordPassesRules = passwordRules.test(formik.values.password);
+
             return (
-              <Form
-                style={{
-                  width: '100%',
-                  maxWidth: 400,
-                  padding: '0px 40px',
-                }}
-              >
+              <Form style={{ width: '100%', maxWidth: 400, padding: '0 40px' }}>
                 <FormikTextField
                   name='password'
                   placeholder='Pick a password'
                   showSuccessStyle
                   type='password'
-                  sx={{
-                    mb: -1,
-                  }}
+                  sx={{ mb: 0.5 }}
                 />
-                <Box mb={1} />
+
+                {/* Rules panel (display-only) */}
+                <Collapse in={!passwordPassesRules} unmountOnExit>
+                  <Box
+                    role='note'
+                    aria-live='polite'
+                    sx={{
+                      mt: 1,
+                      mb: 2,
+                      px: 1.5,
+                      py: 1,
+                      bgcolor: '#111',
+                      border: '1px solid #3B3B3B',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Typography variant='caption' sx={{ color: '#C9C9C9', fontWeight: 700 }}>
+                      Password must include:
+                    </Typography>
+                    <ul style={{ margin: '6px 0 0 16px', padding: 0, color: '#C9C9C9' }}>
+                      <li>Minimum 8 characters</li>
+                      <li>At least one uppercase character</li>
+                      <li>At least one lowercase character</li>
+                      <li>At least one number</li>
+                      <li>
+                        At least one symbol from the following{' '}
+                        <code style={{ fontFamily: 'monospace' }}>{DISPLAY_SYMBOLS}</code>
+                      </li>
+                    </ul>
+                  </Box>
+                </Collapse>
 
                 <FormikTextField
                   name='confirmPassword'
@@ -188,40 +179,24 @@ function Step2() {
                   type='password'
                   showSuccessStyle
                 />
-                <Box
-                  sx={{
-                    // border: '2px solid red',
-                    width: '110%',
-                    // pull 5% on each side so it stays centered visually
-                    ml: '-5%',
-                    mr: '-5%',
-                  }}
-                >
+
+                <Box sx={{ width: '110%', ml: '-5%', mr: '-5%' }}>
                   {passwordsMatch && (
                     <FormControlLabel
                       control={
                         <Checkbox
                           checked={formik.values.agree}
-                          onChange={(e) =>
-                            formik.setFieldValue('agree', e.target.checked)
-                          }
+                          onChange={(e) => formik.setFieldValue('agree', e.target.checked)}
                           sx={{
                             color: '#FFC107',
-                            '&.Mui-checked': {
-                              color: '#FFC107',
-                            },
+                            '&.Mui-checked': { color: '#FFC107' },
                           }}
                         />
                       }
                       label={
                         <Typography variant='caption' sx={{ color: '#C9C9C9' }}>
                           By checking this box I accept the{' '}
-                          <span
-                            style={{
-                              color: '#EFAF00',
-                            }}
-                          >
-                            {' '}
+                          <span style={{ color: '#EFAF00' }}>
                             <MLink
                               component={RouterLink}
                               to={ROUTES.TERMS}
@@ -241,34 +216,25 @@ function Step2() {
                   )}
                 </Box>
 
-                <Box
-                  sx={
-                    {
-                      // border: '2px solid red',
-                    }
+                <CustomAuthButton
+                  fullWidth
+                  type='submit'
+                  variant='contained'
+                  disabled={
+                    !(
+                      formik.values.password &&
+                      formik.values.confirmPassword &&
+                      formik.values.password === formik.values.confirmPassword &&
+                      formik.values.agree
+                    ) || mutation.isPending
                   }
                 >
-                  <CustomAuthButton
-                    fullWidth
-                    type='submit'
-                    variant='contained'
-                    disabled={
-                      !(
-                        formik.values.password &&
-                        formik.values.confirmPassword &&
-                        formik.values.password ===
-                          formik.values.confirmPassword &&
-                        formik.values.agree
-                      ) || mutation.isPending
-                    }
-                  >
-                    {mutation.isPending ? (
-                      <CircularProgress size={18} sx={{ color: '#000' }} />
-                    ) : (
-                      'Continue'
-                    )}
-                  </CustomAuthButton>
-                </Box>
+                  {mutation.isPending ? (
+                    <CircularProgress size={18} sx={{ color: '#000' }} />
+                  ) : (
+                    'Continue'
+                  )}
+                </CustomAuthButton>
               </Form>
             );
           }}

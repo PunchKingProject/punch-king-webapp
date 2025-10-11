@@ -200,7 +200,7 @@ const router = createBrowserRouter(
         />
         <Route path='sponsorship' element={<SponsorshipPage />} />
         <Route
-          path='sponsorship/details/:sponsor_id'
+          path='sponsorship/details/:purchase_id'
           element={<SponsorshipDetailsPage />}
         />
       </Route>

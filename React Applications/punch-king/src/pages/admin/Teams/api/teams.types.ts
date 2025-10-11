@@ -70,10 +70,14 @@ export type TeamPost = {
   title: string;
   caption: string;
   file_url: string; // image or video url
-  comments: number; // API provides this
+  comments_count: number; // ✅ normalized count, safe for tables
+
   sponsorships: number;
   sponsors: number;
   created_at: string;
+
+  // optional: keep raw comments if you need them in a detail modal (do not render directly)
+  comments_raw?: unknown;
 };
 
 export type VoteHistoryParams = {

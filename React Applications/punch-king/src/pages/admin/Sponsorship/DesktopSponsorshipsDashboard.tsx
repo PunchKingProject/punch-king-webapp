@@ -1,22 +1,19 @@
-import type { Dayjs } from "dayjs";
-import debounce from "lodash.debounce";
-import { useEffect, useMemo, useState } from "react";
-import { useSponsorships } from "./hooks/useSponsorships";
-import { toast } from "react-toastify";
-import type { MetricCard } from "../components/CardGrid";
-import type { SponsorshipRow } from "./components/DesktopSponsorshipsSection";
-import type { DateRange } from "react-day-picker";
-import AdminSection from "../components/AdminSection";
-import DateRangeFilter from "../../../components/filters/DateRangeFilter";
-import dayjs from "dayjs";
+import type { Dayjs } from 'dayjs';
+import debounce from 'lodash.debounce';
+import { useEffect, useMemo, useState } from 'react';
+import { useSponsorships } from './hooks/useSponsorships';
+import { toast } from 'react-toastify';
+import type { MetricCard } from '../components/CardGrid';
+import type { SponsorshipRow } from './components/DesktopSponsorshipsSection';
+import type { DateRange } from 'react-day-picker';
+import AdminSection from '../components/AdminSection';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import dayjs from 'dayjs';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import { Box } from "@mui/material";
-import DesktopSponsorshipsSection from "./components/DesktopSponsorshipsSection";
-import { useNavigate } from "react-router-dom";
-import ROUTES from "../../../routes/routePath";
-
-
-
+import { Box } from '@mui/material';
+import DesktopSponsorshipsSection from './components/DesktopSponsorshipsSection';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
@@ -97,6 +94,8 @@ function DesktopSponsorshipsDashboard() {
     ];
   }, [data]);
 
+  const apiRows = data?.table.data ?? [];
+
   // rows (map API → table shape)
   const rows: SponsorshipRow[] = useMemo(() => {
     const apiRows = data?.table.data ?? [];
@@ -119,9 +118,28 @@ function DesktopSponsorshipsDashboard() {
 
   // navigate to a sponsorship details page (purchase-level)
   const handleView = (row: SponsorshipRow) => {
+    const src = apiRows.find((r) => r.id === row.id);
+    console.log(src);
+
     // Adjust to your route signature. Example assumes: /sponsorship/:purchase_id
     navigate(
-      ROUTES.SPONSORSHIP_DETAILS.replace(':sponsor_id', String(row.team_id))
+      ROUTES.SPONSORSHIP_DETAILS.replace(':purchase_id', String(row.id)),
+      {
+        state: src
+          ? {
+              // keep this shape narrow and typed
+              teamSnapshot: {
+                team_name: src.team?.team_name ?? src.team?.username ?? null,
+                email: src.team?.email ?? null,
+                phone_number: src.team?.phone_number ?? null,
+                address: src.team?.address ?? null,
+                country: src.team?.country ?? null,
+                state: src.team?.state ?? null,
+              },
+              sponsorId: src.team?.id ?? null,
+            }
+          : undefined,
+      }
     );
   };
 
@@ -177,4 +195,4 @@ function DesktopSponsorshipsDashboard() {
   );
 }
 
-export default DesktopSponsorshipsDashboard
+export default DesktopSponsorshipsDashboard;
