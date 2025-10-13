@@ -1,6 +1,7 @@
 // src/pages/user/Sponsorship/SponsorshipPage.tsx
 import { Box, useMediaQuery } from '@mui/material';
 import DesktopSponsorshipPage from './DesktopSponsorshipPage';
+import MobileSponsorshipPage from './MobileSponsorshipPage';
 
 export default function SponsorshipPage() {
   const isTabletUp = useMediaQuery('(min-width:910px)');
@@ -13,7 +14,7 @@ export default function SponsorshipPage() {
 
       {/* (Optional) If you plan a mobile version later, render it here */}
       <Box sx={{ display: isTabletUp ? 'none' : 'block' }}>
-        <DesktopSponsorshipPage />
+        <MobileSponsorshipPage />
       </Box>
     </>
   );

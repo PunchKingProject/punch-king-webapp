@@ -84,8 +84,11 @@ export default function MobileMyLicensingPage() {
   useEffect(() => {
     const res: TeamLicenseHistory | undefined = payResp;
 
+    // ⬇️ Coerce null/undefined to []
+    const src = Array.isArray(res?.data) ? res!.data : [];
+
     const list: LicensePaymentRow[] =
-      res?.data.map((r: ApiLicenseHistoryRow) => {
+      src.map((r: ApiLicenseHistoryRow) => {
         const statusRaw = (r.payment_status ?? '').toLowerCase();
         const status =
           statusRaw === 'confirmed' ||
@@ -144,8 +147,11 @@ export default function MobileMyLicensingPage() {
   useEffect(() => {
     const res: LicenseHistoryList | undefined = histResp;
 
+    // ⬇️ Coerce null/undefined to []
+    const src = Array.isArray(res?.data) ? res!.data : [];
+
     const list: LicenseHistoryRow[] =
-      res?.data.map((r: ApiLicenseHistoryListRow) => {
+      src.map((r: ApiLicenseHistoryListRow) => {
         const isActive = (r.status ?? '').toLowerCase() === 'active';
         return {
           id: r.id,

@@ -18,13 +18,16 @@ import { showError } from '../../../../utils/error/toastError';
 const gold = '#EFAF00';
 
 type Props = {
-  postId: number;
+  postId: number | undefined;
   teamName: string;
   teamPosition?: string;
   mediaUrl?: string | null;
   sponsors?: number;
   contributors?: number;
+  onBuy: () => void;
 };
+
+type FormValues = { amount: string };
 
 const cardSx = {
   background: '#1A1A1A',
@@ -33,53 +36,47 @@ const cardSx = {
   borderRadius: '12px',
 };
 
-type FormValues = {
-  amount: string; // keep as string for the input
-};
-
-export default function DesktopSponsorshipForm({
+export default function MobileSponsorshipForm({
   postId,
   teamName,
   teamPosition,
   mediaUrl,
   sponsors,
   contributors,
+//   onBuy,
 }: Props) {
   const { mutateAsync, isPending } = useVoteForPost();
 
   return (
-    <Box sx={{ display: 'grid', gap: 2, maxWidth: 430 }}>
-      {/* Title */}
-      <Typography variant='h4' sx={{ color: '#fff', fontWeight: 900 }}>
-        SPONSORSHIP
-      </Typography>
-
+    <Box sx={{ display: 'grid', gap: 1.25, maxWidth: 520 }}>
       {/* Meta */}
-      <Typography sx={{ color: '#EFAF00', fontWeight: 700 }}>
-        TEAM NAME:&nbsp;
-        <span style={{ color: '#fff' }}>{teamName || '—'}</span>
-      </Typography>
-      <Typography sx={{ color: '#EFAF00', fontWeight: 700 }}>
-        POSITION:&nbsp;
-        <span style={{ color: '#fff' }}>{teamPosition || '—'}</span>
-      </Typography>
+      <Box sx={{ display: 'grid', gap: 0.25 }}>
+        <Typography sx={{ color: '#EFAF00', fontWeight: 700, fontSize: 12 }}>
+          TEAM NAME:&nbsp;
+          <span style={{ color: '#fff' }}>{teamName || '—'}</span>
+        </Typography>
+        <Typography sx={{ color: '#EFAF00', fontWeight: 700, fontSize: 12 }}>
+          POSITION:&nbsp;
+          <span style={{ color: '#fff' }}>{teamPosition || '—'}</span>
+        </Typography>
+      </Box>
 
       {/* Media */}
-      <Card sx={{ ...cardSx, p: 1 }}>
+      <Card sx={{ ...cardSx, p: 0.75 }}>
         {mediaUrl ? (
           <CardMedia
             component='img'
             image={mediaUrl}
             alt={teamName}
-            sx={{ height: 220, objectFit: 'cover', borderRadius: '10px' }}
+            sx={{ height: 200, objectFit: 'cover', borderRadius: '10px' }}
           />
         ) : (
-          <Box sx={{ height: 220, bgcolor: '#2a2a2a', borderRadius: '10px' }} />
+          <Box sx={{ height: 200, bgcolor: '#2a2a2a', borderRadius: '10px' }} />
         )}
       </Card>
 
       {/* Chips */}
-      <Box sx={{ display: 'flex', gap: 2 }}>
+      <Box sx={{ display: 'flex', gap: 1.25 }}>
         <Chip
           icon={<GroupsIcon sx={{ color: gold }} />}
           label={
@@ -92,6 +89,7 @@ export default function DesktopSponsorshipForm({
             bgcolor: 'transparent',
             border: '1px solid #3B3B3B',
             color: '#fff',
+            height: 32,
           }}
         />
         <Chip
@@ -106,11 +104,12 @@ export default function DesktopSponsorshipForm({
             bgcolor: 'transparent',
             border: '1px solid #3B3B3B',
             color: '#fff',
+            height: 32,
           }}
         />
       </Box>
 
-      {/* Formik form */}
+      {/* Form */}
       <Formik<FormValues>
         initialValues={{ amount: '5' }}
         validateOnMount
@@ -124,6 +123,7 @@ export default function DesktopSponsorshipForm({
         }}
         onSubmit={async (vals, helpers) => {
           try {
+            if (!postId) throw new Error('Missing post.');
             const amount = parseInt(vals.amount.trim(), 10);
             await mutateAsync({ post_id: postId, amount });
             toast.success('Sponsorship submitted successfully.');
@@ -149,8 +149,7 @@ export default function DesktopSponsorshipForm({
               <Card sx={cardSx}>
                 <CardContent sx={{ display: 'grid', gap: 1 }}>
                   <TextField
-                    // Use text + inputMode to avoid mobile/TS issues, sanitize manually
-                    type='text'
+                    type='text' // keep text; we sanitize manually
                     name='amount'
                     label='Enter number of chips'
                     value={values.amount}
@@ -162,7 +161,6 @@ export default function DesktopSponsorshipForm({
                     inputProps={{
                       inputMode: 'numeric',
                       pattern: '\\d*',
-                      min: 1,
                     }}
                     error={Boolean(touched.amount && errors.amount)}
                     helperText={
@@ -179,22 +177,41 @@ export default function DesktopSponsorshipForm({
                 </CardContent>
               </Card>
 
-              <Button
-                type='submit'
-                disabled={!amountValid || isPending || isSubmitting}
-                variant='contained'
-                sx={{
-                  bgcolor: gold,
-                  color: '#000',
-                  textTransform: 'none',
-                  fontWeight: 700,
-                  height: 44,
-                  borderRadius: '10px',
-                  mt: 1.5,
-                }}
-              >
-                {isPending ? 'Submitting…' : 'Sponsor'}
-              </Button>
+              <Box sx={{ display: 'flex', gap: 1.25, mt: 1.25 }}>
+                <Button
+                  type='submit'
+                  disabled={!amountValid || isPending || isSubmitting}
+                  variant='contained'
+                  sx={{
+                    bgcolor: gold,
+                    color: '#000',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    height: 44,
+                    borderRadius: '10px',
+                    flex: 1,
+                  }}
+                >
+                  {isPending ? 'Submitting…' : 'Sponsor'}
+                </Button>
+
+                {/* <Button
+                  type='button'
+                  onClick={onBuy}
+                  variant='outlined'
+                  sx={{
+                    borderColor: gold,
+                    color: gold,
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    height: 44,
+                    borderRadius: '10px',
+                    flex: 1,
+                  }}
+                >
+                  Buy Units
+                </Button> */}
+              </Box>
             </Form>
           );
         }}

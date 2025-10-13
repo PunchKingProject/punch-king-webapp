@@ -18,8 +18,8 @@ const gold = '#EFAF00';
 
 // 👉 tweak these if your pricing changes
 const PLAN_PRICE: Record<'annual' | 'semi-annual', number> = {
-  annual: 5000,
-  'semi-annual': 2500,
+  annual: 20000,
+  'semi-annual': 10000,
 };
 
 type FormValues = {

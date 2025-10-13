@@ -1,5 +1,6 @@
 import { Box, useMediaQuery } from "@mui/material";
 import DesktopSubscriptionDetailsPage from "./DesktopSubscriptionDetailsPage";
+import MobileSubscriptionDetailsPage from "./MobileSubscriptionDetailsPage";
 
 const SubscriptionDetailsPage = () => {
 
@@ -29,6 +30,3 @@ const SubscriptionDetailsPage = () => {
 export default SubscriptionDetailsPage
 
 
-function MobileSubscriptionDetailsPage() {
-  return <>Mobile Licensing Details Page</>;
-}

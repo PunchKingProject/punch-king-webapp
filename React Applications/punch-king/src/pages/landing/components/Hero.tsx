@@ -8,19 +8,25 @@ import About from './About';
 import TeamRanking from './TeamRanking';
 import TeamSubscription from './TeamSubscription';
 import TeamSponsorship from './TeamSponsorship';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../../../routes/routePath';
 
 // import CustomTypography from '../../../components/typography/CustomTypography';
 
 const Hero = () => {
   const isTabletUp = useMediaQuery('(min-width:910px)');
+    const navigate = useNavigate();
+
+      const goTeamSignup = () => navigate(`${ROUTES.SIGN_UP}?flow=team`);
+      const goSponsorSignup = () => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`);
 
   return (
     <>
       <Box sx={{ display: isTabletUp ? 'block' : 'none' }}>
-        <DesktopHero />
+        <DesktopHero onSubscribe={goTeamSignup} onSignup={goSponsorSignup} />
       </Box>
       <Box sx={{ display: isTabletUp ? 'none' : 'block' }}>
-        <MobileHero />
+        <MobileHero onSubscribe={goTeamSignup} onSignup={goSponsorSignup} />
       </Box>
 
       <TeamRanking />
@@ -34,7 +40,12 @@ const Hero = () => {
 };
 export default Hero;
 
-const MobileHero = () => {
+type CTAProps = {
+  onSubscribe: () => void; // Subscribe → Team signup
+  onSignup: () => void; // Sign up → Sponsor signup
+};
+
+const MobileHero = ({ onSubscribe, onSignup }: CTAProps) => {
   return (
     <>
       <Box
@@ -90,6 +101,7 @@ const MobileHero = () => {
             sx={{
               padding: '8px 10vw',
             }}
+            onClick={onSubscribe} // 👈 Team signup
           >
             Subscribe
           </CustomButton>
@@ -101,6 +113,7 @@ const MobileHero = () => {
             sx={{
               padding: '8px 10vw',
             }}
+            onClick={onSignup} // 👈 Sponsor signup
           >
             Sign up
           </CustomButton>
@@ -172,7 +185,7 @@ const MobileHero = () => {
   );
 };
 
-const DesktopHero = () => {
+const DesktopHero = ({ onSubscribe, onSignup }: CTAProps) => {
   return (
     <Box
       sx={{
@@ -278,6 +291,7 @@ const DesktopHero = () => {
                 // padding: '8px 10px',
                 width: '48%',
               }}
+              onClick={onSubscribe} // 👈 Team signup
             >
               Subscribe
             </CustomButton>
@@ -290,6 +304,7 @@ const DesktopHero = () => {
                 // padding: '8px 10vw',
                 width: '48%',
               }}
+              onClick={onSignup} // 👈 Sponsor signup
             >
               Sign up
             </CustomButton>

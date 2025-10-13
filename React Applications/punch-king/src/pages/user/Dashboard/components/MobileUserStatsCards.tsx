@@ -126,7 +126,7 @@ export default function MobileUserStatsCards({
         {/* Cost of units (just number) */}
         <Box sx={cardSx}>
           <Box>
-            <Title loading={loading}>COST OF UNITS</Title>
+            <Title loading={loading}>COST OF CHIPS</Title>
             <Value loading={loading}>{fmtNumber(costOfUnits)}</Value>
           </Box>
         </Box>
@@ -167,7 +167,7 @@ export default function MobileUserStatsCards({
                   height: 28,
                 }}
               >
-                View
+     
               </Button>
             ) : null}
           </Box>

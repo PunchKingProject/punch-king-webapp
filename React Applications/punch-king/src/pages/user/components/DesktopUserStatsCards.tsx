@@ -182,7 +182,7 @@ export default function DesktopUserStatsCards({
       {/* SPENT UNITS */}
       <Box sx={cardSx}>
         <Box>
-          <Title loading={loading}>SPENT UNITS</Title>
+          <Title loading={loading}>SPENT CHIPS</Title>
           <Value loading={loading}>{spentUnits}</Value>
         </Box>
       </Box>
@@ -190,7 +190,7 @@ export default function DesktopUserStatsCards({
       {/* COST OF UNITS (number only, no NGN symbol per your card guidance) */}
       <Box sx={cardSx}>
         <Box>
-          <Title loading={loading}>COST OF UNITS</Title>
+          <Title loading={loading}>COST OF CHIPS</Title>
           <Value loading={loading}>{fmtNumber(costOfUnits)}</Value>
         </Box>
       </Box>
