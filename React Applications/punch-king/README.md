@@ -1,5 +1,4 @@
-Perfect — let’s turn your barebones Vite README into a **proper, polished project README** that clearly communicates what *PunchKing* is, how to run it, and what it does.
-This version keeps it clean, professional, and developer-friendly while showcasing your work.
+
 
 ---
 
