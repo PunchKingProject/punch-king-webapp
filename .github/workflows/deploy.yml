@@ -3,7 +3,7 @@ name: Deploy Punch King Dev Frontend
 on:
   push:
     branches:
-      - dev # Trigger on dev branch
+      - development
 
 jobs:
   deploy:
