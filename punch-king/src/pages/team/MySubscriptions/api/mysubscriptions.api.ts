@@ -1,0 +1,48 @@
+import { customFetch } from '../../../../Axios.ts';
+import type {
+    CreateSubBody,
+  Envelope,
+  SubHistoryPayload,
+  SubPaymentPayload,
+  TeamSubStats,
+  TeamSubStatsParams,
+} from './mysubscriptions.types.ts';
+
+// GET /sub/team-sub-stats?start_date=DD-MM-YYYY&end_date=DD-MM-YYYY
+export async function getTeamSubStats(
+  params: TeamSubStatsParams
+): Promise<TeamSubStats> {
+  const { data } = await customFetch.get<Envelope<TeamSubStats>>(
+    '/sub/team-sub-stats',
+    { params }
+  );
+  return data.data;
+}
+
+
+export async function getTeamSubActiveInactive(params: {
+  page: number;
+  page_size: number;
+}) {
+  const { data } = await customFetch.get<Envelope<SubHistoryPayload>>(
+    '/sub/active-inactive/',
+    { params }
+  );
+  return data.data;
+}
+
+
+export async function getTeamSubPayments(params: {
+  page: number;
+  page_size: number;
+}) {
+  const { data } = await customFetch.get<Envelope<SubPaymentPayload>>(
+    '/sub/single-team',
+    { params }
+  );
+  return data.data;
+}
+
+export async function createSubscription(body: CreateSubBody): Promise<void> {
+  await customFetch.post('/sub/', body);
+}
