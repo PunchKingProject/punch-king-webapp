@@ -28,7 +28,6 @@ RUN rm -rf ./*
 COPY --from=builder /app/dist .
 
 # Add a custom nginx config to handle SPA routing
-# This version is cleaner and ensures Vite's history mode works (no 404s on refresh)
 RUN echo 'server { \
     listen 80; \
     location / { \
