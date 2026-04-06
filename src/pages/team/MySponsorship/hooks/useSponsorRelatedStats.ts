@@ -1,0 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
+import type { SponsorRelatedStats, SponsorRelatedStatsParams } from "../api/mySponsorship.types.ts";
+import { getSponsorRelatedStats } from "../api/mySponsorship.api.ts";
+
+export function useSponsorRelatedStats(params: SponsorRelatedStatsParams) {
+  return useQuery<SponsorRelatedStats, Error>({
+    queryKey: [
+      'sponsor-related-stats',
+      params.sponsor_id,
+      params.start_date,
+      params.end_date,
+    ],
+    queryFn: () => getSponsorRelatedStats(params),
+    enabled: !!params?.sponsor_id && !!params?.start_date && !!params?.end_date,
+  });
+}
