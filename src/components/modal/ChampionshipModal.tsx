@@ -10,7 +10,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { colors } from '../../theme/colors.ts';
-import { modalImage } from '../../assets';
+import newModalImage from '../../assets/newModalImage.png'
 
 type Props = {
   open: boolean;
@@ -39,12 +39,14 @@ export default function ChampionshipModal({
       fullWidth
       maxWidth='lg'
       fullScreen={fullScreen}
-      PaperProps={{
-        sx: {
-          bgcolor: '#0E0E0E',
-          border: '1px solid #2C2C2C',
-          borderRadius: fullScreen ? 0 : 3,
-          boxShadow: '0 24px 64px rgba(0,0,0,0.65)',
+      slotProps={{
+        paper: {
+          sx: {
+            bgcolor: '#0E0E0E',
+            border: '1px solid #2C2C2C',
+            borderRadius: fullScreen ? 0 : 3,
+            boxShadow: '0 24px 64px rgba(0,0,0,0.65)',
+          },
         },
       }}
     >
@@ -166,8 +168,8 @@ export default function ChampionshipModal({
 
               {/* quick facts */}
               <Box sx={{ display: 'grid', gap: 0.75, mb: 2 }}>
-                <InfoRow label='Bout' value='4 rounds' />
-                <InfoRow label='Weight Category' value='Welter-weight' />
+                <InfoRow label='Bout' value='6 rounds' />
+                <InfoRow label='Weight Categories' value='Welterweight, Lightweight, Middleweight' />
                 <InfoRow label='Age' value='18–25' />
               </Box>
 
@@ -183,11 +185,11 @@ export default function ChampionshipModal({
               >
                 <PrizeRow
                   label='Punch King Champion'
-                  value='₦50 million naira worth of professional contract, continental endorsement deals, and more.'
+                  value='$50,000 worth of professional contract, continental endorsement deals, and more.'
                 />
-                <PrizeRow label='Finalist' value='₦20 million naira.' />
-                <PrizeRow label='Semi finalist' value='₦10 million naira.' />
-                <PrizeRow label='Quarter finalist' value='₦5 million naira.' />
+                <PrizeRow label='Finalist' value='$20,000' />
+                <PrizeRow label='Semi finalist' value='$10,000' />
+                <PrizeRow label='Quarter finalist' value='$5,000' />
               </Box>
 
               <Typography
@@ -261,7 +263,7 @@ export default function ChampionshipModal({
           >
             <Box
               component='img'
-              src={modalImage}
+              src={newModalImage}
               alt='Championship poster'
               sx={{
                 width: '100%',

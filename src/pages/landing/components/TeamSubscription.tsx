@@ -14,7 +14,7 @@ type Plan = {
 const subscriptionPlans: Plan[] = [
   {
     title: 'YEARLY',
-    price: 'N20,000',
+    price: '$40',
     details: `Get the most visibility with the annual subscription plan. Pitch your team to potential sponsors for 12 months, every day, with unlimited uploads of videos and pictures of your team—and get a chance to present your champion to compete for the Punch King belt.`,
     benefits: [
       'Continental exposure and a global audience.',
@@ -27,7 +27,7 @@ const subscriptionPlans: Plan[] = [
   },
   {
     title: '6 MONTHS',
-    price: 'N10,000',
+    price: '$20',
     details: `Subscribe to this plan to present your champion for possible qualification in the Punch King championship.`,
     benefits: [
       'Continental recognition and a global audience.',
