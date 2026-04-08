@@ -12,7 +12,7 @@ import FacebookIcon from '../../../assets/facebookLogo.svg?react';
 import PhoneIcon from '../../../assets/phoneLogo.svg?react';
 import WhatsAppIcon from '../../../assets/whatsappLogo.svg?react';
 import YouTubeIcon from '../../../assets/youtubeLogo.svg?react';
-import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import LanguageSwitcher from "../../.g./components/LanguageSwitcher";
 
 const CONTACT_PRIMARY = '+234 9061287852';
 const CONTACT_EMAIL = 'Info@punchkingboxing.com';
