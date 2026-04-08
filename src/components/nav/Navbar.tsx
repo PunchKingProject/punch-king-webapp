@@ -42,7 +42,7 @@ function useLogout() {
 
     // TODO: clear tokens/session here
     // e.g. localStorage.removeItem('auth'); queryClient.clear(); etc.
-    navigate(ROUTES.SIGN_IN, { replace: true });
+    navigate(ROUTES.HOME, { replace: true });
   };
 }
 // const MobileNavbar = () => {

@@ -79,8 +79,7 @@ const DashboardSection = ({
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
-          >
-            <Box>{title}</Box>
+          ><Box>{title}</Box>
             {toolbar}
           </Box>
 

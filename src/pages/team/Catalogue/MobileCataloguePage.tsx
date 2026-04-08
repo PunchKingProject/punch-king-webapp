@@ -9,6 +9,7 @@ import { useTeamPosts } from './hooks/useTeamPosts.ts';
 import MobileCatalogueStatsCards from './components/MobileCatalogueStatsCards.tsx';
 import MobileMyCatalogueList from './components/MobileMyCatalogueList.tsx';
 import TeamBreadcrumbs from '../../../components/breadcrumbs/TeamBreadcrumbs.tsx';
+import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
 
 
 const gold = '#f0c040';
@@ -30,6 +31,7 @@ export default function MobileCataloguePage() {
 
   return (
     <Box sx={{ px: 2, py: 2 }}>
+      <FreeTrialBanner />
       {/* 👇 clickable breadcrumb, same API as desktop */}
       <TeamBreadcrumbs
         rootLabel='TEAM DASHBOARD'
@@ -71,7 +73,7 @@ export default function MobileCataloguePage() {
             '&:hover': { bgcolor: '#ffd465' },
           }}
         >
-          upload media
+          Upload Media
         </Button>
       </Box>
 

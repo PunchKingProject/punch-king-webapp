@@ -95,9 +95,9 @@ function SignupGuard() {
           >
             <Typography
               variant='bodyTextMilkDefault'
-              sx={{ color: 'white', fontWeight: 700 }}
+              sx={{ color: 'white', fontWeight: 700, textTransform: 'capitalize' }}
             >
-              User Signup steps
+              {flow} signup steps
             </Typography>
             <StepDots total={4} active={step} />
             <Typography variant='body2' sx={{ mt: 1, color: '#C9C9C9' }}>

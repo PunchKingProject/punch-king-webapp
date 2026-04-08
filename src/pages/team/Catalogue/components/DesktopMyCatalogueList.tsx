@@ -57,7 +57,7 @@ export default function DesktopMyCatalogueList({
           variant='contained'
           sx={{
             bgcolor: '#f0c040',
-            color: '#000',
+            color: '#1f1f1f',
             textTransform: 'none',
             fontWeight: 700,
             px: 3,
@@ -65,7 +65,7 @@ export default function DesktopMyCatalogueList({
             '&:hover': { bgcolor: '#ffd465' },
           }}
         >
-          upload media
+          Upload Media
         </Button>
       </Box>
 

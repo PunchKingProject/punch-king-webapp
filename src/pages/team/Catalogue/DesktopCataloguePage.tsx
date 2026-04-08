@@ -9,6 +9,7 @@ import { useTeamPosts } from './hooks/useTeamPosts.ts';
 import { toast } from 'react-toastify';
 import DesktopMyCatalogueList from './components/DesktopMyCatalogueList.tsx';
 import { useNavigate } from 'react-router-dom';
+import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
 
 const contentPaddingSx = {
   padding: '1.56em 6.98em',
@@ -37,6 +38,7 @@ export default function DesktopCataloguePage() {
 
   return (
     <>
+      <FreeTrialBanner />
       <DashboardSection
         title={
           <TeamBreadcrumbs
@@ -59,6 +61,7 @@ export default function DesktopCataloguePage() {
 
       {/* My catalogue list */}
       <Box sx={contentPaddingSx}>
+
         <DesktopMyCatalogueList
           posts={posts ?? []}
           loading={postsLoading}

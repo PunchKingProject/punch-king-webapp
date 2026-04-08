@@ -46,7 +46,7 @@ function UserMobileMenu() {
     localStorage.removeItem('persist:root');
     sessionStorage.clear();
     setProfileOpen(false);
-    navigate(ROUTES.SIGN_IN ?? '/sign-in', { replace: true });
+    navigate(ROUTES.SIGN_IN ?? '/', { replace: true });
   };
 
   return (

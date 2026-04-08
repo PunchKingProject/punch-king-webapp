@@ -508,7 +508,7 @@ export default function DesktopBuySponsorsForm() {
 
                                     <TextField
                                         name="nameOnCard"
-                                        label="Name On Card"
+                                        label="Enter Name On Card"
                                         value={values.nameOnCard}
                                         onChange={handleChange}
                                         onBlur={handleBlur}

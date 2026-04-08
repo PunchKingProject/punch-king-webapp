@@ -55,8 +55,7 @@ const SideBar = () => {
           }}
         >
           {items.map((item) => {
-            
-                const active = isActive(item.path);
+            const active = isActive(item.path);
             return (
             <Button
               key={item.label}
@@ -64,7 +63,7 @@ const SideBar = () => {
               onClick={() => navigate(item.path)}
               sx={{
                 color: active ? '#fff' : '#f0c040',
-                borderColor: active ? '#fff ':'#f0c040',
+                borderColor: active ? '#fff':'#f0c040',
                 width: '200px',
                 py: 1,
                 borderRadius: '10px',
