@@ -7,7 +7,7 @@ import PaginatedTable, {
 export type SponsorRelatedTableRow = {
   id: number;
   date: string; // M/D/YYYY
-  amount: string; // ₦ formatted
+  amount: string; // $ formatted
   qty: number; // units
 };
 
@@ -66,15 +66,15 @@ export default function DesktopSponsorRelatedHistoryTable({
 }
 
 /* ---------- mapper ---------- */
-function fmtNGN(n: number) {
+function fmtUSD(n: number) {
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 0,
     }).format(n);
   } catch {
-    return `₦${n.toLocaleString()}`;
+    return `$${n.toLocaleString()}`;
   }
 }
 
@@ -91,7 +91,7 @@ export function mapSponsorRelatedApiToRows(
   return list.map((r) => ({
     id: r.id,
     date: dayjs(r.created_at).format('M/D/YYYY'),
-    amount: fmtNGN(
+    amount: fmtUSD(
       r.equivalent_amount > 0 ? r.equivalent_amount : r.units * unitPrice
     ),
     qty: r.units ?? 0,

@@ -20,7 +20,7 @@ Fans can sponsor teams to boost their rankings, teams can apply for certificatio
 
 * Register and manage team profiles
 * Apply for certification and upload proof of payment
-* Subscribe to PunchKing plans (₦10,000/year or ₦5,000/6 months)
+* Subscribe to PunchKing plans ($10,000/year or $5,000/6 months)
 * Upload videos/photos and monitor sponsorship votes
 
 ### 💸 Sponsor Dashboard

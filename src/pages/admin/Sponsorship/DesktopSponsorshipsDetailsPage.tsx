@@ -180,7 +180,7 @@ export default function DesktopSponsorshipDetailsPage() {
     () =>
       new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency: 'NGN',
+        currency: 'USD',
         maximumFractionDigits: 2,
       }),
     []

@@ -141,7 +141,7 @@ export type FetchUserPurchaseHistoryParams = {
 export type SponsorVoteItem = {
   id: number;
   units: number; // “Volume”
-  equivalent_amount: number; // “Value” (NGN)
+  equivalent_amount: number; // “Value” (USD)
   team_name: string;
   created_at: string; // ISO datetime
 };

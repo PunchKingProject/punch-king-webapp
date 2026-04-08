@@ -187,7 +187,7 @@ export default function DesktopUserStatsCards({
         </Box>
       </Box>
 
-      {/* COST OF UNITS (number only, no NGN symbol per your card guidance) */}
+      {/* COST OF UNITS (number only, no USD symbol per your card guidance) */}
       <Box sx={cardSx}>
         <Box>
           <Title loading={loading}>COST OF CHIPS</Title>

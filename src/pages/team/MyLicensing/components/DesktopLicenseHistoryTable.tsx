@@ -25,16 +25,16 @@ export type LicenseUiRow = {
 
 const fmt = (iso?: string | null) =>
   iso ? dayjs(iso).format('M/D/YYYY') : '—';
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const v = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(v);
   } catch {
-    return `₦${v.toLocaleString()}`;
+    return `$${v.toLocaleString()}`;
   }
 };
 
@@ -75,7 +75,7 @@ export default function DesktopLicenseHistoryTable({
       license_number: r.license_number ?? '—',
       start_date: fmt(r.start_date),
       end_date: fmt(r.end_date),
-      amount_paid: fmtNGN(r.amount_paid),
+      amount_paid: fmtUSD(r.amount_paid),
       status: (r.status || 'inactive')
         .replace(/[_-]/g, ' ')
         .replace(/\b\w/g, (m) => m.toUpperCase()),

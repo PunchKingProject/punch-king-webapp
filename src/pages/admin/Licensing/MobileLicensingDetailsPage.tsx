@@ -242,7 +242,7 @@ export default function MobileLicensingDetailsPage() {
               typeof selected?.payment_amount === 'number'
                 ? new Intl.NumberFormat(undefined, {
                     style: 'currency',
-                    currency: 'NGN',
+                    currency: 'USD',
                     maximumFractionDigits: 2,
                   }).format(selected.payment_amount)
                 : 'N/A'

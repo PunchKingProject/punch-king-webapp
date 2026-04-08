@@ -8,7 +8,7 @@ export type PaymentHistoryRow = {
   id: number;
   username: string;
   payment_date: string; // M/D/YYYY
-  amount_paid: string; // formatted NGN
+  amount_paid: string; // formatted USD
   units: number;
   slip?: string | null;
 };

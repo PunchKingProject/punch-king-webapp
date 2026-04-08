@@ -34,16 +34,16 @@ const fmtDateTime = (iso?: string | null) =>
     ? `${dayjs(iso).format('M/D/YYYY')}  ${dayjs(iso).format('h:mma')}`
     : 'N/A';
 
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const val = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(val);
   } catch {
-    return `₦${val.toLocaleString()}`;
+    return `$${val.toLocaleString()}`;
   }
 };
 
@@ -136,7 +136,7 @@ export default function DesktopLicensePaymentDetailsSection({
                     color: '#00C853', // bright green like the mock
                   }}
                 >
-                  {fmtNGN(entry?.payment_amount)}
+                  {fmtUSD(entry?.payment_amount)}
                 </Typography>
               </Box>
             </Box>

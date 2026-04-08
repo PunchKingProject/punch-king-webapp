@@ -231,7 +231,7 @@ export default function MobileUsersDetailsPage() {
       return {
         value: new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(it.payment_amount),
         volume: it.sponsorship_points,
@@ -278,7 +278,7 @@ export default function MobileUsersDetailsPage() {
         team_name: it.team_name,
         value: new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(it.equivalent_amount),
         volume: it.units,

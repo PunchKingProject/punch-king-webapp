@@ -27,7 +27,7 @@ export const userSponsorshipFieldData: Field<UserListItem>[] = [
 
 
 export type PurchaseRow = {
-  value: string; // formatted NGN string
+  value: string; // formatted USD string
   volume: number; // units
   date: string; // YYYY-MM-DD
   time: string; // hh:mma
@@ -44,7 +44,7 @@ export const purchaseFieldData: Field<PurchaseRow>[] = [
 
 export type SponsorRow = {
   team_name: string;
-  value: string; // formatted NGN string
+  value: string; // formatted USD string
   volume: number; // units
   date: string; // YYYY-MM-DD
   time: string; // hh:mma

@@ -21,7 +21,7 @@ const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 const fmtCurrency = (n: number) =>
   new Intl.NumberFormat(undefined, {
     style: 'currency',
-    currency: 'NGN',
+    currency: 'USD',
     maximumFractionDigits: 2,
   }).format(n);
 

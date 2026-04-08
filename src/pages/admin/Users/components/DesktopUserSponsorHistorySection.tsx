@@ -6,7 +6,7 @@ import PaginatedTable from "../../../../components/tables/PaginatedTable.tsx";
 export type UserSponsorRow = {
   id?: number | string;
   team_name: string;
-  value: number; // NGN (equivalent_amount)
+  value: number; // USD (equivalent_amount)
   volume: number; // units
   date: string; // 'YYYY-MM-DD'
   time: string; // 'hh:mma'

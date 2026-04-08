@@ -70,7 +70,7 @@ export type Meta = {
 export type CreatePurchaseInput = {
   /** number of sponsorship units being purchased */
   points: number;
-  /** computed client-side = points × unit price (NGN) */
+  /** computed client-side = points × unit price (USD) */
   payment_amount: number;
   /** local image file (we'll upload it to /img to get a URL) */
   payment_slip_file: File;

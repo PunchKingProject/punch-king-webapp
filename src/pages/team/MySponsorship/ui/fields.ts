@@ -6,7 +6,7 @@ export type MobileSponsorshipItem = {
   sponsor_id: number;
   sponsor_name: string;
   sponsorship_date: string; // display-ready
-  amount: string; // stringified NGN
+  amount: string; // stringified USD
   qty: string; // stringified units
 };
 

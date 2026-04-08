@@ -32,16 +32,16 @@ const fmtDateTime = (iso?: string | null) =>
     ? `${dayjs(iso).format('M/D/YYYY')}  ${dayjs(iso).format('h:mma')}`
     : 'N/A';
 
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const v = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(v);
   } catch {
-    return `₦${v.toLocaleString()}`;
+    return `$${v.toLocaleString()}`;
   }
 };
 
@@ -115,7 +115,7 @@ export default function DesktopSubscriptionPaymentDetailsSection({
                     color: '#00C853',
                   }}
                 >
-                  {fmtNGN(entry?.payment_amount)}
+                  {fmtUSD(entry?.payment_amount)}
                 </Typography>
               </Box>
             </Box>

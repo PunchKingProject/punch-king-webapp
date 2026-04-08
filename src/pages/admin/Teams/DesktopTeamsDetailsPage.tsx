@@ -138,7 +138,7 @@ export const DesktopTeamsDetailsPage = () => {
       const d = dayjs(it.created_at);
       const value = new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency: 'NGN',
+        currency: 'USD',
         maximumFractionDigits: 2,
       }).format(it.equivalent_amount ?? 0);
 

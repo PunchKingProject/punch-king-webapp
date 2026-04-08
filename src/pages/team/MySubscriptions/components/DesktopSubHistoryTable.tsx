@@ -74,16 +74,16 @@ export const mapSubHistoryApiToRows = (
     subscription_status?: string | null;
   }>
 ) => {
-  const fmtNGN = (n?: number | null) => {
+  const fmtUSD = (n?: number | null) => {
     const v = typeof n === 'number' ? n : 0;
     try {
       return new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency: 'NGN',
+        currency: 'USD',
         maximumFractionDigits: 2,
       }).format(v);
     } catch {
-      return `₦${v.toLocaleString()}`;
+      return `$${v.toLocaleString()}`;
     }
   };
   const status = (s?: string | null) =>
@@ -97,7 +97,7 @@ export const mapSubHistoryApiToRows = (
     subscription_type: labelize(r.type),
     start_date: r.start_date ? dayjs(r.start_date).format('M/D/YYYY') : '—',
     end_date: r.end_date ? dayjs(r.end_date).format('M/D/YYYY') : '—',
-    amount_paid: fmtNGN(r.amount_paid),
+    amount_paid: fmtUSD(r.amount_paid),
     status: status(r.subscription_status),
   }));
 };

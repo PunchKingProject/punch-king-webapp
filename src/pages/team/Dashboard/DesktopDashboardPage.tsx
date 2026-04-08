@@ -132,23 +132,23 @@ function DesktopDashboardPage() {
   // map api -> table rows
   const rows: MySponsorshipRow[] = useMemo(() => {
     const list = voteData?.data ?? [];
-    const fmtNGN = (n?: number) => {
+    const fmtUSD = (n?: number) => {
       const v = typeof n === 'number' ? n : 0;
       try {
         return new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(v);
       } catch {
-        return `₦${v.toLocaleString()}`;
+        return `$${v.toLocaleString()}`;
       }
     };
     return list.map((r) => ({
       id: r.id,
       sponsor_name: r.sponsor_name,
       units: r.units,
-      amount: fmtNGN(r.equivalent_amount),
+      amount: fmtUSD(r.equivalent_amount),
       created_at: `${dayjs(r.created_at).format('M/D/YYYY')}  ${dayjs(
         r.created_at
       ).format('h:mma')}`,
@@ -191,16 +191,16 @@ function DesktopDashboardPage() {
 
   const subsRows: MySubscriptionRow[] = useMemo(() => {
     const list = subsData?.table.data ?? [];
-    const fmtNGN = (n?: number | null) => {
+    const fmtUSD = (n?: number | null) => {
       const v = typeof n === 'number' ? n : 0;
       try {
         return new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(v);
       } catch {
-        return `₦${v.toLocaleString()}`;
+        return `$${v.toLocaleString()}`;
       }
     };
     const nice = (s?: string | null) => (s ? dayjs(s).format('M/D/YYYY') : '—');
@@ -218,7 +218,7 @@ function DesktopDashboardPage() {
         subscription_type: titleize(r.type),
         start_date: nice(r.start_date),
         end_date: nice(r.end_date),
-        amount_paid: fmtNGN(r.payment_amount),
+        amount_paid: fmtUSD(r.payment_amount),
         status: active ? 'Active' : 'Expired',
       };
     });
@@ -252,16 +252,16 @@ function DesktopDashboardPage() {
 
   const licRows: MyLicenseRow[] = useMemo(() => {
     const list = licData?.data ?? [];
-    const fmtNGN = (n?: number | null) => {
+    const fmtUSD = (n?: number | null) => {
       const v = typeof n === 'number' ? n : 0;
       try {
         return new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(v);
       } catch {
-        return `₦${v.toLocaleString()}`;
+        return `$${v.toLocaleString()}`;
       }
     };
     const nice = (s?: string | null) => (s ? dayjs(s).format('M/D/YYYY') : '—');
@@ -276,7 +276,7 @@ function DesktopDashboardPage() {
         license_name: r.team?.license_number || '—',
         start_date: nice(r.start_date),
         end_date: nice(r.end_date),
-        amount_paid: fmtNGN(r.payment_amount),
+        amount_paid: fmtUSD(r.payment_amount),
         status: active ? 'Active' : 'Expired',
       };
     });

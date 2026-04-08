@@ -5,7 +5,7 @@ import type { Field } from "../../admin/components/ScrollableSection.tsx";
 export type MobilePurchaseListItem = {
   id: number;
   payment_date: string; // e.g. "3/12/2025"
-  payment_amount: string; // formatted NGN string (e.g. "₦5,000.00")
+  payment_amount: string; // formatted USD string (e.g. "$5,000.00")
   sponsorship_points: number; // units purchased
   username: string; // team name (or fallback username)
   payment_slip?: string | null;

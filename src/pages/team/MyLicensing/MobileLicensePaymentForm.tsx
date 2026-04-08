@@ -40,15 +40,15 @@
 //   '& .MuiFormHelperText-root': { color: '#f44336' },
 // };
 //
-// function fmtNGN(n: number) {
+// function fmtUSD(n: number) {
 //   try {
 //     return new Intl.NumberFormat(undefined, {
 //       style: 'currency',
-//       currency: 'NGN',
+//       currency: 'USD',
 //       maximumFractionDigits: 0,
 //     }).format(n);
 //   } catch {
-//     return `₦${n.toLocaleString()}`;
+//     return `$${n.toLocaleString()}`;
 //   }
 // }
 //
@@ -152,7 +152,7 @@
 //               <TextField
 //                 size='small'
 //                 label='Cost (auto generated)'
-//                 value={fmtNGN(amount)}
+//                 value={fmtUSD(amount)}
 //                 InputProps={{ readOnly: true }}
 //                 sx={inputSx}
 //               />
@@ -363,7 +363,7 @@ type FormValues = {
   planId: string;
 };
 
-function fmtPrice(n: number, currency: string = 'NGN') {
+function fmtPrice(n: number, currency: string = 'USD') {
   try {
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
@@ -372,7 +372,7 @@ function fmtPrice(n: number, currency: string = 'NGN') {
     }).format(n);
   } catch {
     // Fallback if Intl fails
-    const symbol = currency === 'USD' ? '$' : '₦';
+    const symbol = currency === 'USD' ? '$' : '$';
     return `${symbol}${n.toLocaleString()}`;
   }
 }

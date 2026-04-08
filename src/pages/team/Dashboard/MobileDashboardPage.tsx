@@ -79,16 +79,16 @@ type RankedTeamsPayload = {
 };
 
 const toYMD = (d: Date) => d.toISOString().slice(0, 10);
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const v = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(v);
   } catch {
-    return `₦${v.toLocaleString()}`;
+    return `$${v.toLocaleString()}`;
   }
 };
 const formatRangeLabel = (from?: Date, to?: Date) => {
@@ -192,7 +192,7 @@ export default function MobileDashboardPage() {
     idx: idx + 1,
     sponsor_name: r.sponsor_name ?? '—',
     date: dayjs(r.created_at).format('D/M/YYYY'),
-    amount_paid: fmtNGN(r.equivalent_amount),
+    amount_paid: fmtUSD(r.equivalent_amount),
     units: r.units ?? 0,
   }));
   const spTotal = votePayload?.metadata.total_count ?? 0;
@@ -223,7 +223,7 @@ export default function MobileDashboardPage() {
       .replace(/\b\w/g, (m) => m.toUpperCase()),
     start_date: r.start_date ? dayjs(r.start_date).format('D/M/YYYY') : '—',
     end_date: r.end_date ? dayjs(r.end_date).format('D/M/YYYY') : '—',
-    amount_paid: fmtNGN(r.payment_amount),
+    amount_paid: fmtUSD(r.payment_amount),
     status: r.end_date
       ? dayjs(r.end_date).isAfter(dayjs())
         ? 'Active'
@@ -245,7 +245,7 @@ export default function MobileDashboardPage() {
     license_name: r.team?.license_number || '—',
     start_date: r.start_date ? dayjs(r.start_date).format('D/M/YYYY') : '—',
     end_date: r.end_date ? dayjs(r.end_date).format('D/M/YYYY') : '—',
-    amount_paid: fmtNGN(r.payment_amount),
+    amount_paid: fmtUSD(r.payment_amount),
     status: r.end_date
       ? dayjs(r.end_date).isAfter(dayjs())
         ? 'Active'

@@ -33,7 +33,7 @@ export type SponsorshipApiRow = {
   sponsor_name: string;
   sponsorship_date: string;            // ISO
   sponsorship_amount: number;          // units (Qty)
-  sponsorship_equivalent_cash: number; // NGN amount (may be 0/missing)
+  sponsorship_equivalent_cash: number; // USD amount (may be 0/missing)
 };
 
 // ----- payload container
@@ -58,7 +58,7 @@ export type SponsorRelatedStatsParams = {
 
 export type SponsorRelatedStats = {
   total_points: number; // units
-  total_cash: number; // NGN
+  total_cash: number; // USD
 };
 
 export type SponsorRelatedApiRow = {

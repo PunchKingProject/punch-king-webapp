@@ -58,7 +58,7 @@ export default function DesktopMySponsorshipStatsCards({
   value = 0,
   rank = 0,
 }: Props) {
-  const fmtNGN = (n: number) =>
+  const fmtUSD = (n: number) =>
     new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(
       Number.isFinite(n) ? n : 0
     );
@@ -90,7 +90,7 @@ export default function DesktopMySponsorshipStatsCards({
     >
       <Card title='CHIPS' value={sponsorships} />
       <Card title='SPONSORS' value={sponsors} />
-      <Card title='CHIPS VALUE' value={fmtNGN(value)} />
+      <Card title='CHIPS VALUE' value={fmtUSD(value)} />
       <Card title='MY RANKING' value={`${rank || 0}TH`.toUpperCase()} />
     </Box>
   );

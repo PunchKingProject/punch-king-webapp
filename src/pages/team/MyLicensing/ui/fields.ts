@@ -4,7 +4,7 @@ import type { Field } from '../../../admin/components/ScrollableSection.tsx';
 export type LicensePaymentRow = {
   id: number;
   license_name: string; // e.g. "NBDC"
-  amount_paid: string; // formatted NGN
+  amount_paid: string; // formatted USD
   payment_date: string; // M/D/YYYY
   status: string; // "Processing" | "Processed" | "Failed"
   payment_slip?: string | null;

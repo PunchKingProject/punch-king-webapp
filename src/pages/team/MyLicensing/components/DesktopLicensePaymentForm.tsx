@@ -29,15 +29,15 @@
 // const labelSx = { fontWeight: 800, fontSize: 14, lineHeight: 1.2 };
 // const valueSx = { color: '#A2A2A2', mt: 0.5, fontSize: 14 };
 //
-// function fmtNGN(n: number) {
+// function fmtUSD(n: number) {
 //   try {
 //     return new Intl.NumberFormat(undefined, {
 //       style: 'currency',
-//       currency: 'NGN',
+//       currency: 'USD',
 //       maximumFractionDigits: 0,
 //     }).format(n);
 //   } catch {
-//     return `₦${n.toLocaleString()}`;
+//     return `$${n.toLocaleString()}`;
 //   }
 // }
 //
@@ -201,7 +201,7 @@
 //
 //                   <TextField
 //                     label='Cost (auto generated)'
-//                     value={fmtNGN(cost)}
+//                     value={fmtUSD(cost)}
 //                     InputProps={{ readOnly: true }}
 //                     sx={{
 //                       '& .MuiInputBase-root': {
@@ -373,7 +373,7 @@ const GOLD = '#EFAF00';
 const inputBg = '#101010';
 const textColor = '#EDEDED';
 
-function fmtPrice(n: number, currency: string = 'NGN') {
+function fmtPrice(n: number, currency: string = 'USD') {
   try {
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
@@ -382,7 +382,7 @@ function fmtPrice(n: number, currency: string = 'NGN') {
     }).format(n);
   } catch {
     // Fallback if Intl fails
-    const symbol = currency === 'USD' ? '$' : '₦';
+    const symbol = currency === 'USD' ? '$' : '$';
     return `${symbol}${n.toLocaleString()}`;
   }
 }
@@ -536,7 +536,7 @@ export default function DesktopLicensePaymentForm() {
                     <Typography variant="h3" sx={{ color: GOLD, fontWeight: 900 }}>
                       {selectedPlan
                         ? fmtPrice(selectedPlan.price, selectedPlan.currency)
-                        : '₦0'
+                        : '$0'
                       }
                     </Typography>
                   </Box>

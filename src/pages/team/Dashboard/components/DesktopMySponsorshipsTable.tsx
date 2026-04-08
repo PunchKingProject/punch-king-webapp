@@ -6,7 +6,7 @@ export type MySponsorshipRow = {
   id: number;
   sponsor_name: string;
   units: number;
-  amount: string; //formatted NGN
+  amount: string; //formatted USD
   created_at: string; // formatted local date+time
 };
 

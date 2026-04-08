@@ -95,16 +95,16 @@ export const mapPaymentApiToRows = (
     payment_status?: string | null;
   }>
 ) => {
-  const fmtNGN = (n?: number | null) => {
+  const fmtUSD = (n?: number | null) => {
     const v = typeof n === 'number' ? n : 0;
     try {
       return new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency: 'NGN',
+        currency: 'USD',
         maximumFractionDigits: 2,
       }).format(v);
     } catch {
-      return `₦${v.toLocaleString()}`;
+      return `$${v.toLocaleString()}`;
     }
   };
   const status = (s?: string | null) => {
@@ -120,7 +120,7 @@ export const mapPaymentApiToRows = (
     subscription_type:
       r.type?.replace(/[_-]/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()) ||
       '—',
-    amount_paid: fmtNGN(r.payment_amount),
+    amount_paid: fmtUSD(r.payment_amount),
     payment_date: r.payment_date
       ? dayjs(r.payment_date).format('M/D/YYYY')
       : '—',

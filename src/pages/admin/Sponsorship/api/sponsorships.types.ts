@@ -145,7 +145,7 @@ export type SponsorVoteHistoryPayload = {
 export type SponsorVoteRow = {
   id: number;
   team_name: string;
-  value: string;   // formatted currency (e.g., ₦1,000.00)
+  value: string;   // formatted currency (e.g., $1,000.00)
   volume: number;  // units
   date: string;    // M/D/YYYY
   time: string;    // h:mma
