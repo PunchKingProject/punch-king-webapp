@@ -24,7 +24,7 @@ const TOTAL_STEPS = Object.keys(STEP_LABELS).length;
 function useCurrentStep(): number {
   const { pathname } = useLocation();
   // Matches: /step/2  | /step2  | /step-2  | /step_2  (case-insensitive)
-  const m = pathname.match(/\/step(?:[-_/]?)(\d+)/i);
+  const m = pathname.match(/\/step[-_\/]?(\d+)/i);
   const step = m ? Number(m[1]) : 1;
   return Math.min(Math.max(step, 1), TOTAL_STEPS);
 }
@@ -45,7 +45,7 @@ function SignupGuard() {
       navigate(`/sign-up?flow=${flow}`, { replace: true });
       // return <h1>he;;pw</h1>
     }
-  }, []);
+  }, [dispatch, flow, navigate, token]);
 
   const isCompletePage = pathname.includes('/sign-up/complete'); // 👈 detect
 
