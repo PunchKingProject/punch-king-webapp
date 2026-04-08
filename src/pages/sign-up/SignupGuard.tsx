@@ -24,7 +24,7 @@ const TOTAL_STEPS = Object.keys(STEP_LABELS).length;
 function useCurrentStep(): number {
   const { pathname } = useLocation();
   // Matches: /step/2  | /step2  | /step-2  | /step_2  (case-insensitive)
-  const m = pathname.match(/\/step[-_\/]?(\d+)/i);
+  const m = pathname.match(/\/step(?:[-_/]?)(\d+)/i);
   const step = m ? Number(m[1]) : 1;
   return Math.min(Math.max(step, 1), TOTAL_STEPS);
 }
