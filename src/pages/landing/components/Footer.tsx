@@ -13,7 +13,7 @@ import WhatsAppIcon from '../../../assets/whatsappLogo.svg?react';
 import YouTubeIcon from '../../../assets/youtubeLogo.svg?react';
 
 const CONTACT_PRIMARY = '+234 9061287852'; // WhatsApp + Tel
-const CONTACT_EMAIL = 'Punchkingboxinglimited@gmail.com';
+const CONTACT_EMAIL = 'info@punchkingboxing.com';
 
 // Social profiles (from your screenshot)
 const INSTAGRAM_URL = 'https://instagram.com/punchkingboxing';

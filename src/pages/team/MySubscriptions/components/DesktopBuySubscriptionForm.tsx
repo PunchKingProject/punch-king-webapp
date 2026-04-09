@@ -116,7 +116,7 @@ export default function DesktopBuySubscriptionForm() {
                     type='submit'
                     fullWidth
                     variant='contained'
-                    disabled={isSubmitting || !values.planId}
+                    disabled={isSubmitting || !values.planId || !values.nameOnCard.trim()}
                     sx={{
                       bgcolor: gold,
                       color: '#000',

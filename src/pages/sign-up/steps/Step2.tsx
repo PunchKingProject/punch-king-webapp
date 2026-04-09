@@ -22,9 +22,9 @@ import { Link as MLink } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import ROUTES from '../../../routes/routePath.ts';
 
-// --- Validation (UNCHANGED)
+// This adds # and other common symbols to the allowed/required list
 const passwordRules =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]{7,}$/;
 
 const validationSchema = Yup.object({
   password: Yup.string()
