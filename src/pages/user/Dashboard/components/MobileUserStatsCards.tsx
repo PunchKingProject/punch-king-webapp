@@ -126,7 +126,7 @@ export default function MobileUserStatsCards({
         {/* Cost of units (just number) */}
         <Box sx={cardSx}>
           <Box>
-            <Title loading={loading}>COST OF CHIPS</Title>
+            <Title loading={loading}>COST OF CHIPS PURCHASED</Title>
             <Value loading={loading}>{fmtNumber(costOfUnits)}</Value>
           </Box>
         </Box>

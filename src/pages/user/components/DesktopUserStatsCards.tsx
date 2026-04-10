@@ -190,7 +190,7 @@ export default function DesktopUserStatsCards({
       {/* COST OF UNITS (number only, no USD symbol per your card guidance) */}
       <Box sx={cardSx}>
         <Box>
-          <Title loading={loading}>COST OF CHIPS</Title>
+          <Title loading={loading}>COST OF CHIPS PURCHASED</Title>
           <Value loading={loading}>${fmtNumber(costOfUnits)}</Value>
         </Box>
       </Box>
