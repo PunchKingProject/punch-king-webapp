@@ -11,6 +11,7 @@ import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRound
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import dayjs from 'dayjs';
 import type { TeamPost } from '../api/catalogue.types.ts';
+import MediaPreview from "./MediaPreview.tsx";
 
 // container around each post
 const postWrapSx = {
@@ -21,7 +22,7 @@ const imageFrameSx = {
   width: '100%',
   maxWidth: 720,
   mx: 'auto',
-  aspectRatio: '3 / 2', // close to your design
+  // aspectRatio: '3 / 2', // close to your design
   border: '1px solid #F0C040', // gold border as in screenshot
   borderRadius: '6px',
   overflow: 'hidden',
@@ -88,27 +89,30 @@ export default function DesktopMyCatalogueList({
         posts.map((p) => (
           <Box key={p.id} sx={postWrapSx}>
             {/* media */}
+            {/*<Box sx={imageFrameSx}>*/}
+            {/*  {p.file_url ? (*/}
+            {/*    <img*/}
+            {/*      src={p.file_url}*/}
+            {/*      alt={p.title || 'post'}*/}
+            {/*      style={{ width: '100%', height: '100%', objectFit: 'cover' }}*/}
+            {/*    />*/}
+            {/*  ) : (*/}
+            {/*    <Box*/}
+            {/*      sx={{*/}
+            {/*        width: '100%',*/}
+            {/*        height: '100%',*/}
+            {/*        display: 'grid',*/}
+            {/*        placeItems: 'center',*/}
+            {/*        color: '#A2A2A2',*/}
+            {/*        fontSize: 14,*/}
+            {/*      }}*/}
+            {/*    >*/}
+            {/*      No media*/}
+            {/*    </Box>*/}
+            {/*  )}*/}
+            {/*</Box>*/}
             <Box sx={imageFrameSx}>
-              {p.file_url ? (
-                <img
-                  src={p.file_url}
-                  alt={p.title || 'post'}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'grid',
-                    placeItems: 'center',
-                    color: '#A2A2A2',
-                    fontSize: 14,
-                  }}
-                >
-                  No media
-                </Box>
-              )}
+              <MediaPreview url={p.file_url} />
             </Box>
 
             {/* body */}

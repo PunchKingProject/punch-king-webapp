@@ -191,7 +191,7 @@ export default function DesktopUserStatsCards({
       <Box sx={cardSx}>
         <Box>
           <Title loading={loading}>COST OF CHIPS</Title>
-          <Value loading={loading}>{fmtNumber(costOfUnits)}</Value>
+          <Value loading={loading}>${fmtNumber(costOfUnits)}</Value>
         </Box>
       </Box>
 

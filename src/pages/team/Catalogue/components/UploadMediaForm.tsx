@@ -21,34 +21,8 @@ import ROUTES from '../../../../routes/routePath.ts';
 import { getErrorMessage } from '../../../../utils/error/error.ts';
 import { usePostStats } from '../hooks/usePostStats.ts';
 import { useUploadPost } from '../hooks/useUploadPost.ts';
-
-const MAX_POSTS = 5;
-
-const gold = '#f0c040';
-
-const schema = Yup.object({
-  title: Yup.string()
-    .trim()
-    .min(2, 'Too short')
-    .max(120, 'Too long')
-    .required('Title is required'),
-  caption: Yup.string()
-    .trim()
-    .min(2, 'Too short')
-    .max(2000, 'Too long')
-    .required('Caption is required'),
-  file: Yup.mixed<File>()
-    .required('Please choose a file')
-    .test('file-type', 'Only images or videos are allowed', (file) =>
-      file ? /^image\/|^video\//.test(file.type) : false
-    ),
-});
-
-type Values = {
-  title: string;
-  caption: string;
-  file: File | null;
-};
+// import { useLocation, useSearchParams } from 'react-router-dom';
+import {useUpdatePost} from "../hooks/useEditPost.ts";
 
 function ordinal(n: number) {
   const s = ['th', 'st', 'nd', 'rd'];
@@ -56,52 +30,125 @@ function ordinal(n: number) {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-export default function UploadMediaForm() {
+const MAX_POSTS = 5;
+
+const gold = '#f0c040';
+
+type EditPost = {
+  id: number;
+  title: string;
+  caption: string;
+  file_url: string | null;
+};
+
+type Props = {
+  editPost?: EditPost | null;
+};
+
+// schema stays the same but file becomes optional in edit mode
+const buildSchema = (isEditMode: boolean) =>
+  Yup.object({
+    title: Yup.string()
+      .trim()
+      .min(2, 'Too short')
+      .max(120, 'Too long')
+      .required('Title is required'),
+    caption: Yup.string()
+      .trim()
+      .min(2, 'Too short')
+      .max(2000, 'Too long')
+      .required('Caption is required'),
+    file: isEditMode
+      ? Yup.mixed<File>().nullable().optional() // file is optional when editing
+      : Yup.mixed<File>()
+        .required('Please choose a file')
+        .test('file-type', 'Only images or videos are allowed', (file) =>
+          file ? /^image\/|^video\//.test(file.type) : false
+        ),
+  });
+
+type Values = {
+  title: string;
+  caption: string;
+  file: File | null;
+};
+
+// helper to determine if a URL or file is a video
+function isVideo(source: File | string | null): boolean {
+  if (!source) return false;
+  if (source instanceof File) return source.type.startsWith('video/');
+  // for remote URLs, check the extension
+  return /\.(mp4|mov|webm|ogg|avi)(\?.*)?$/i.test(source);
+}
+
+export default function UploadMediaForm({ editPost }: Props) {
+  const isEditMode = !!editPost;
+
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+
+  // If editing, show the existing file_url as the initial preview
+  const [preview, setPreview] = useState<string | null>(editPost?.file_url ?? null);
   const [uploadPct, setUploadPct] = useState<number | null>(null);
 
-  const { mutateAsync, isPending } = useUploadPost();
-  const navigate = useNavigate();
+  const { mutateAsync: uploadPost, isPending: isUploading } = useUploadPost();
+  const { mutateAsync: updatePost, isPending: isUpdating } = useUpdatePost(); // your edit mutation
+  const isPending = isUploading || isUpdating;
 
-  // NEW: confirm & success modals
+  const navigate = useNavigate();
   const confirm = useDisclosure(false);
   const success = useDisclosure(false);
 
-  // NEW: current count so we can say “this will be your 3rd post…”
   const { data: stats } = usePostStats();
   const totalPosts = stats?.total_posts ?? 0;
   const nextPosition = Math.min(totalPosts + 1, MAX_POSTS);
 
   useEffect(() => {
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      // Only revoke if preview is a local blob URL, not the remote file_url
+      if (preview && preview.startsWith('blob:')) URL.revokeObjectURL(preview);
     };
   }, [preview]);
 
   return (
     <Formik<Values>
-      initialValues={{ title: '', caption: '', file: null }}
-      validationSchema={schema}
+      // Pre-fill from editPost if present
+      initialValues={{
+        title: editPost?.title ?? '',
+        caption: editPost?.caption ?? '',
+        file: null,
+      }}
+      validationSchema={buildSchema(isEditMode)}
       onSubmit={async (values, helpers) => {
-        if (!values.file) return;
         try {
-          // 1) Upload raw file to /img/, get hosted URL
-          setUploadPct(0);
-          const file_url = await uploadTeamImage(values.file, {
-            onUploadProgress: (e) => {
-              if (!e.total) return;
-              const pct = Math.round((e.loaded / e.total) * 100);
-              setUploadPct(pct);
-            },
-          });
+          let file_url = editPost?.file_url ?? null; // default to existing URL
 
-          // 2) Create the post with the returned URL
-          await mutateAsync({
-            title: values.title,
-            caption: values.caption,
-            file_url,
-          });
+          // Only upload a new file if the user picked one
+          if (values.file) {
+            setUploadPct(0);
+            file_url = await uploadTeamImage(values.file, {
+              onUploadProgress: (e) => {
+                if (!e.total) return;
+                setUploadPct(Math.round((e.loaded / e.total) * 100));
+              },
+            });
+          }
+
+          if (isEditMode && editPost) {
+            // Edit path — only send what changed
+            await updatePost({
+              post_id: editPost.id,
+              title: values.title,
+              caption: values.caption,
+              ...(values.file && { file_url }), // only include if user picked a new file
+            });
+          } else {
+            // Create path
+            await uploadPost({
+              title: values.title,
+              caption: values.caption,
+              file_url: file_url!,
+            });
+          }
 
           confirm.onClose();
           success.onOpen();
@@ -113,46 +160,74 @@ export default function UploadMediaForm() {
         }
       }}
     >
-      {({
-        setFieldValue,
-        isSubmitting,
-        isValid,
-        touched,
-        errors,
-        values,
-        handleSubmit,
-      }) => (
+      {({ setFieldValue, isSubmitting, isValid, touched, errors, values, handleSubmit }) => (
         <Form noValidate>
+
+          {/* Preview frame */}
           {/* Preview frame */}
           <Box
             sx={{
               width: '100%',
               maxWidth: 720,
               mx: 'auto',
-              aspectRatio: '3/2',
               border: `1px solid ${gold}`,
               borderRadius: '6px',
               overflow: 'hidden',
               bgcolor: '#111',
-              display: 'grid',
-              placeItems: 'center',
+              cursor: 'pointer',
+              // ❌ removed: aspectRatio: '3/2'
+              // ❌ removed: display: 'grid', placeItems: 'center'
+              // The media itself now defines the height
             }}
             onClick={() => inputRef.current?.click()}
           >
             {preview ? (
-              <img
-                src={preview}
-                alt='preview'
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
+              isVideo(values.file ?? preview) ? (
+                <video
+                  src={preview}
+                  controls
+                  style={{
+                    width: '100%',
+                    height: 'auto',   // ← natural height
+                    display: 'block', // ← removes inline baseline gap
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ) : (
+                <img
+                  src={preview}
+                  alt='preview'
+                  style={{
+                    width: '100%',
+                    height: 'auto',   // ← natural height
+                    display: 'block', // ← removes inline baseline gap
+                  }}
+                />
+              )
             ) : (
-              <Typography sx={{ color: gold, fontWeight: 700 }}>
-                upload file
-              </Typography>
+              // Empty state — give it a sensible min-height so it's tappable
+              <Box
+                sx={{
+                  width: '100%',
+                  minHeight: 180,
+                  display: 'grid',
+                  placeItems: 'center',
+                  textAlign: 'center',
+                }}
+              >
+                <Box sx={{ pointerEvents: 'none' }}>
+                  <Typography sx={{ color: gold, fontWeight: 700 }}>
+                    Upload file
+                  </Typography>
+                  <Typography sx={{ color: '#A2A2A2', fontSize: 11, mt: 0.5 }}>
+                    Images up to 10MB · Videos up to 50MB
+                  </Typography>
+                </Box>
+              </Box>
             )}
           </Box>
 
-          {/* Hidden input */}
+          {/* Hidden file input — unchanged */}
           <input
             ref={inputRef}
             type='file'
@@ -161,7 +236,7 @@ export default function UploadMediaForm() {
             onChange={(e) => {
               const f = e.currentTarget.files?.[0] ?? null;
               setFieldValue('file', f, true);
-              if (preview) URL.revokeObjectURL(preview);
+              if (preview?.startsWith('blob:')) URL.revokeObjectURL(preview);
               setPreview(f ? URL.createObjectURL(f) : null);
             }}
           />
@@ -182,11 +257,17 @@ export default function UploadMediaForm() {
                 fontWeight: 700,
               }}
             >
-              {values.file ? 'Change picture' : 'Choose picture'}
+              {values.file
+                ? isVideo(values.file)
+                  ? 'Change video'
+                  : 'Change image'
+                : isEditMode
+                  ? 'Replace file (optional)'
+                  : 'Choose file'}
             </Typography>
           )}
 
-          {/* Progress (only while uploading to /img/) */}
+          {/* Upload progress */}
           {uploadPct !== null && (
             <Box sx={{ mt: 1.5, maxWidth: 720, mx: 'auto' }}>
               <LinearProgress
@@ -194,20 +275,26 @@ export default function UploadMediaForm() {
                 value={uploadPct}
                 sx={{ height: 6, borderRadius: 3 }}
               />
-              <Typography
-                sx={{
-                  mt: 0.5,
-                  fontSize: 12,
-                  color: '#A2A2A2',
-                  textAlign: 'right',
-                }}
-              >
+              <Typography sx={{ mt: 0.5, fontSize: 12, color: '#A2A2A2', textAlign: 'right' }}>
                 {uploadPct}%
               </Typography>
             </Box>
           )}
 
-          {/* Title */}
+          {/*/!* Upload progress *!/*/}
+          {/*{uploadPct !== null && (*/}
+          {/*  <Box sx={{ mt: 1.5, maxWidth: 720, mx: 'auto' }}>*/}
+          {/*    <LinearProgress*/}
+          {/*      variant='determinate'*/}
+          {/*      value={uploadPct}*/}
+          {/*      sx={{ height: 6, borderRadius: 3 }}*/}
+          {/*    />*/}
+          {/*    <Typography sx={{ mt: 0.5, fontSize: 12, color: '#A2A2A2', textAlign: 'right' }}>*/}
+          {/*      {uploadPct}%*/}
+          {/*    </Typography>*/}
+          {/*  </Box>*/}
+          {/*)}*/}
+
           <Box sx={{ mt: 2 }}>
             <FormikTextField
               name='title'
@@ -217,7 +304,6 @@ export default function UploadMediaForm() {
             />
           </Box>
 
-          {/* Caption */}
           <Box sx={{ mt: 1 }}>
             <FormikTextarea
               name='caption'
@@ -228,12 +314,16 @@ export default function UploadMediaForm() {
             />
           </Box>
 
-          {/* Submit → open confirm modal (not submitting yet) */}
           <Box sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }}>
             <Button
               type='button'
               onClick={confirm.onOpen}
-              disabled={isSubmitting || isPending || !isValid || !values.file}
+              disabled={
+                isSubmitting ||
+                isPending ||
+                !isValid ||
+                (!isEditMode && !values.file) // file required only for new uploads
+              }
               variant='contained'
               sx={{
                 bgcolor: gold,
@@ -250,7 +340,11 @@ export default function UploadMediaForm() {
                 ) : undefined
               }
             >
-              {isPending || uploadPct !== null ? 'Uploading…' : 'upload media'}
+              {isPending || uploadPct !== null
+                ? 'Saving…'
+                : isEditMode
+                  ? 'Save changes'
+                  : 'Upload media'}
             </Button>
           </Box>
 
@@ -258,17 +352,15 @@ export default function UploadMediaForm() {
           <NoticeModal
             open={confirm.open}
             onClose={confirm.onClose}
-            onContinue={() => handleSubmit()} // now actually submit the form
+            onContinue={() => handleSubmit()}
             onSecondary={confirm.onClose}
-            title='NOTICE!!!'
-            message={`Are you sure you want to upload this post?\n\nThis will be your ${ordinal(
-              nextPosition
-            )} post of ${MAX_POSTS}.`}
-            continueLabel={
-              isSubmitting || isPending || uploadPct !== null
-                ? 'Please wait…'
-                : 'Post'
+            title='Confirm'
+            message={
+              isEditMode
+                ? 'Are you sure you want to save these changes?'
+                : `Are you sure you want to upload this post?\n\nThis will be your ${ordinal(nextPosition)} post of ${MAX_POSTS}.`
             }
+            continueLabel={isSubmitting || isPending ? 'Please wait…' : isEditMode ? 'Save' : 'Post'}
             secondaryLabel='Cancel'
             icon={<WarningIcon />}
           />
@@ -281,8 +373,12 @@ export default function UploadMediaForm() {
               success.onClose();
               navigate(ROUTES.CATALOGUE);
             }}
-            title='NOTICE!!!'
-            message='You have successfully uploaded your post.'
+            title='Success'
+            message={
+              isEditMode
+                ? 'Your post has been updated successfully.'
+                : 'Your post has been uploaded successfully.'
+            }
             continueLabel='Finish'
             icon={<SuccessIcon />}
           />

@@ -9,34 +9,36 @@ import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineR
 import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import type {TeamPost} from "../api/catalogue.types.ts";
+import MediaPreview from "./MediaPreview.tsx";
 
-type Comment = {
-  id: number;
-  commenter?: string | null;
-  content: string;
-};
+// type Comment = {
+//   id: number;
+//   commenter?: string | null;
+//   content: string;
+// };
 
-type Item = {
-  id: number;
-  file_url: string | null;
-  caption: string;
-  created_at: string; // already formatted
-  comments_count: number;
-  comments: Comment[];
-  sponsors: number;
-};
+// type Item = {
+//   id: number;
+//   file_url: string | null;
+//   caption: string;
+//   created_at: string; // already formatted
+//   comments_count: number;
+//   comments: Comment[];
+//   sponsors: number;
+// };
 
 type Props = {
-  posts: Item[];
+  posts: TeamPost[];
   loading?: boolean;
-  onUpdate?: (postId: number) => void;
+  onUpdate?: (p: TeamPost) => void;
   onDelete?: (postId: number) => void;
   onViewSponsors?: (postId: number) => void;
 };
 
 const imageFrameSx = {
   width: '100%',
-  aspectRatio: '3 / 2',
+  // aspectRatio: '3 / 2',
   border: '1px solid #F0C040',
   borderRadius: '6px',
   overflow: 'hidden',
@@ -81,27 +83,30 @@ export default function MobileMyCatalogueList({
       {posts.map((p) => (
         <Box key={p.id} sx={{ mb: 5 }}>
           {/* media */}
+          {/*<Box sx={imageFrameSx}>*/}
+          {/*  {p.file_url ? (*/}
+          {/*    <img*/}
+          {/*      src={p.file_url}*/}
+          {/*      alt='post'*/}
+          {/*      style={{ width: '100%', height: '100%', objectFit: 'cover' }}*/}
+          {/*    />*/}
+          {/*  ) : (*/}
+          {/*    <Box*/}
+          {/*      sx={{*/}
+          {/*        width: '100%',*/}
+          {/*        height: '100%',*/}
+          {/*        display: 'grid',*/}
+          {/*        placeItems: 'center',*/}
+          {/*        color: '#A2A2A2',*/}
+          {/*        fontSize: 14,*/}
+          {/*      }}*/}
+          {/*    >*/}
+          {/*      No media*/}
+          {/*    </Box>*/}
+          {/*  )}*/}
+          {/*</Box>*/}
           <Box sx={imageFrameSx}>
-            {p.file_url ? (
-              <img
-                src={p.file_url}
-                alt='post'
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              <Box
-                sx={{
-                  width: '100%',
-                  height: '100%',
-                  display: 'grid',
-                  placeItems: 'center',
-                  color: '#A2A2A2',
-                  fontSize: 14,
-                }}
-              >
-                No media
-              </Box>
-            )}
+            <MediaPreview url={p.file_url} />
           </Box>
 
           {/* caption */}
@@ -199,7 +204,7 @@ export default function MobileMyCatalogueList({
           {/* actions */}
           <Box sx={{ mt: 1.5, display: 'grid', gap: 1 }}>
             <Button
-              onClick={() => onUpdate?.(p.id)}
+              onClick={() => onUpdate?.(p)}
               variant='contained'
               fullWidth
               sx={{
@@ -212,7 +217,7 @@ export default function MobileMyCatalogueList({
                 '&:hover': { bgcolor: '#ffd465' },
               }}
             >
-              Update media
+              Update
             </Button>
             <Button
               onClick={() => onDelete?.(p.id)}
@@ -228,7 +233,7 @@ export default function MobileMyCatalogueList({
                 '&:hover': { borderColor: '#f0c040', color: '#f0c040' },
               }}
             >
-              Delete media
+              Delete
             </Button>
           </Box>
         </Box>

@@ -39,3 +39,12 @@ export type CreatePostPayload = {
   file_url: string; // URL returned from POST /img/
 };
 
+export type EditPostPayload = {
+  post_id: number;
+  title: string;
+  caption: string;
+}
+
+export type DeletePostPayload = {
+  id: number;
+}

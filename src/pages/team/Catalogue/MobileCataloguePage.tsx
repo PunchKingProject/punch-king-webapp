@@ -10,40 +10,40 @@ import MobileCatalogueStatsCards from './components/MobileCatalogueStatsCards.ts
 import MobileMyCatalogueList from './components/MobileMyCatalogueList.tsx';
 import TeamBreadcrumbs from '../../../components/breadcrumbs/TeamBreadcrumbs.tsx';
 import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
+import ConfirmDialog from "./components/ConfirmDialog.tsx";
+import {useState} from "react";
+import {useDeletePost} from "./hooks/useDeletePost.ts";
 
 
 const gold = '#f0c040';
 
+// MobileCataloguePage.tsx
 export default function MobileCataloguePage() {
   const navigate = useNavigate();
-
-  // metrics
   const { data: stats, isLoading: statsLoading } = usePostStats();
-
-  // posts
   const {
     data: posts,
     isLoading: postsLoading,
     isError: postsError,
   } = useTeamPosts();
 
-  if (postsError) toast.error('Failed to fetch team posts.');
+  const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
+
+  // Confirm dialog state
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+
+  if (postsError) toast.error('Failed to fetch posts.');
 
   return (
     <Box sx={{ px: 2, py: 2 }}>
       <FreeTrialBanner />
-      {/* 👇 clickable breadcrumb, same API as desktop */}
-      <TeamBreadcrumbs
-        rootLabel='TEAM DASHBOARD'
-        rootTo={ROUTES.TEAM}
-        currentLabel='CATALOGUE'
-      />
-      {/* {/* breadcrumb-ish header */}
-      {/* <Typography sx={{ color: '#A2A2A2', fontWeight: 700, fontSize: 12 }}>
-        TEAM DASHBOARD / CATALOGUE
-      </Typography>  */}
 
-      {/* sliding stats cards (TOTAL POSTS / TOTAL COMMENTS / UNIQUE SPONSORS) */}
+      <TeamBreadcrumbs
+        rootLabel='Team Dashboard'
+        rootTo={ROUTES.TEAM}
+        currentLabel='Catalogue'
+      />
+
       <Box sx={{ mt: 1.5 }}>
         <MobileCatalogueStatsCards
           loading={statsLoading}
@@ -53,10 +53,9 @@ export default function MobileCataloguePage() {
         />
       </Box>
 
-      {/* section title + upload CTA */}
       <Box sx={{ mt: 2, display: 'grid', gap: 1 }}>
         <Typography sx={{ color: '#fff', fontWeight: 900 }}>
-          My catalogue
+          My Catalogue
         </Typography>
 
         <Button
@@ -77,34 +76,151 @@ export default function MobileCataloguePage() {
         </Button>
       </Box>
 
-      {/* list of posts */}
       <Box sx={{ mt: 2, mb: 6 }}>
         <MobileMyCatalogueList
           posts={(posts ?? []).map((p) => ({
             id: p.id,
+            title: p.title,
+            team: p.team,
             file_url: p.file_url,
             caption: p.caption ?? '—',
             created_at: dayjs(p.created_at).format('M/D/YYYY'),
             comments_count: p.comments_count ?? p.comments?.length ?? 0,
             comments: p.comments ?? [],
             sponsors: p.sponsors ?? 0,
+            sponsorships: p.sponsorships ?? 0,
           }))}
           loading={postsLoading}
-          onUpdate={(postId) =>
-            navigate(ROUTES.CATALOGUE_UPLOAD + `?edit=${postId}`)
-          }
-          onDelete={(postId) => {
-            // hook up your real delete modal/call here
-            toast.info(`Delete post #${postId} (wire backend call)`);
-          }}
-          onViewSponsors={(postId) => {
-            // optional modal/page
-            toast.info(`View sponsors for post #${postId}`);
-          }}
+          onUpdate={(p) => navigate(`${ROUTES.CATALOGUE_UPLOAD}?edit=${p.id}`, {
+            state: {
+              id: p.id,
+              title: p.title,
+              caption: p.caption,
+              file_url: p.file_url,
+            },
+          })}
+          onDelete={(postId) => setPendingDeleteId(postId)}
+          // onViewSponsors={(postId) => {
+          //   // TODO: open sponsor list modal
+          // }}
         />
       </Box>
 
       <Box sx={{ height: 16 }} />
+
+      {/* Confirm delete dialog */}
+      <ConfirmDialog
+        open={pendingDeleteId !== null}
+        title='Delete Post'
+        description='This action cannot be undone. The post and its media will be permanently removed.'
+        confirmLabel='Delete Post'
+        cancelLabel='Cancel'
+        loading={isDeleting}
+        onConfirm={() => {
+          if (pendingDeleteId !== null) {
+            deletePost(
+              { id: pendingDeleteId },
+              { onSettled: () => setPendingDeleteId(null) }
+            );
+          }
+        }}
+        onCancel={() => setPendingDeleteId(null)}
+      />
     </Box>
   );
 }
+
+// export default function MobileCataloguePage() {
+//   const navigate = useNavigate();
+//
+//   // metrics
+//   const { data: stats, isLoading: statsLoading } = usePostStats();
+//
+//   // posts
+//   const {
+//     data: posts,
+//     isLoading: postsLoading,
+//     isError: postsError,
+//   } = useTeamPosts();
+//
+//   if (postsError) toast.error('Failed to fetch team posts.');
+//
+//   return (
+//     <Box sx={{ px: 2, py: 2 }}>
+//       <FreeTrialBanner />
+//       {/* 👇 clickable breadcrumb, same API as desktop */}
+//       <TeamBreadcrumbs
+//         rootLabel='TEAM DASHBOARD'
+//         rootTo={ROUTES.TEAM}
+//         currentLabel='CATALOGUE'
+//       />
+//       {/* {/* breadcrumb-ish header */}
+//       {/* <Typography sx={{ color: '#A2A2A2', fontWeight: 700, fontSize: 12 }}>
+//         TEAM DASHBOARD / CATALOGUE
+//       </Typography>  */}
+//
+//       {/* sliding stats cards (TOTAL POSTS / TOTAL COMMENTS / UNIQUE SPONSORS) */}
+//       <Box sx={{ mt: 1.5 }}>
+//         <MobileCatalogueStatsCards
+//           loading={statsLoading}
+//           posts={stats?.total_posts ?? 0}
+//           comments={stats?.total_comments ?? 0}
+//           uniqueSponsors={stats?.total_unique_sponsors ?? 0}
+//         />
+//       </Box>
+//
+//       {/* section title + upload CTA */}
+//       <Box sx={{ mt: 2, display: 'grid', gap: 1 }}>
+//         <Typography sx={{ color: '#fff', fontWeight: 900 }}>
+//           My catalogue
+//         </Typography>
+//
+//         <Button
+//           onClick={() => navigate(ROUTES.CATALOGUE_UPLOAD)}
+//           variant='contained'
+//           fullWidth
+//           sx={{
+//             bgcolor: gold,
+//             color: '#000',
+//             textTransform: 'none',
+//             fontWeight: 700,
+//             borderRadius: '8px',
+//             height: 34,
+//             '&:hover': { bgcolor: '#ffd465' },
+//           }}
+//         >
+//           Upload Media
+//         </Button>
+//       </Box>
+//
+//       {/* list of posts */}
+//       <Box sx={{ mt: 2, mb: 6 }}>
+//         <MobileMyCatalogueList
+//           posts={(posts ?? []).map((p) => ({
+//             id: p.id,
+//             file_url: p.file_url,
+//             caption: p.caption ?? '—',
+//             created_at: dayjs(p.created_at).format('M/D/YYYY'),
+//             comments_count: p.comments_count ?? p.comments?.length ?? 0,
+//             comments: p.comments ?? [],
+//             sponsors: p.sponsors ?? 0,
+//           }))}
+//           loading={postsLoading}
+//           onUpdate={(postId) =>
+//             navigate(ROUTES.CATALOGUE_UPLOAD + `?edit=${postId}`)
+//           }
+//           onDelete={(postId) => {
+//             // hook up your real delete modal/call here
+//             toast.info(`Delete post #${postId} (wire backend call)`);
+//           }}
+//           onViewSponsors={(postId) => {
+//             // optional modal/page
+//             toast.info(`View sponsors for post #${postId}`);
+//           }}
+//         />
+//       </Box>
+//
+//       <Box sx={{ height: 16 }} />
+//     </Box>
+//   );
+// }

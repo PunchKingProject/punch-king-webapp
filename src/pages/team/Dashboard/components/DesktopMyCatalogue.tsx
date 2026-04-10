@@ -35,6 +35,10 @@ const textMutedSx = {
   fontSize: 13,
 };
 
+function isVideo(url: string): boolean {
+  return /\.(mp4|mov|webm|ogg|avi)(\?.*)?$/i.test(url);
+}
+
 export default function DesktopMyCatalogue({
   posts,
   loading,
@@ -74,27 +78,37 @@ export default function DesktopMyCatalogue({
           {posts.map((p) => (
             <Box key={p.id} sx={cardBoxSx}>
               {/* media */}
+              // DesktopMyCatalogue.tsx — only the media box changes
+
+              {/* media */}
               <Box
                 sx={{
                   width: '100%',
-                  aspectRatio: '4 / 3',
+                  height: 220,          // fixed card height keeps the grid uniform
                   bgcolor: '#111',
+                  borderBottom: '1px solid #3B3B3B',
+                  overflow: 'hidden',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderBottom: '1px solid #3B3B3B',
                 }}
               >
                 {p.file_url ? (
-                  <img
-                    src={p.file_url}
-                    alt={p.title || 'post'}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
+                  isVideo(p.file_url) ? (
+                    <video
+                      src={p.file_url}
+                      style={{ maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+                      // no autoplay — user initiates in the detail view
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={p.file_url}
+                      alt={p.title || 'post'}
+                      style={{ maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+                    />
+                  )
                 ) : (
                   <Typography sx={{ color: '#A2A2A2' }}>No media</Typography>
                 )}

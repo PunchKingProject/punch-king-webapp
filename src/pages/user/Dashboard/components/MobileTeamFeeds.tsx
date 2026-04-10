@@ -6,7 +6,7 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
+  // CardMedia,
   IconButton,
   InputBase,
   Skeleton,
@@ -18,6 +18,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { AllPostsPayload, FeedPost } from '../api/dashboard.types.ts';
 import { useAllPosts } from '../hooks/useAllPosts.ts';
+import FeedThumbnail from "./FeedThumbnail.tsx";
 
 type Props = {
   onViewPost?: (id: number) => void;
@@ -131,30 +132,12 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
                 }}
               >
                 {/* Thumbnail */}
-                {p.file_url ? (
-                  <CardMedia
-                    component='img'
-                    image={p.file_url}
-                    alt={p.title}
-                    sx={{
-                      width: { xs: '100%', 400: 88 } ,
-                      height: { xs: 180, 400: 88 },
-                      objectFit: 'cover',
-                      borderRadius: 2,
-                      flex: '0 0 auto',
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: { xs: '100%', 400: 88 },
-                      height: { xs: 180, 400: 88 },
-                      borderRadius: 2,
-                      bgcolor: '#2a2a2a',
-                      flex: '0 0 auto',
-                    }}
-                  />
-                )}
+                <FeedThumbnail
+                  url={p.file_url}
+                  title={p.title}
+                  width={120}
+                  height={120}
+                />
 
                 {/* Text */}
                 <CardContent sx={{ p: 0, flex: 1, minWidth: 0 }}>
