@@ -88,7 +88,6 @@ export default function FeedThumbnail({ url, title, width, height }: Props) {
     );
   }
 
-  // IMAGE VIEW (No play button here)
   return (
     <Box sx={containerSx}>
       <img
