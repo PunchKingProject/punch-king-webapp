@@ -1,6 +1,6 @@
 // src/pages/user/Sponsorship/mobile/components/MobileSponsorshipStatsCards.tsx
 import { Box, Button } from '@mui/material';
-import MobileMetricCard from '../../../../components/cards/MobileMetricCard';
+import MobileMetricCard from '../../../../components/cards/MobileMetricCard.tsx';
 
 type Props = {
   loading?: boolean;
@@ -23,7 +23,6 @@ export default function MobileSponsorshipStatsCards({
   spentUnits,
   onBuy,
 }: Props) {
-
   return (
     <Box
       sx={{
@@ -60,8 +59,11 @@ export default function MobileSponsorshipStatsCards({
             color: '#000',
             '&:hover': { bgcolor: '#d99c00' },
           }}
-        >Buy</Button>
+        >
+          Buy
+        </Button>
       </Box>
+
       {/* Spent Units */}
       <MobileMetricCard
         title='SPENT UNITS'

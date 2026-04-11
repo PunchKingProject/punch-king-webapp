@@ -6,8 +6,8 @@ import {
   punchKingMobileLogo,
 } from '../../../assets';
 import { useEffect, useRef, useState } from 'react';
-import { colors } from '../../../theme/colors';
-import { ScrollableSection } from './ScrollableSection';
+import { colors } from '../../../theme/colors.ts';
+import { ScrollableSection } from './ScrollableSection.tsx';
 
 const data = [
   { title: 'All Users', total: 200, percentage: '30', status: true },

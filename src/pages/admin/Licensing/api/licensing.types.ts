@@ -1,4 +1,4 @@
-import type { LicenseStatus, PaymentStatus } from "../../../../components/chips/StatusChipDropdown";
+import type { LicenseStatus, PaymentStatus } from "../../../../components/chips/StatusChipDropdown.tsx";
 
 export type ApiMeta = {
   message: string;

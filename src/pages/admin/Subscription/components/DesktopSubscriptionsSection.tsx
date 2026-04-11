@@ -3,8 +3,8 @@ import { Box, IconButton } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
-import StatusChip from '../../../../components/chips/StatusChip';
+} from '../../../../components/tables/PaginatedTable.tsx';
+import StatusChip from '../../../../components/chips/StatusChip.tsx';
 
 export type SubRow = {
   id: number;

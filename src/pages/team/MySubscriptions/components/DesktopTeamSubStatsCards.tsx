@@ -7,8 +7,6 @@ type ActiveSubCard = {
 };
 
 function planLabelFrom(type?: string) {
-
-
   if (!type) return '—';
   const t = type.toLowerCase();
   if (t.includes('semi')) return '6 months subscription';
@@ -96,18 +94,23 @@ export default function DesktopTeamSubStatsCards({
     >
       {/* Active subscription */}
       <Card>
-        <Typography sx={{ fontWeight: 800, fontSize: 14, color: '#CFCFCF' }}>active_subscription</Typography>
+        <Typography sx={{ fontWeight: 800, fontSize: 14, color: '#CFCFCF' }}>
+          Active subscription
+        </Typography>
 
         {active ? (
           <>
             <Typography sx={{ mt: 0.5, fontSize: 13, color: '#BDBDBD' }}>
               {activeCard.planLabel}
             </Typography>
-            <Typography sx={{ mt: 0.25, fontSize: 13, color: '#BDBDBD' }}>ends{activeCard.endLabel}
+            <Typography sx={{ mt: 0.25, fontSize: 13, color: '#BDBDBD' }}>
+              Ends {activeCard.endLabel}
             </Typography>
           </>
         ) : (
-          <Typography sx={{ mt: 0.5, fontSize: 13, color: '#BDBDBD' }}>no_active_subscription</Typography>
+          <Typography sx={{ mt: 0.5, fontSize: 13, color: '#BDBDBD' }}>
+            No active subscription
+          </Typography>
         )}
 
         <Box sx={{ mt: 1.25 }}>
@@ -124,19 +127,27 @@ export default function DesktopTeamSubStatsCards({
               px: 3,
               '&:hover': { bgcolor: '#E9A600' },
             }}
-          >subscribe</Button>
+          >
+            Subscribe
+          </Button>
         </Box>
       </Card>
+
       {/* Annual count */}
       <Card>
-        <Typography sx={{ fontWeight: 800, fontSize: 14, color: '#CFCFCF' }}>annual_subscriptions</Typography>
+        <Typography sx={{ fontWeight: 800, fontSize: 14, color: '#CFCFCF' }}>
+          Annual subscriptions
+        </Typography>
         <Typography sx={{ mt: 1, fontWeight: 800, fontSize: 28 }}>
           {annualCount}
         </Typography>
       </Card>
+
       {/* 6 months count */}
       <Card>
-        <Typography sx={{ fontWeight: 800, fontSize: 14, color: '#CFCFCF' }}>6_months_subscription</Typography>
+        <Typography sx={{ fontWeight: 800, fontSize: 14, color: '#CFCFCF' }}>
+          6 months subscription
+        </Typography>
         <Typography sx={{ mt: 1, fontWeight: 800, fontSize: 28 }}>
           {semiAnnualCount}
         </Typography>

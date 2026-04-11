@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
-import MobileLicensePaymentForm from './MobileLicensePaymentForm';
+import MobileLicensePaymentForm from './MobileLicensePaymentForm.tsx';
 import { Link as RouterLink } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import ROUTES from '../../../routes/routePath.ts';
 
 const crumbLinkSx = {
   color: '#A2A2A2',
@@ -33,12 +33,14 @@ export default function MobileLicensePaymentPage() {
           PAYMENTS
         </Typography>
       </Box>
+
       <Typography
         component='h1'
         sx={{ color: '#fff', fontWeight: 900, fontSize: 16, mb: 1.5 }}
       >
         LICENSE PAYMENT
       </Typography>
+
       <MobileLicensePaymentForm />
     </Box>
   );

@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Typography, useMediaQuery } from "@mui/material";
-import PKDialog from "./PkDialog";
+import PKDialog from "./PkDialog.tsx";
 
 
 export type PKImageDialogProps = {
@@ -31,8 +31,6 @@ export default function PKImageDialog({
   frame = true,
   mobileCertificate = false,
 }: PKImageDialogProps) {
-  
-
   const isMobile = useMediaQuery('(max-width:600px)');
 
   const useMobileCard = mobileCertificate && isMobile;
@@ -61,7 +59,9 @@ export default function PKImageDialog({
               cursor: 'pointer',
               userSelect: 'none',
             }}
-          >Close</Box>
+          >
+            Close
+          </Box>
 
           {/* White card with framed image */}
           <Box
@@ -104,7 +104,9 @@ export default function PKImageDialog({
                   }}
                 />
               ) : (
-                <Typography sx={{ color: '#666' }}>No image available</Typography>
+                <Typography sx={{ color: '#666' }}>
+                  No image available
+                </Typography>
               )}
             </Box>
           </Box>

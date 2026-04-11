@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { FetchTeamVoteHistoryParams, TeamVoteHistory } from "../api/dashboard.types";
-import { getTeamVoteHistory } from "../api/dashboard.api";
+import type { FetchTeamVoteHistoryParams, TeamVoteHistory } from "../api/dashboard.types.ts";
+import { getTeamVoteHistory } from "../api/dashboard.api.ts";
 
 
 

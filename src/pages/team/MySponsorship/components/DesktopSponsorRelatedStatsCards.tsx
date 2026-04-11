@@ -6,15 +6,15 @@ type Props = {
   totalCash?: number;
 };
 
-function fmtNGN(n: number) {
+function fmtUSD(n: number) {
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 0,
     }).format(n);
   } catch {
-    return `₦${n.toLocaleString()}`;
+    return `$${n.toLocaleString()}`;
   }
 }
 
@@ -59,7 +59,7 @@ export default function DesktopSponsorRelatedStatsCards({
       ) : (
         <>
           <CardBox title='CHIPS' value={String(totalPoints)} />
-          <CardBox title='CHIPS VALUE' value={fmtNGN(totalCash)} />
+          <CardBox title='CHIPS VALUE' value={fmtUSD(totalCash)} />
         </>
       )}
     </Box>

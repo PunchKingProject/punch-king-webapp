@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopUploadMediaPage from './DesktopUploadMediaPage';
-import MobileUploadMediaPage from './MobileUploadMediaPage';
+import DesktopUploadMediaPage from './DesktopUploadMediaPage.tsx';
+import MobileUploadMediaPage from './MobileUploadMediaPage.tsx';
 
 export default function UploadMediaPage() {
   const isTabletUp = useMediaQuery('(min-width:910px)');

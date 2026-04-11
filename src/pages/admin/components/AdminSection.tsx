@@ -1,8 +1,8 @@
 import { Box, Skeleton, Typography, type SxProps } from '@mui/material';
-import SideBar from './SideBar';
+import SideBar from './SideBar.tsx';
 import type { ReactNode } from 'react';
-import type { MetricCard } from './CardGrid';
-import CardGrid from './CardGrid';
+import type { MetricCard } from './CardGrid.tsx';
+import CardGrid from './CardGrid.tsx';
 
 interface AdminSectionProps {
   title: ReactNode;

@@ -2,19 +2,19 @@ import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom"
-import DesktopUsersDetailsStats from "./components/DesktopUsersDetailsStats";
-import DesktopUserDetailsSection from "./components/DesktopUserDetailsSection";
-import type { FetchUserPurchaseHistoryParams } from "./api/users.types";
-import { useUserPurchaseHistory } from "./hooks/useUserPurchaseHistory";
+import DesktopUsersDetailsStats from "./components/DesktopUsersDetailsStats.tsx";
+import DesktopUserDetailsSection from "./components/DesktopUserDetailsSection.tsx";
+import type { FetchUserPurchaseHistoryParams } from "./api/users.types.ts";
+import { useUserPurchaseHistory } from "./hooks/useUserPurchaseHistory.ts";
 import { toast } from "react-toastify";
 import debounce from "lodash.debounce";
-import type { UserPurchaseRow } from "./components/DesktopUserPurchaseHistorySection";
-import DesktopUserPurchaseHistorySection from "./components/DesktopUserPurchaseHistorySection";
-import { userPurchaseColumns, userSponsorColumns } from "./ui/columns";
+import type { UserPurchaseRow } from "./components/DesktopUserPurchaseHistorySection.tsx";
+import DesktopUserPurchaseHistorySection from "./components/DesktopUserPurchaseHistorySection.tsx";
+import { userPurchaseColumns, userSponsorColumns } from "./ui/columns.ts";
 import { Box } from "@mui/material";
-import { useSponsorVoteHistory } from "./hooks/useSponsorVoteHistory";
-import type { UserSponsorRow } from "./components/DesktopUserSponsorHistorySection";
-import DesktopUserSponsorHistorySection from "./components/DesktopUserSponsorHistorySection";
+import { useSponsorVoteHistory } from "./hooks/useSponsorVoteHistory.ts";
+import type { UserSponsorRow } from "./components/DesktopUserSponsorHistorySection.tsx";
+import DesktopUserSponsorHistorySection from "./components/DesktopUserSponsorHistorySection.tsx";
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 

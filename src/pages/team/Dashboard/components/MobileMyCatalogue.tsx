@@ -3,7 +3,7 @@ import {
     Button,
     Card,
     CardContent,
-    CardMedia,
+    // CardMedia,
     Skeleton,
     Typography,
 } from '@mui/material';
@@ -14,6 +14,11 @@ const cardSx = {
   boxShadow: '2px 2px 10px 2px #2B2B2BB0',
   borderRadius: '12px',
 };
+
+function isVideo(url: string): boolean {
+  return /\.(mp4|mov|webm|ogg|avi)(\?.*)?$/i.test(url);
+}
+
 const gold = '#EFAF00';
 
 type Row = {
@@ -39,8 +44,6 @@ export default function MobileMyCatalogue({
   onViewComments,
   onViewSponsors,
 }: Props) {
-
-
   if (loading) {
     return (
       <Box sx={{ display: 'grid', gap: 1.25 }}>
@@ -77,35 +80,39 @@ export default function MobileMyCatalogue({
             <Typography sx={{ color: '#fff', fontWeight: 800, mb: 0.75 }}>
               {r.idx}.
             </Typography>
+            // MobileMyCatalogue.tsx — only the media box changes
+
             <Box
               sx={{
                 border: '1px solid #EFAF00',
                 borderRadius: 2,
                 p: 0.5,
                 mb: 1,
+                bgcolor: '#111',
+                height: 160,          // fixed height keeps cards compact
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               {r.img ? (
-                <CardMedia
-                  component='img'
-                  image={r.img}
-                  alt='media'
-                  sx={{
-                    width: '100%',
-                    height: 180,
-                    objectFit: 'cover',
-                    borderRadius: 1,
-                  }}
-                />
+                isVideo(r.img) ? (
+                  <video
+                    src={r.img}
+                    style={{ maxWidth: '100%', maxHeight: '100%', display: 'block', borderRadius: 4 }}
+                    muted
+                    playsInline
+                  />
+                ) : (
+                  <img
+                    src={r.img}
+                    alt='media'
+                    style={{ maxWidth: '100%', maxHeight: '100%', display: 'block', borderRadius: 4 }}
+                  />
+                )
               ) : (
-                <Box
-                  sx={{
-                    width: '100%',
-                    height: 180,
-                    bgcolor: '#2a2a2a',
-                    borderRadius: 1,
-                  }}
-                />
+                <Box sx={{ width: '100%', height: '100%', bgcolor: '#2a2a2a', borderRadius: 1 }} />
               )}
             </Box>
 
@@ -113,7 +120,6 @@ export default function MobileMyCatalogue({
               <Typography
                 sx={{ color: '#C9C9C9', fontWeight: 700, fontSize: 12 }}
               >
-                {' '}
                 Caption: <span style={{ color: '#FFF' }}>{r.caption}</span>
               </Typography>
 
@@ -144,8 +150,7 @@ export default function MobileMyCatalogue({
                   Comments:
                 </Typography>
                 <Typography sx={{ color: '#A2A2A2', fontSize: 12 }}>
-                  {r.comments}
-                  Comments
+                  {r.comments} Comments
                 </Typography>
                 <Button
                   onClick={() => onViewComments?.(r.id)}
@@ -180,7 +185,7 @@ export default function MobileMyCatalogue({
                     minWidth: 0,
                   }}
                 >
-                View
+                  View
                 </Button>
               </Box>
             </CardContent>

@@ -29,8 +29,6 @@ export default function MobileCatalogueStatsCards({
   comments,
   uniqueSponsors,
 }: Props) {
- 
-
   const containerRef = useRef<HTMLDivElement | null>(null);
   const secondRef = useRef<HTMLDivElement | null>(null);
 

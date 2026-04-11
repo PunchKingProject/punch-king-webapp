@@ -4,7 +4,7 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Chip,
+  Chip, CircularProgress,
   TextField,
   Typography,
 } from '@mui/material';
@@ -12,8 +12,8 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import { Formik, Form } from 'formik';
 import { toast } from 'react-toastify';
-import { useVoteForPost } from '../hooks/useVoteForPost';
-import { showError } from '../../../../utils/error/toastError';
+import { useVoteForPost } from '../hooks/useVoteForPost.ts';
+import { showError } from '../../../../utils/error/toastError.ts';
 
 const gold = '#EFAF00';
 
@@ -45,17 +45,15 @@ export default function DesktopSponsorshipForm({
   sponsors,
   contributors,
 }: Props) {
-
-
   const { mutateAsync, isPending } = useVoteForPost();
 
   return (
     <Box sx={{ display: 'grid', gap: 2, maxWidth: 430 }}>
       {/* Title */}
       <Typography variant='h4' sx={{ color: '#fff', fontWeight: 900 }}>
-        {' '}
         SPONSORSHIP
       </Typography>
+
       {/* Meta */}
       <Typography sx={{ color: '#EFAF00', fontWeight: 700 }}>
         TEAM NAME:&nbsp;
@@ -65,6 +63,7 @@ export default function DesktopSponsorshipForm({
         POSITION:&nbsp;
         <span style={{ color: '#fff' }}>{teamPosition || '—'}</span>
       </Typography>
+
       {/* Media */}
       <Card sx={{ ...cardSx, p: 1 }}>
         {mediaUrl ? (
@@ -78,6 +77,7 @@ export default function DesktopSponsorshipForm({
           <Box sx={{ height: 220, bgcolor: '#2a2a2a', borderRadius: '10px' }} />
         )}
       </Card>
+
       {/* Chips */}
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Chip
@@ -109,7 +109,7 @@ export default function DesktopSponsorshipForm({
           }}
         />
       </Box>
-      {/* Formik form */}
+
       <Formik<FormValues>
         initialValues={{ amount: '5' }}
         validateOnMount
@@ -118,7 +118,7 @@ export default function DesktopSponsorshipForm({
           const raw = values.amount.trim();
           if (!raw) errors.amount = 'Amount is required';
           else if (!/^\d+$/.test(raw)) errors.amount = 'Enter a whole number';
-          else if (Number(raw) < 1) errors.amount = 'Amount must be at least 1';
+          else if (Number(raw) < 5) errors.amount = 'Amount must be at least 5';
           return errors;
         }}
         onSubmit={async (vals, helpers) => {
@@ -126,29 +126,28 @@ export default function DesktopSponsorshipForm({
             const amount = parseInt(vals.amount.trim(), 10);
             await mutateAsync({ post_id: postId, amount });
             toast.success('Sponsorship submitted successfully.');
-            helpers.resetForm({ values: { amount: '1' } });
+            helpers.resetForm({ values: { amount: '5' } });
           } catch (err: unknown) {
             showError(err);
           }
         }}
       >
-        {({
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          handleBlur,
-          isSubmitting,
-        }) => {
-          const amountValid =
-            /^\d+$/.test(values.amount.trim()) && Number(values.amount) >= 1;
+        {(formikProps) => {
+          const {
+            values,
+            errors,
+            touched,
+            setFieldValue,
+            handleBlur,
+            isSubmitting,
+            isValid,
+          } = formikProps;
 
           return (
             <Form noValidate>
               <Card sx={cardSx}>
                 <CardContent sx={{ display: 'grid', gap: 1 }}>
                   <TextField
-                    // Use text + inputMode to avoid mobile/TS issues, sanitize manually
                     type='text'
                     name='amount'
                     label='Enter number of chips'
@@ -161,11 +160,12 @@ export default function DesktopSponsorshipForm({
                     inputProps={{
                       inputMode: 'numeric',
                       pattern: '\\d*',
-                      min: 1,
                     }}
                     error={Boolean(touched.amount && errors.amount)}
                     helperText={
-                      touched.amount && errors.amount ? errors.amount : ' '
+                      touched.amount && errors.amount
+                        ? errors.amount
+                        : 'Minimum sponsorship: 5 chips'
                     }
                     sx={{
                       '& .MuiInputBase-root': {
@@ -177,9 +177,11 @@ export default function DesktopSponsorshipForm({
                   />
                 </CardContent>
               </Card>
+
               <Button
                 type='submit'
-                disabled={!amountValid || isPending || isSubmitting}
+                fullWidth
+                disabled={!isValid || isPending || isSubmitting}
                 variant='contained'
                 sx={{
                   bgcolor: gold,
@@ -189,9 +191,17 @@ export default function DesktopSponsorshipForm({
                   height: 44,
                   borderRadius: '10px',
                   mt: 1.5,
+                  '&.Mui-disabled': {
+                    bgcolor: '#333',
+                    color: '#777',
+                  },
                 }}
               >
-                {isPending ? 'Submitting…' : 'Sponsor'}
+                {isPending ? (
+                  <CircularProgress size={20} sx={{ color: '#000' }} />
+                ) : (
+                  'Sponsor'
+                )}
               </Button>
             </Form>
           );

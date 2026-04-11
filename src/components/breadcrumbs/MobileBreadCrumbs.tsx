@@ -1,8 +1,7 @@
-
 import { Box, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { colors } from '../../theme/colors';
+import { colors } from '../../theme/colors.ts';
 
 type Props = {
   rootLabel: string; // e.g. "TEAMS DASHBOARD"
@@ -17,8 +16,6 @@ function MobileBreadCrumbs({
   currentLabel,
   separator = ' / ',
 }: Props) {
- 
-
   const navigate = useNavigate();
 
   return (
@@ -49,6 +46,7 @@ function MobileBreadCrumbs({
       >
         Back
       </Typography>
+
       {/* Breadcrumb row */}
       <Box
         sx={{

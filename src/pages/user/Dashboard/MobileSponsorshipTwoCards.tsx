@@ -16,8 +16,6 @@ export default function MobileSponsorshipTwoCards({
   onBuy,
   sx,
 }: Props) {
-
-
   return (
     <Box
       sx={{
@@ -45,7 +43,6 @@ export default function MobileSponsorshipTwoCards({
           <Typography
             sx={{ color: '#FFFCF4', fontWeight: 900, fontSize: 14, mb: 0.5 }}
           >
-            {' '}
             My Sponsorship Units
           </Typography>
           {loading ? (
@@ -75,6 +72,7 @@ export default function MobileSponsorshipTwoCards({
           Buy
         </Button>
       </Box>
+
       {/* Card 2: Spent Units */}
       <Box
         sx={{

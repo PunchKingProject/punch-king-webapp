@@ -1,4 +1,4 @@
-import { customFetch } from '../../../../Axios';
+import { customFetch } from '../../../../Axios.ts';
 import type {
   Envelope,
   FetchSponsorshipHistoryParams,
@@ -9,7 +9,7 @@ import type {
   SponsorshipHistoryPayload,
   TeamSponsorshipStats,
   TeamSponsorshipStatsParams,
-} from './mySponsorship.types';
+} from './mySponsorship.types.ts';
 
 export async function getTeamSponsorshipStats(
   params: TeamSponsorshipStatsParams

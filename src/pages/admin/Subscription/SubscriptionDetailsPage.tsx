@@ -1,11 +1,13 @@
 import { Box, useMediaQuery } from "@mui/material";
-import DesktopSubscriptionDetailsPage from "./DesktopSubscriptionDetailsPage";
-import MobileSubscriptionDetailsPage from "./MobileSubscriptionDetailsPage";
+import DesktopSubscriptionDetailsPage from "./DesktopSubscriptionDetailsPage.tsx";
+import MobileSubscriptionDetailsPage from "./MobileSubscriptionDetailsPage.tsx";
 
 const SubscriptionDetailsPage = () => {
 
     const isDesktop = useMediaQuery('(min-width:910px)');
   
+
+
   return (
     <>
       <Box

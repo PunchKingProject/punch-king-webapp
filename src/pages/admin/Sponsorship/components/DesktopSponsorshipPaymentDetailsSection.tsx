@@ -1,6 +1,6 @@
 import { Box, Button, Link, Typography } from '@mui/material';
 import dayjs from 'dayjs';
-import type { BankInfo, SponsorshipApiRow } from '../api/sponsorships.types';
+import type { BankInfo, SponsorshipApiRow } from '../api/sponsorships.types.ts';
 
 type Props = {
   loading?: boolean;
@@ -34,16 +34,16 @@ const fmtDateTime = (iso?: string | null) =>
     ? `${dayjs(iso).format('M/D/YYYY')}  ${dayjs(iso).format('h:mma')}`
     : 'N/A';
 
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const val = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(val);
   } catch {
-    return `₦${val.toLocaleString()}`;
+    return `$${val.toLocaleString()}`;
   }
 };
 
@@ -69,13 +69,12 @@ export default function DesktopSponsorshipPaymentDetailsSection({
   entry,
   onViewSlip,
 }: Props) {
- 
-
   return (
     <Box id='payment-details' sx={{ mt: 6 }}>
       <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>
         PAYMENT DETAILS
       </Typography>
+
       <Box
         sx={{
           display: 'grid',
@@ -127,7 +126,7 @@ export default function DesktopSponsorshipPaymentDetailsSection({
                     color: '#00C853',
                   }}
                 >
-                  {fmtNGN(entry?.payment_amount)}
+                  {fmtUSD(entry?.payment_amount)}
                 </Typography>
               </Box>
             </Box>

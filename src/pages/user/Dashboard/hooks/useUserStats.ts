@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { UserStatsParams } from "../api/dashboard.types";
-import { getUserStats } from "../api/dashboard.api";
+import type { UserStatsParams } from "../api/dashboard.types.ts";
+import { getUserStats } from "../api/dashboard.api.ts";
 
 export function useUserStats(params: UserStatsParams) {
   const { start_date, end_date } = params;

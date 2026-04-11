@@ -15,13 +15,11 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import debounce from 'lodash.debounce';
-import { useRankedTeams } from '../hooks/useRankedTeams';
+import { useRankedTeams } from '../hooks/useRankedTeams.ts';
 
 const gold = '#EFAF00';
 
 function ordinal(n: number) {
-
-
   const s = ['th', 'st', 'nd', 'rd'];
   const v = n % 100;
   return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`.toUpperCase();
@@ -46,9 +44,9 @@ export default function DesktopTeamRanking() {
   return (
     <Box sx={{ width: 360, ml: { md: 3 }, flexShrink: 0 }}>
       <Typography variant='h5' sx={{ color: '#fff', fontWeight: 900, mb: 2 }}>
-        {' '}
         TEAM RANKING
       </Typography>
+
       {/* Search */}
       <Box
         sx={{
@@ -76,6 +74,7 @@ export default function DesktopTeamRanking() {
           <SearchIcon fontSize='small' sx={{ color: '#EDEDED' }} />
         </IconButton>
       </Box>
+
       {/* List */}
       <Stack spacing={2}>
         {isLoading &&
@@ -137,13 +136,7 @@ export default function DesktopTeamRanking() {
               <Stack
                 direction='row'
                 spacing={1.5}
-                sx={{
-                  mt: 1.25,
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '10px',
-                  width: '100%',
-                }}
+                sx={{ mt: 1.25, alignItems: 'center', flexWrap: 'wrap', gap: '10px', width: '100%', }}
               >
                 <Chip
                   icon={<GroupsIcon sx={{ color: gold }} />}
@@ -204,6 +197,7 @@ export default function DesktopTeamRanking() {
             </Box>
           ))}
       </Stack>
+
       {/* Basic pagination controls (if you want) */}
       {/* Add prev/next here if needed — your API is page-based */}
     </Box>

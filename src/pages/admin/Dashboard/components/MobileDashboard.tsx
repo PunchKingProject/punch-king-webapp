@@ -6,7 +6,7 @@
   import { toast } from 'react-toastify';
 
 
-  import MetricsDateFilterDrawer from './MetricsDateFilterDrawer';
+  import MetricsDateFilterDrawer from './MetricsDateFilterDrawer.tsx';
 
   import { useDashboardStats, useRankedTeams, useRankedUsers } from '../hooks';
   import type {
@@ -15,10 +15,10 @@
     Team,
     UserSponsorship,
 
-  } from '../api/dashboard.types';
-  import { teamFieldData, userSponsorshipFieldData } from '../ui/fields';
-  import { colors } from '../../../../theme/colors';
-  import { ScrollableSection } from '../../components/ScrollableSection';
+  } from '../api/dashboard.types.ts';
+  import { teamFieldData, userSponsorshipFieldData } from '../ui/fields.ts';
+  import { colors } from '../../../../theme/colors.ts';
+  import { ScrollableSection } from '../../components/ScrollableSection.tsx';
 
   // ===== Helpers =====
   const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
@@ -30,8 +30,6 @@
   };
 
   export default function MobileDashboard() {
-
-
     const containerRef = useRef<HTMLDivElement | null>(null);
     const secondCardRef = useRef<HTMLDivElement | null>(null);
 
@@ -205,7 +203,9 @@
             alignItems: 'center',
           }}
         >
-          <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>Dashboard</Typography>
+          <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>
+            Dashboard
+          </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography
@@ -227,6 +227,7 @@
             />
           </Box>
         </Box>
+
         {/* Sliding metric cards */}
         <Box
           ref={containerRef}
@@ -291,6 +292,7 @@
             </Box>
           ))}
         </Box>
+
         {/* TEAMS server list (unchanged by date) */}
         <ScrollableSection<Team>
           title='TEAMS by ranking'
@@ -306,6 +308,7 @@
           }}
           onLoadMore={() => setTeamPage((p) => p + 1)}
         />
+
         {/* USERS server list (unchanged by date) */}
         <ScrollableSection<UserSponsorship>
           title='Users by sponsorships'

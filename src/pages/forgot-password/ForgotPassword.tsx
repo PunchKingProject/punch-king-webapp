@@ -3,15 +3,15 @@ import { Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../assets';
-import CustomAuthButton from '../../components/buttons/CustomAuthButton';
-import CustomButton from '../../components/buttons/CustomButton';
-import FormikTextField from '../../components/form/FormikTextField';
-import ROUTES from '../../routes/routePath';
-import Footer from '../landing/components/Footer';
+import CustomAuthButton from '../../components/buttons/CustomAuthButton.tsx';
+import CustomButton from '../../components/buttons/CustomButton.tsx';
+import FormikTextField from '../../components/form/FormikTextField.tsx';
+import ROUTES from '../../routes/routePath.ts';
+import Footer from '../landing/components/Footer.tsx';
 import { useMutation } from '@tanstack/react-query';
-import { forgotPassword } from './api/forgotpassword.api';
+import { forgotPassword } from './api/forgotpassword.api.ts';
 import { toast } from 'react-toastify';
-import { showError } from '../../utils/error/toastError';
+import { showError } from '../../utils/error/toastError.ts';
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -80,11 +80,7 @@ const ForgotPasswordPage = () => {
             right: 24,
           }}
         >
-          <CustomButton
-            color='primary'
-            variant='text'
-            onClick={() => navigate(ROUTES.SIGN_UP)}
-          >
+          <CustomButton color='primary' variant='text' onClick={() => navigate(ROUTES.SIGN_UP)}>
             Register
           </CustomButton>
         </Box>
@@ -131,6 +127,7 @@ const ForgotPasswordPage = () => {
                     mb: 0,
                   }}
                 />
+
                 <Typography
                   sx={{
                     textAlign: 'right',
@@ -145,6 +142,7 @@ const ForgotPasswordPage = () => {
                 >
                   Sign In?
                 </Typography>
+
                 <Box
                   sx={
                     {
@@ -176,6 +174,7 @@ const ForgotPasswordPage = () => {
           }}
         </Formik>
       </Box>
+
       <Box
         sx={{
           //   border: '2px solid red',

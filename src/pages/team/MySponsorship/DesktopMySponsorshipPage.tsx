@@ -4,18 +4,18 @@ import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
-import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import DesktopMySponsorshipStatsCards from './components/DesktopMySponsorshipStatsCards';
-import { useTeamSponsorshipStats } from './hooks/useTeamSponsorshipStats';
-import { useTeamSponsorshipHistory } from './hooks/useTeamSponsorshipHistory';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
+import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import DesktopMySponsorshipStatsCards from './components/DesktopMySponsorshipStatsCards.tsx';
+import { useTeamSponsorshipStats } from './hooks/useTeamSponsorshipStats.ts';
+import { useTeamSponsorshipHistory } from './hooks/useTeamSponsorshipHistory.ts';
 import DesktopSponsorshipHistoryTable, {
   mapApiToRows,
   type SponsorshipRow,
-} from './components/DesktopSponsorshipHistoryTable';
+} from './components/DesktopSponsorshipHistoryTable.tsx';
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import ROUTES from '../../../routes/routePath.ts';
 
 const contentPaddingSx = {
   padding: '1.56em 6.98em',

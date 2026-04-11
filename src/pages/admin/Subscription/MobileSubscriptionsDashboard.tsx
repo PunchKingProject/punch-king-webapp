@@ -7,14 +7,14 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../components/ScrollableSection';
-import ROUTES from '../../../routes/routePath';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import ROUTES from '../../../routes/routePath.ts';
 
-import { useSubscriptions } from './hooks/useSubscriptions';
-import StatusChip from '../../../components/chips/StatusChip';
-import { subFieldData, type SubListItem } from './ui/fields';
-import { colors } from '../../../theme/colors';
+import { useSubscriptions } from './hooks/useSubscriptions.ts';
+import StatusChip from '../../../components/chips/StatusChip.tsx';
+import { subFieldData, type SubListItem } from './ui/fields.ts';
+import { colors } from '../../../theme/colors.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 const formatRangeLabel = (from?: Date, to?: Date) => {
@@ -23,8 +23,6 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 };
 
 export default function MobileSubscriptionsDashboard() {
-
-
   const navigate = useNavigate();
 
   // ===== metrics + list date scope =====
@@ -159,6 +157,7 @@ export default function MobileSubscriptionsDashboard() {
           />
         </Box>
       </Box>
+
       {/* Sliding metric cards (same style as other mobile pages) */}
       <Box
         ref={scrollerRef}
@@ -221,6 +220,7 @@ export default function MobileSubscriptionsDashboard() {
           </Box>
         ))}
       </Box>
+
       {/* SUBSCRIPTION requests (server list) */}
       <ScrollableSection<SubListItem>
         title='SUBSCRIPTION requests'
@@ -241,8 +241,8 @@ export default function MobileSubscriptionsDashboard() {
               navigate(
                 ROUTES.SUBSCRIPTION_DETAILS.replace(
                   ':team_id',
-                  String(r.team_id),
-                ),
+                  String(r.team_id)
+                )
               )
             }
             sx={{ color: '#fff', mt: 0.5 }}

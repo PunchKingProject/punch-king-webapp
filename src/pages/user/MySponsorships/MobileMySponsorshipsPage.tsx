@@ -6,27 +6,26 @@ import type { DateRange } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import ROUTES from '../../../routes/routePath';
-import { colors } from '../../../theme/colors';
-import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../../admin/components/ScrollableSection';
+import ROUTES from '../../../routes/routePath.ts';
+import { colors } from '../../../theme/colors.ts';
+import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../../admin/components/ScrollableSection.tsx';
 
-import PKImageDialog from '../../../components/modal/PkImageDialog';
-import { useUserStats } from '../Dashboard/hooks/useUserStats';
-import { usePurchaseHistory } from './hooks/usePurchaseHistory';
-import { purchaseFieldData, type MobilePurchaseListItem } from './fields';
+import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
+import { useUserStats } from '../Dashboard/hooks/useUserStats.ts';
+import { usePurchaseHistory } from './hooks/usePurchaseHistory.ts';
+import { purchaseFieldData, type MobilePurchaseListItem } from './fields.ts';
 
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 const fmtCurrency = (n: number) =>
   new Intl.NumberFormat(undefined, {
     style: 'currency',
-    currency: 'NGN',
+    currency: 'USD',
     maximumFractionDigits: 2,
   }).format(n);
 
 export default function MobileMySponsorshipsPage() {
-
   const navigate = useNavigate();
 
   // ===== Date range (cards + list) =====
@@ -91,7 +90,7 @@ export default function MobileMySponsorshipsPage() {
     });
   }, []);
 
-  const [page, setPage] = useState(1); // API is 1-based
+const [page, setPage] = useState(1); // API is 1-based
 
 
   const {
@@ -121,8 +120,7 @@ export default function MobileMySponsorshipsPage() {
   }, [history]);
 
   const total = history?.metadata.total_count ?? 0;
-  const hasMore =
-    (Array.isArray(history?.data) ? history!.data.length : 0) < total;
+  const hasMore = (history?.data.length ?? 0) < total;
 
   // ===== Image dialog (slip) =====
   const [openSlip, setOpenSlip] = useState<{
@@ -144,7 +142,6 @@ export default function MobileMySponsorshipsPage() {
         }}
       >
         <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>
-          {' '}
           SPONSORSHIPS
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -165,6 +162,7 @@ export default function MobileMySponsorshipsPage() {
           />
         </Box>
       </Box>
+
       {/* Cards slider */}
       <Box
         ref={scrollerRef}
@@ -216,6 +214,7 @@ export default function MobileMySponsorshipsPage() {
           </Box>
         ))}
       </Box>
+
       {/* Purchase history list */}
       <ScrollableSection<MobilePurchaseListItem>
         title='SPONSORSHIP purchase history'
@@ -234,15 +233,14 @@ export default function MobileMySponsorshipsPage() {
             <IconButton
               aria-label='View'
               sx={{ color: '#fff', mt: 0.5 }}
-              onClick={() =>
-                setOpenSlip({ open: true, src: row.payment_slip ?? null })
-              }
+              onClick={() => setOpenSlip({ open: true, src: row.payment_slip ?? null })}
             >
               <VisibilityRounded />
             </IconButton>
           ) : undefined
         }
       />
+
       {/* Slip preview (mobile-friendly) */}
       <PKImageDialog
         open={openSlip.open}

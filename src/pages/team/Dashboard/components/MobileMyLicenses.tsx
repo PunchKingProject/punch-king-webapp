@@ -1,8 +1,8 @@
-import { ScrollableSection } from '../../../admin/components/ScrollableSection';
+import { ScrollableSection } from '../../../admin/components/ScrollableSection.tsx';
 import {
     teamLicenseFields,
     type TeamLicenseRow,
-} from '../../Dashboard/ui/fields';
+} from '../ui/fields.ts';
 
 type Props = {
   rows: TeamLicenseRow[];

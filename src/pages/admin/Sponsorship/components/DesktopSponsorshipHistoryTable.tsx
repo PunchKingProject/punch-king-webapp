@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
-import type { SponsorVoteRow } from '../api/sponsorships.types';
+} from '../../../../components/tables/PaginatedTable.tsx';
+import type { SponsorVoteRow } from '../api/sponsorships.types.ts';
 
 type Props = {
   rows: SponsorVoteRow[];

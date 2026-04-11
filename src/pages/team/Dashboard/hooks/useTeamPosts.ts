@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { TeamPost } from "../api/dashboard.types";
-import { getTeamPosts } from "../api/dashboard.api";
+import type { TeamPost } from "../api/dashboard.types.ts";
+import { getTeamPosts } from "../api/dashboard.api.ts";
 
 export function useTeamPosts() {
   return useQuery<TeamPost[]>({

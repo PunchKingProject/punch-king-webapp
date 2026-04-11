@@ -1,7 +1,7 @@
 // src/components/formik/FormikTextarea.tsx
 import { TextField, type TextFieldProps } from '@mui/material';
 import { useField } from 'formik';
-import { colors } from '../../theme/colors';
+import { colors } from '../../theme/colors.ts';
 
 type FormikTextareaProps = Omit<
   TextFieldProps,

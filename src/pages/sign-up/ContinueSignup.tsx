@@ -1,10 +1,7 @@
-
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 function ContinueSignup() {
-
-
   const [sp] = useSearchParams();
   const token = sp.get('token') || '';
   console.log(token)
@@ -30,7 +27,7 @@ function ContinueSignup() {
         navigate(`/sign-up/step2?flow=${flow}&token=${token}`, { replace: true })
   }, [])
 
- return <div>ContinueSignup</div>;
+  return <div>ContinueSignup</div>;
 }
 
 export default ContinueSignup;

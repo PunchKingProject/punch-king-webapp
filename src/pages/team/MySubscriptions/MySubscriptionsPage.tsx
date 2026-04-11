@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopMySubscriptionsPage from './DesktopMySubscriptionsPage';
-import MobileMySubscriptionsPage from './MobileMySubscriptionsPage';
+import DesktopMySubscriptionsPage from './DesktopMySubscriptionsPage.tsx';
+import MobileMySubscriptionsPage from './MobileMySubscriptionsPage.tsx';
 
 
 export default function MySubscriptionsPage() {

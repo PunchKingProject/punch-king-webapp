@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopUserDashboard from './components/DesktopUserDashboard';
-import MobileUserDashboard from './MobileUserDashboard';
+import DesktopUserDashboard from './components/DesktopUserDashboard.tsx';
+import MobileUserDashboard from './MobileUserDashboard.tsx';
 
 export type UserRow = {
   user_name: string;

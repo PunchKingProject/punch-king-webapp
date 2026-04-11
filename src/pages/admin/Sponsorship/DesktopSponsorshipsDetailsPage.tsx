@@ -6,43 +6,43 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import ROUTES from '../../../routes/routePath';
-import AdminBreadCrumbs from '../components/AdminBreadcrumbs';
-import AdminSection from '../components/AdminSection';
+import ROUTES from '../../../routes/routePath.ts';
+import AdminBreadCrumbs from '../components/AdminBreadcrumbs.tsx';
+import AdminSection from '../components/AdminSection.tsx';
 
 import type { DateRange } from 'react-day-picker';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
 
 import WarningIcon from '../../../assets/modalQuestionIcon.svg?react';
 import SuccessIcon from '../../../assets/modalSuccess.svg?react';
-import NoticeModal from '../../../components/modal/NoticeModal';
-import PKImageDialog from '../../../components/modal/PkImageDialog';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
+import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
 
-import { useDisclosure } from '../../../hooks/useDisclosure';
-import { useUpdateSponsorshipStatus } from './hooks/useUpdateSponsorshipStatus';
+import { useDisclosure } from '../../../hooks/useDisclosure.ts';
+import { useUpdateSponsorshipStatus } from './hooks/useUpdateSponsorshipStatus.ts';
 
 import {
   normalizePaymentStatus,
   normalizePurchaseStatus,
-} from '../../../utils/helpers';
+} from '../../../utils/helpers.ts';
 
 import type {
   PaymentStatus,
   PurchaseStatus,
   SponsorVoteRow,
   SponsorshipApiRow,
-} from './api/sponsorships.types';
+} from './api/sponsorships.types.ts';
 
-import DesktopSponsorshipConfirmationSection from './components/DesktopSponsorshipConfirmationSection';
-import DesktopSponsorshipHistoryTable from './components/DesktopSponsorshipHistoryTable';
-import DesktopSponsorshipPaymentDetailsSection from './components/DesktopSponsorshipPaymentDetailsSection';
-import DesktopSponsorshipPaymentHistoryTable from './components/DesktopSponsorshipPaymentHistoryTable';
-import DesktopSponsorshipTeamDetailsSection from './components/DesktopSponsorshipTeamDetailsSection';
+import DesktopSponsorshipConfirmationSection from './components/DesktopSponsorshipConfirmationSection.tsx';
+import DesktopSponsorshipHistoryTable from './components/DesktopSponsorshipHistoryTable.tsx';
+import DesktopSponsorshipPaymentDetailsSection from './components/DesktopSponsorshipPaymentDetailsSection.tsx';
+import DesktopSponsorshipPaymentHistoryTable from './components/DesktopSponsorshipPaymentHistoryTable.tsx';
+import DesktopSponsorshipTeamDetailsSection from './components/DesktopSponsorshipTeamDetailsSection.tsx';
 
-import { useSponsorPurchaseHistory } from './hooks/useSponsorPurchaseHistory';
-import { useSponsorshipPurchase } from './hooks/useSponsorshipPurchase';
-import { useSponsorVoteHistory } from './hooks/useSponsorVoteHistory';
+import { useSponsorPurchaseHistory } from './hooks/useSponsorPurchaseHistory.ts';
+import { useSponsorshipPurchase } from './hooks/useSponsorshipPurchase.ts';
+import { useSponsorVoteHistory } from './hooks/useSponsorVoteHistory.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
@@ -180,7 +180,7 @@ export default function DesktopSponsorshipDetailsPage() {
     () =>
       new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency: 'NGN',
+        currency: 'USD',
         maximumFractionDigits: 2,
       }),
     []

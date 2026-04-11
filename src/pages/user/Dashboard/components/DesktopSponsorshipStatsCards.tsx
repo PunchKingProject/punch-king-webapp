@@ -42,8 +42,6 @@ export default function DesktopSponsorshipStatsCards({
   spentUnits = 0,
   onBuy,
 }: Props) {
- 
-
   return (
     <Box
       sx={{
@@ -82,6 +80,7 @@ export default function DesktopSponsorshipStatsCards({
           </Button>
         </Box>
       </Box>
+
       {/* SPENT UNITS */}
       <Box sx={cardSx}>
         <Box>

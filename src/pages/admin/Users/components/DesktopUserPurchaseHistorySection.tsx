@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
-import type { TableColumn } from "../../../../components/tables/PaginatedTable";
-import PaginatedTable from "../../../../components/tables/PaginatedTable";
+import type { TableColumn } from "../../../../components/tables/PaginatedTable.tsx";
+import PaginatedTable from "../../../../components/tables/PaginatedTable.tsx";
 
 
 
 export type UserPurchaseRow = {
   id?: number | string;
-  value: number; // NGN amount
+  value: number; // USD amount
   volume: number; // sponsorship_points
   date: string; // 'YYYY-MM-DD'
   time: string; // 'hh:mma'

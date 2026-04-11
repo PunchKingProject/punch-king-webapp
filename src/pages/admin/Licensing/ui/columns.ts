@@ -1,5 +1,5 @@
-import type { TableColumn } from "../../../../components/tables/PaginatedTable";
-import type { LicenseRow } from "../components/DesktopLicensesSection";
+import type { TableColumn } from "../../../../components/tables/PaginatedTable.tsx";
+import type { LicenseRow } from "../components/DesktopLicensesSection.tsx";
 
 export const licenseColumns: TableColumn<LicenseRow>[] = [
   { field: 'team_name', header: 'Team name' },

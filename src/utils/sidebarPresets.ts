@@ -1,5 +1,5 @@
-import type { SideNavItem } from "../components/nav/SideNav";
-import ROUTES from "../routes/routePath";
+import type { SideNavItem } from "../components/nav/SideNav.tsx";
+import ROUTES from "../routes/routePath.ts";
 
 export const ADMIN_SIDENAV_ITEMS: SideNavItem[] = [
   { label: 'Teams', to: ROUTES.TEAMS },
@@ -15,10 +15,10 @@ export const TEAM_SIDENAV_ITEMS: SideNavItem[] = [
   { label: 'My Subscriptions', to: ROUTES.MY_SUBSCRIPTIONS },
   { label: 'My Licensing', to: ROUTES.MY_LICENSING },
   { label: 'My Sponsorship', to: ROUTES.MY_SPONSORSHIP },
-  // { label: 'Inbox', to: ROUTES.INBOX },
+  { label: 'Inbox', to: ROUTES.INBOX },
 ];
 
 export const USER_SIDENAV_ITEMS = [
   { label: 'My Sponsorships', to: ROUTES.USER_MY_SPONSORSHIPS },
-  // { label: 'Inbox', to: ROUTES.USER_INBOX },
+  { label: 'Inbox', to: ROUTES.USER_INBOX },
 ];

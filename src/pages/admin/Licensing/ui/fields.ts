@@ -1,5 +1,5 @@
 // pages/admin/Licensing/ui/fields.ts
-import type { Field } from '../../components/ScrollableSection';
+import type { Field } from '../../components/ScrollableSection.tsx';
 
 export type LicenseListItem = {
   id?: number;

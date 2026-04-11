@@ -1,21 +1,18 @@
 // ...imports unchanged
-import { Box, Button, Divider, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import Footer from '../pages/landing/components/Footer.tsx';
+import Navbar from '../components/nav/Navbar.tsx';
 import {
   closeMobileMenuIcon,
   openMobileMenuIcon,
   openProfileIcon,
   punchKingMobileLogo,
 } from '../assets';
-import Navbar from '../components/nav/Navbar';
-import Footer from '../pages/landing/components/Footer';
-import ROUTES from '../routes/routePath';
-import { readClaimsFromStorage } from '../utils/jwt';
+import ROUTES from '../routes/routePath.ts';
 
 function TeamMobileMenu() {
-
-
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
@@ -27,6 +24,7 @@ function TeamMobileMenu() {
     setProfileOpen(false); // 👈 also close profile dropdown just in case
     navigate(path);
   };
+
 
   const items = useMemo(
     () => [
@@ -55,13 +53,6 @@ function TeamMobileMenu() {
     navigate(ROUTES.SIGN_IN ?? '/sign-in', { replace: true });
   };
 
-  // inside TeamMobileMenu component (top, before return)
-  // inside TeamMobileMenu component
-  const claims = useMemo(() => readClaimsFromStorage('token'), []);
-  const displayName = claims?.name?.trim() || 'there';
-  const roleLabel = (claims?.role || 'Team')
-    .toString()
-    .replace(/^\w/, (c) => c.toUpperCase());
   return (
     <>
       <Box
@@ -106,6 +97,7 @@ function TeamMobileMenu() {
           }}
         />
       </Box>
+
       {/* Profile Dropdown */}
       {profileOpen && (
         <>
@@ -136,12 +128,6 @@ function TeamMobileMenu() {
             }}
           >
             {/* Add more profile actions here if needed */}
-            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>Hello, {displayName}!
-            </Typography>
-            <Typography sx={{ color: '#A2A2A2', fontSize: 12, mb: 0.5 }}>
-              {roleLabel}
-            </Typography>
-            <Divider sx={{ borderColor: '#3B3B3B', my: 0.5 }} />
             <Button
               variant='outlined'
               onClick={handleLogout}
@@ -152,10 +138,13 @@ function TeamMobileMenu() {
                 textTransform: 'none',
                 '&:hover': { backgroundColor: '#222', borderColor: '#fff' },
               }}
-            >Logout</Button>
+            >
+              Logout
+            </Button>
           </Box>
         </>
       )}
+
       {/* Main Menu */}
       {open && (
         <>

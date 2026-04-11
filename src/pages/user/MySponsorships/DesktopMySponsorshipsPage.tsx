@@ -4,23 +4,21 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import type { DateRange } from 'react-day-picker';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DesktopUserStatsCards from '../components/DesktopUserStatsCards';
-import { useUserStats } from '../Dashboard/hooks/useUserStats';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import { USER_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
-import { usePurchaseHistory } from './hooks/usePurchaseHistory';
-import DesktopPurchaseHistorySection, { mapApiToRows, type PurchaseRow } from './components/DesktopPurchaseHistorySection';
+import DesktopUserStatsCards from '../components/DesktopUserStatsCards.tsx';
+import { useUserStats } from '../Dashboard/hooks/useUserStats.ts';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import { USER_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
+import { usePurchaseHistory } from './hooks/usePurchaseHistory.ts';
+import DesktopPurchaseHistorySection, { mapApiToRows, type PurchaseRow } from './components/DesktopPurchaseHistorySection.tsx';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import ROUTES from '../../../routes/routePath.ts';
 
 
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
 export default function DesktopMySponsorshipsPage() {
-
-
   // date range (last 30 days by default)
   const [range, setRange] = useState<[Dayjs, Dayjs]>([
     dayjs().subtract(30, 'day'),
@@ -105,11 +103,10 @@ export default function DesktopMySponsorshipsPage() {
                 textDecoration: 'none', // no underline
               }}
             >
-              {' '}
               USER DASHBOARD
             </Typography>
             <Typography sx={{ color: '#A2A2A2' }}>/</Typography>
-
+           
             <Typography
               sx={{ color: '#A2A2A2', fontWeight: 700, fontSize: 16 }}
             >
@@ -147,6 +144,7 @@ export default function DesktopMySponsorshipsPage() {
           // }}
         />
       </DashboardSection>
+
       <Box
         sx={{
           padding: '1.56em 6.98em',

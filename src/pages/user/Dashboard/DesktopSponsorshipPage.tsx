@@ -13,12 +13,12 @@ import dayjs from 'dayjs';
 import type { DateRange } from 'react-day-picker';
 
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import { useUserStats } from './hooks/useUserStats';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
-import DesktopSponsorshipStatsCards from './components/DesktopSponsorshipStatsCards';
-import DesktopSponsorshipForm from './components/DesktopSponsorshipForm';
-import ROUTES from '../../../routes/routePath';
+import { useUserStats } from './hooks/useUserStats.ts';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
+import DesktopSponsorshipStatsCards from './components/DesktopSponsorshipStatsCards.tsx';
+import DesktopSponsorshipForm from './components/DesktopSponsorshipForm.tsx';
+import ROUTES from '../../../routes/routePath.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
@@ -32,8 +32,6 @@ type NavState = {
 };
 
 export default function DesktopSponsorshipPage() {
-
-
   const { postId } = useParams();
   const id = useMemo(() => Number(postId), [postId]);
   const navigate = useNavigate();
@@ -81,7 +79,6 @@ export default function DesktopSponsorshipPage() {
               component={RouterLink}
               to={'/user/'}
             >
-              {' '}
               USER DASHBOARD
             </Typography>
             <Typography sx={{ color: '#A2A2A2' }}>/</Typography>
@@ -142,10 +139,11 @@ export default function DesktopSponsorshipPage() {
           onBuy={() => {
             // TODO: open buy flow
             // postId is available as `id` if you need context
-            navigate(ROUTES.USER_BUY_SPONSORS);
+                    navigate(ROUTES.USER_BUY_SPONSORS);
           }}
         />
       </DashboardSection>
+
       {/* Body padding to match the rest of user pages */}
       <Box sx={{ p: '1.56em 6.98em' }}>
         {/* Sponsorship form (ignore sponsorship history and cost per your note) */}

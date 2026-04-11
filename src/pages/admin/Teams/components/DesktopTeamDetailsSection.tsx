@@ -1,4 +1,3 @@
-
 // pages/admin/Teams/components/TeamDetailsSection.tsx
 import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import { Box, Button, Typography } from '@mui/material';
@@ -9,18 +8,18 @@ import { useRef } from 'react';
 import * as Yup from 'yup';
 import { punchKingLogo } from '../../../../assets';
 import QuestionModalIcon from '../../../../assets/modalQuestionIcon.svg?react';
-import CustomAuthButton from '../../../../components/buttons/CustomAuthButton';
-import FormikDatePicker from '../../../../components/form/FormikDatePicker';
-import FormikSelect from '../../../../components/form/FormikSelect';
-import FormikTextField from '../../../../components/form/FormikWhiteTextField';
-import NoticeModal from '../../../../components/modal/NoticeModal';
-import PKDialog from '../../../../components/modal/PkDialog';
-import PKImageDialog from '../../../../components/modal/PkImageDialog';
-import { useDisclosure } from '../../../../hooks/useDisclosure';
-import { useUploadTeamImage } from '../../../../hooks/useUploadTeamImage';
-import { colors } from '../../../../theme/colors';
-import { useTeamProfile } from '../hooks/useTeamProfile';
-import { useUpdateTeamProfile } from '../hooks/useUpdateTeamProfile';
+import CustomAuthButton from '../../../../components/buttons/CustomAuthButton.tsx';
+import FormikDatePicker from '../../../../components/form/FormikDatePicker.tsx';
+import FormikSelect from '../../../../components/form/FormikSelect.tsx';
+import FormikTextField from '../../../../components/form/FormikWhiteTextField.tsx';
+import NoticeModal from '../../../../components/modal/NoticeModal.tsx';
+import PKDialog from '../../../../components/modal/PkDialog.tsx';
+import PKImageDialog from '../../../../components/modal/PkImageDialog.tsx';
+import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
+import { useUploadTeamImage } from '../../../../hooks/useUploadTeamImage.ts';
+import { colors } from '../../../../theme/colors.ts';
+import { useTeamProfile } from '../hooks/useTeamProfile.ts';
+import { useUpdateTeamProfile } from '../hooks/useUpdateTeamProfile.tsx';
 dayjs.extend(isSameOrBefore);
 
 // adjust path to where you cplaced these:
@@ -227,7 +226,6 @@ const STATE_OPTIONS: Record<string, { value: string; label: string }[]> = {
 };
 
 export default function TeamDetailsSection({ teamId }: Props) {
-
   const { data, isLoading, isError } = useTeamProfile(teamId);
 
   const uploadMutation = useUploadTeamImage();
@@ -364,7 +362,7 @@ export default function TeamDetailsSection({ teamId }: Props) {
                       display: 'flex',
                       justifyContent: 'flex-end',
                       alignItems: 'baseline',
-                      mt: -2,
+                      mt: -2 
                     }}
                   >
                     <Button
@@ -435,7 +433,7 @@ export default function TeamDetailsSection({ teamId }: Props) {
                         ml: 'auto',
                       }}
                     >
-                      View Licence certificate0 
+                      View Licence certificate
                     </Button>
                   </Box>
 
@@ -514,9 +512,9 @@ export default function TeamDetailsSection({ teamId }: Props) {
                         setTouched(
                           Object.keys(errors).reduce(
                             (acc, k) => ({ ...acc, [k]: true }),
-                            {},
+                            {}
                           ),
-                          false,
+                          false
                         );
                         return;
                       }
@@ -583,9 +581,7 @@ export default function TeamDetailsSection({ teamId }: Props) {
                           }}
                         />
                       ) : (
-                        <Typography sx={{ color: '#666' }}>
-                          No image
-                        </Typography>
+                        <Typography sx={{ color: '#666' }}>No image</Typography>
                       )}
                     </Box>
 
@@ -621,6 +617,7 @@ export default function TeamDetailsSection({ teamId }: Props) {
                   frame
                 />
               </Box>
+
               {/* Confirm dialog */}
               <NoticeModal
                 open={confirmDlg.open}
@@ -636,6 +633,7 @@ export default function TeamDetailsSection({ teamId }: Props) {
                 } profile`}
                 icon={<QuestionModalIcon />}
               />
+
               <NoticeModal
                 open={successDlg.open}
                 onClose={successDlg.onClose}

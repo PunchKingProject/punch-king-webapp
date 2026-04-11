@@ -1,4 +1,4 @@
-import type { Field } from '../../components/ScrollableSection';
+import type { Field } from '../../components/ScrollableSection.tsx';
 import type { ReactNode } from 'react';
 
 export type SubListItem = {

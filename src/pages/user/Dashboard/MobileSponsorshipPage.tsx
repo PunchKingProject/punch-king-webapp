@@ -10,10 +10,10 @@ import {
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
-import ROUTES from '../../../routes/routePath';
-import MobileSponsorshipForm from './components/MobileSponsorshipForm';
-import { useUserStats } from './hooks/useUserStats';
-import MobileSponsorshipTwoCards from './MobileSponsorshipTwoCards';
+import ROUTES from '../../../routes/routePath.ts';
+import MobileSponsorshipForm from './components/MobileSponsorshipForm.tsx';
+import { useUserStats } from './hooks/useUserStats.ts';
+import MobileSponsorshipTwoCards from './MobileSponsorshipTwoCards.tsx';
 
 type NavState = {
   postId?: number;
@@ -27,8 +27,6 @@ type NavState = {
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
 export default function MobileSponsorshipPage() {
-
-
   const { postId } = useParams();
   const id = useMemo(() => Number(postId), [postId]);
   const navigate = useNavigate();
@@ -77,6 +75,7 @@ export default function MobileSponsorshipPage() {
           Back
         </Button>
       </Box>
+
       {/* Two metric cards (same visual style, trimmed to two KPIs) */}
       <MobileSponsorshipTwoCards
         loading={isLoading}
@@ -85,6 +84,7 @@ export default function MobileSponsorshipPage() {
         onBuy={() => navigate(ROUTES.USER_BUY_SPONSORS)}
         sx={{ mt: 1.5 }}
       />
+
       {/* Sponsorship form */}
       <Box sx={{ mt: 3 }}>
         <MobileSponsorshipForm

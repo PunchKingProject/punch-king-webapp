@@ -1,7 +1,7 @@
 import { Box, Button, TextField, Tooltip, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import type { CommentRow } from '../api/dashboard.types';
+import type { CommentRow } from '../api/dashboard.types.ts';
 
 const cardSx = {
   background: '#1A1A1A',
@@ -18,8 +18,6 @@ type NodeProps = {
 };
 
 function CommentNode({ comment, depth, onReply, isPosting }: NodeProps) {
-  
-
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
 
@@ -50,88 +48,80 @@ function CommentNode({ comment, depth, onReply, isPosting }: NodeProps) {
         </Typography>
 
         <Box sx={{ mt: 1.25 }}>
-          {canReply ? (
-            open ? (
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <TextField
-                  size='small'
-                  fullWidth
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder='Write a reply…'
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      bgcolor: '#1A1A1A',
-                      color: '#EDEDED',
-                    },
-                  }}
-                />
-                <Button
-                  onClick={submit}
-                  disabled={isPosting || !text.trim()}
-                  variant='contained'
-                  sx={{
-                    bgcolor: '#EFAF00',
-                    color: '#000',
-                    textTransform: 'none',
-                    fontWeight: 700,
-                  }}
-                >
-                  {' '}
-                  Reply
-                </Button>
-                <Button
-                  onClick={() => {
-                    setOpen(false);
-                    setText('');
-                  }}
-                  variant='text'
-                  sx={{
-                    color: '#EFAF00',
-                    textTransform: 'none',
-                    fontWeight: 700,
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Box>
-            ) : (
+          { canReply ? (open ? (
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <TextField
+                size='small'
+                fullWidth
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder='Write a reply…'
+                sx={{
+                  '& .MuiInputBase-root': {
+                    bgcolor: '#1A1A1A',
+                    color: '#EDEDED',
+                  },
+                }}
+              />
               <Button
-                onClick={() => setOpen(true)}
+                onClick={submit}
+                disabled={isPosting || !text.trim()}
+                variant='contained'
+                sx={{
+                  bgcolor: '#EFAF00',
+                  color: '#000',
+                  textTransform: 'none',
+                  fontWeight: 700,
+                }}
+              >
+                Reply
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpen(false);
+                  setText('');
+                }}
                 variant='text'
                 sx={{
                   color: '#EFAF00',
                   textTransform: 'none',
                   fontWeight: 700,
-                  px: 0,
-                  minWidth: 0,
                 }}
               >
-          Reply
+                Cancel
               </Button>
-            )
+            </Box>
           ) : (
+            <Button
+              onClick={() => setOpen(true)}
+              variant='text'
+              sx={{
+                color: '#EFAF00',
+                textTransform: 'none',
+                fontWeight: 700,
+                px: 0,
+                minWidth: 0,
+              }}
+            >
+              Reply
+            </Button>
+          )) : (
             // optional: show disabled hint on nested comments
-            <Tooltip title='Only top-level comments can be replied to'>
+            <Tooltip title="Only top-level comments can be replied to">
               <span>
                 <Button
                   variant='text'
                   disabled
-                  sx={{
-                    color: '#7a6a2e',
-                    textTransform: 'none',
-                    fontWeight: 700,
-                    px: 0,
-                    minWidth: 0,
-                  }}
+                  sx={{ color: '#7a6a2e', textTransform: 'none', fontWeight: 700, px: 0, minWidth: 0 }}
                 >
-                Reply
+                  Reply
                 </Button>
               </span>
             </Tooltip>
           )}
         </Box>
       </Box>
+
       {(comment.replies ?? []).map((child) => (
         <CommentNode
           key={child.id}

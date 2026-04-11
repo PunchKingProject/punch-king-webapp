@@ -1,7 +1,7 @@
 // pages/team/Dashboard/hooks/useMySubscriptions.ts
 import { useQuery } from '@tanstack/react-query';
-import { getMySubscriptions } from '../api/dashboard.api';
-import type { FetchMySubsParams, TeamSubPayload } from '../api/dashboard.types';
+import { getMySubscriptions } from '../api/dashboard.api.ts';
+import type { FetchMySubsParams, TeamSubPayload } from '../api/dashboard.types.ts';
 
 export function useMySubscriptions(params: FetchMySubsParams) {
   const enabled =

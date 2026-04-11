@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import type {
   FetchUserPurchaseHistoryParams,
   UserPurchaseHistoryResponse,
-} from '../api/users.types';
-import { fetchUserPurchaseHistory } from '../api/users.api';
+} from '../api/users.types.ts';
+import { fetchUserPurchaseHistory } from '../api/users.api.ts';
 
 export function useUserPurchaseHistory(params: FetchUserPurchaseHistoryParams) {
   const { sponsor_id, page, page_size, start_date, end_date, search } = params;

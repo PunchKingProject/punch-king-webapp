@@ -1,6 +1,6 @@
 import { configureStore} from '@reduxjs/toolkit';
-import registrationReducer from './registration.slice'
-import { saveDraftToStorage } from './registration.persist';
+import registrationReducer from './registration.slice.ts'
+import { saveDraftToStorage } from './registration.persist.ts';
 
 export const store = configureStore({
     reducer: {

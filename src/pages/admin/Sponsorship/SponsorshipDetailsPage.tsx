@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from "@mui/material";
-import DesktopSponsorshipsDetailsPage from "./DesktopSponsorshipsDetailsPage";
-import MobileSponsorshipsDetailsPage from "./MobileSponsorshipsDetailsPage";
+import DesktopSponsorshipsDetailsPage from "./DesktopSponsorshipsDetailsPage.tsx";
+import MobileSponsorshipsDetailsPage from "./MobileSponsorshipsDetailsPage.tsx";
 
 const SponsorshipDetailsPage = () => {
 

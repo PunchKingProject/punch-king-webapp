@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
-import type { Team } from '../api/dashboard.types';
+} from '../../../../components/tables/PaginatedTable.tsx';
+import type { Team } from '../api/dashboard.types.ts';
 
 
 

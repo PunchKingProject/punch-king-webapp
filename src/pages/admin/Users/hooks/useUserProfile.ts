@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchUserProfile } from "../api/users.api";
-import { type UserProfile } from "../api/users.types";
+import { fetchUserProfile } from "../api/users.api.ts";
+import { type UserProfile } from "../api/users.types.ts";
 
 
 

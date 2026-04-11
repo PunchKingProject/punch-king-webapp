@@ -1,7 +1,7 @@
 // src/pages/user/Inbox/InboxPage.tsx
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopInboxPage from './DesktopInboxPage';
-import MobileInboxPage from './MobileInboxPage';
+import DesktopInboxPage from './DesktopInboxPage.tsx';
+import MobileInboxPage from './MobileInboxPage.tsx';
 
 export default function InboxPage() {
   const isTabletUp = useMediaQuery('(min-width:910px)');

@@ -1,5 +1,13 @@
-import { customFetch } from "../../../../Axios";
-import type { CreateSponsorPurchaseRequest, Envelope, PurchaseHistoryItem, PurchaseHistoryParams, PurchaseHistoryPayload } from "./mysponsorships.types";
+import { customFetch } from "../../../../Axios.ts";
+import type {
+  CreateSponsorPurchaseRequest,
+  CreateSponsorPurchaseResponse,
+  Envelope,
+  PurchaseHistoryParams,
+  PurchaseHistoryPayload,
+  SponsorshipRate,
+  SponsorshipRatesResponse
+} from "./mysponsorships.types.ts";
 
 // ADD this function (leave existing exports as-is)
 /**
@@ -19,23 +27,23 @@ export async function getPurchaseHistory(
     '/sponsorship/users-purchase-history',
     { params }
   );
- const payload = data.data;
-
- return {
-   data: Array.isArray(payload?.data)
-     ? (payload!.data as PurchaseHistoryItem[])
-     : [], // ⬅︎ null → []
-   metadata: payload?.metadata ?? {
-     current_page: 1,
-     page_size: params.page_size,
-     total_count: 0,
-     last_page: 0,
-   },
- };
+  return data.data;
 }
 
 export async function createSponsorPurchase(
-  body: CreateSponsorPurchaseRequest
-): Promise<void> {
-  await customFetch.post('/sponsorship/purchase', body);
+    body: CreateSponsorPurchaseRequest
+): Promise<CreateSponsorPurchaseResponse> {
+  const { data } = await customFetch.post<CreateSponsorPurchaseResponse>(
+      '/sponsorship/purchase',
+      body
+  );
+
+  return data;
+}
+
+export async function getSponsorshipRates(): Promise<SponsorshipRate[]> {
+  const { data } = await customFetch.get<SponsorshipRatesResponse>('/sponsorship/rate/');
+
+  // 2. Return the inner 'data' array (e.g., the [ {id: 1...}, {id: 2...} ] part)
+  return data.data;
 }

@@ -1,4 +1,4 @@
-import { useUploadTeamImage } from "../../../../hooks/useUploadTeamImage";
+import { useUploadTeamImage } from "../../../../hooks/useUploadTeamImage.ts";
 
 /**
  * mutateAsync(file: File) => Promise<string> (public URL)

@@ -1,12 +1,5 @@
 // src/pages/user/components/DesktopUserStatsCards.tsx
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Skeleton,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, CardContent, Skeleton, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 
 type Props = {
@@ -112,6 +105,7 @@ function CtaSkeleton() {
   );
 }
 
+
 export default function DesktopUserStatsCards({
   loading,
   myUnits = 0,
@@ -135,7 +129,7 @@ export default function DesktopUserStatsCards({
   // Prefer new props; fall back to legacy
   const variant: 'button' | 'text' = cta
     ? 'button'
-    : (ctaVariant ?? buyVariant ?? 'button');
+    : ctaVariant ?? buyVariant ?? 'button';
   const label =
     ctaLabel ?? buyLabel ?? (variant === 'text' ? 'Buy' : 'Buy sponsor units');
   const handle = onCta ?? onBuy;
@@ -162,8 +156,8 @@ export default function DesktopUserStatsCards({
   const ctaJustify: 'flex-start' | 'flex-end' = cta
     ? 'flex-start'
     : variant === 'text'
-      ? 'flex-end'
-      : 'flex-start';
+    ? 'flex-end'
+    : 'flex-start';
 
   return (
     <Box
@@ -171,10 +165,7 @@ export default function DesktopUserStatsCards({
         display: 'grid',
         gap: 2,
         width: '100%',
-        gridTemplateColumns: {
-          xs: '1fr',
-          md: 'repeat(auto-fit, minmax(260px, 1fr))',
-        },
+        gridTemplateColumns: { xs: '1fr', md: 'repeat(auto-fit, minmax(260px, 1fr))' },
       }}
     >
       {/* MY SPONSORSHIP UNITS */}
@@ -187,6 +178,7 @@ export default function DesktopUserStatsCards({
           {loading ? <CtaSkeleton /> : ctaNode}{' '}
         </Box>
       </Box>
+
       {/* SPENT UNITS */}
       <Box sx={cardSx}>
         <Box>
@@ -194,13 +186,15 @@ export default function DesktopUserStatsCards({
           <Value loading={loading}>{spentUnits}</Value>
         </Box>
       </Box>
-      {/* COST OF UNITS (number only, no NGN symbol per your card guidance) */}
+
+      {/* COST OF UNITS (number only, no USD symbol per your card guidance) */}
       <Box sx={cardSx}>
         <Box>
-          <Title loading={loading}>COST OF CHIPS</Title>
-          <Value loading={loading}>{fmtNumber(costOfUnits)}</Value>
+          <Title loading={loading}>COST OF CHIPS PURCHASED</Title>
+          <Value loading={loading}>${fmtNumber(costOfUnits)}</Value>
         </Box>
       </Box>
+
       {/* SPONSORED TEAMS (second row) */}
       <Box sx={{ ...cardSx }}>
         <Box>
@@ -238,6 +232,7 @@ export default function DesktopUserStatsCards({
     </Box>
   );
 }
+
 
 function Skeletons() {
   return (

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { CreatePostPayload } from "../api/catalogue.types";
-import { createTeamPost } from "../api/catalogue.api";
+import type { CreatePostPayload } from "../api/catalogue.types.ts";
+import { createTeamPost } from "../api/catalogue.api.ts";
 
 export function useUploadPost() {
   const qc = useQueryClient();

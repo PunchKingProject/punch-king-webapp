@@ -7,17 +7,17 @@ import { useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
-import ROUTES from '../../../routes/routePath';
-import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
+import ROUTES from '../../../routes/routePath.ts';
+import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
 import DesktopSponsorRelatedHistoryTable, {
   mapSponsorRelatedApiToRows,
   type SponsorRelatedTableRow,
-} from './components/DesktopSponsorRelatedHistoryTable';
-import DesktopSponsorRelatedStatsCards from './components/DesktopSponsorRelatedStatsCards';
-import { useSponsorRelatedList } from './hooks/useSponsorRelatedList';
-import { useSponsorRelatedStats } from './hooks/useSponsorRelatedStats';
+} from './components/DesktopSponsorRelatedHistoryTable.tsx';
+import DesktopSponsorRelatedStatsCards from './components/DesktopSponsorRelatedStatsCards.tsx';
+import { useSponsorRelatedList } from './hooks/useSponsorRelatedList.ts';
+import { useSponsorRelatedStats } from './hooks/useSponsorRelatedStats.ts';
 
 const fmtDMY = (d: Dayjs) => d.format('DD-MM-YYYY');
 
@@ -34,8 +34,6 @@ const contentPaddingSx = {
 };
 
 export default function DesktopMySponsorshipDetailsPage() {
-
-
   const navigate = useNavigate();
   const { sponsorId } = useParams<{ sponsorId: string }>();
   const sId = Number(sponsorId); // 👈 actual sponsor id from the route
@@ -154,6 +152,7 @@ export default function DesktopMySponsorshipDetailsPage() {
           totalCash={statsData?.total_cash ?? 0}
         />
       </DashboardSection>
+
       <Box sx={contentPaddingSx}>
         <DesktopSponsorRelatedHistoryTable
           rows={rows}

@@ -30,8 +30,6 @@ export default function MobileLicensingStatsCards({
   totalLicenses,
   onGetLicense,
 }: Props) {
-
-
   if (loading) {
     return (
       <Box sx={{ display: 'flex', overflowX: 'auto', gap: 4, px: 2, py: 1 }}>
@@ -58,7 +56,6 @@ export default function MobileLicensingStatsCards({
       {/* Active license */}
       <Box sx={cardSx}>
         <Typography sx={{ color: '#CFCFCF', fontWeight: 800, fontSize: 14 }}>
-          {' '}
           Active License
         </Typography>
         <Typography sx={{ color: '#BDBDBD', fontSize: 13 }}>
@@ -88,6 +85,7 @@ export default function MobileLicensingStatsCards({
           </Button>
         </Box>
       </Box>
+
       {/* All licenses */}
       <Box sx={cardSx}>
         <Typography sx={{ color: '#CFCFCF', fontWeight: 800, fontSize: 14 }}>

@@ -6,15 +6,15 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 import DateFilterIcon from '../../../../assets/filterTimeFrameIcon.svg?react';
-import DateRangeFilter from '../../../../components/filters/DateRangeFilter';
+import DateRangeFilter from '../../../../components/filters/DateRangeFilter.tsx';
 import { useRankedTeams } from '../../Dashboard/hooks';
-import AdminSection from '../../components/AdminSection';
-import { useTeamDashboardStats } from '../hooks/useTeamDashboardStats';
+import AdminSection from '../../components/AdminSection.tsx';
+import { useTeamDashboardStats } from '../hooks/useTeamDashboardStats.ts';
 
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../../routes/routePath';
-import type { TeamTableRow } from './TeamsSection';
-import TeamsSection from './TeamsSection';
+import ROUTES from '../../../../routes/routePath.ts';
+import type { TeamTableRow } from './TeamsSection.tsx';
+import TeamsSection from './TeamsSection.tsx';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 

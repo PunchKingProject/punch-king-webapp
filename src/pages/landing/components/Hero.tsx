@@ -1,33 +1,29 @@
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import Marquee from 'react-fast-marquee';
 import { heroSponsors, newHeroImage } from '../../../assets';
-import CustomButton from '../../../components/buttons/CustomButton';
-import HeroImageWithLoader from '../../../components/images/HeroImagesWithLoader';
-import { colors } from '../../../theme/colors';
-import About from './About';
-import TeamRanking from './TeamRanking';
-import TeamSubscription from './TeamSubscription';
-import TeamSponsorship from './TeamSponsorship';
-import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import HeroImageWithLoader from '../../../components/images/HeroImagesWithLoader.tsx';
+import { colors } from '../../../theme/colors.ts';
+import About from './About.tsx';
+import TeamRanking from './TeamRanking.tsx';
+import TeamSubscription from './TeamSubscription.tsx';
+import TeamSponsorship from './TeamSponsorship.tsx';
 
 // import CustomTypography from '../../../components/typography/CustomTypography';
 
 const Hero = () => {
   const isTabletUp = useMediaQuery('(min-width:910px)');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-
-      const goTeamSignup = () => navigate(`${ROUTES.SIGN_UP}?flow=team`);
-      const goSponsorSignup = () => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`);
+      // const goTeamSignup = () => navigate(`${ROUTES.SIGN_UP}?flow=team`);
+      // const goSponsorSignup = () => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`);
 
   return (
     <>
       <Box sx={{ display: isTabletUp ? 'block' : 'none' }}>
-        <DesktopHero onSubscribe={goTeamSignup} onSignup={goSponsorSignup} />
+        <DesktopHero />
       </Box>
       <Box sx={{ display: isTabletUp ? 'none' : 'block' }}>
-        <MobileHero onSubscribe={goTeamSignup} onSignup={goSponsorSignup} />
+        <MobileHero />
       </Box>
 
       <TeamRanking />
@@ -41,13 +37,12 @@ const Hero = () => {
 };
 export default Hero;
 
-type CTAProps = {
-  onSubscribe: () => void; // Subscribe → Team signup
-  onSignup: () => void; // Sign up → Sponsor signup
-};
+// type CTAProps = {
+//   onSubscribe: () => void; // Subscribe → Team signup
+//   onSignup: () => void; // Sign up → Sponsor signup
+// };
 
-const MobileHero = ({ onSubscribe, onSignup }: CTAProps) => {
-  
+const MobileHero = () => {
   return (
     <>
       <Box
@@ -82,44 +77,44 @@ const MobileHero = ({ onSubscribe, onSignup }: CTAProps) => {
         >
           ~ Moses Eagle James
         </Typography>
-        <Box
-          sx={{
-            padding: '1em',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '4vw',
-            position: 'absolute',
-            bottom: '8%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100%',
-          }}
-        >
-          <CustomButton
-            variant='contained'
-            color='primary'
-            textColor={colors.AccentDark}
-            sx={{
-              padding: '8px 10vw',
-            }}
-            onClick={onSubscribe} // 👈 Team signup
-          >
-            Subscribe
-          </CustomButton>
-          <CustomButton
-            variant='contained'
-            color='primary'
-            bgColor='white'
-            textColor={colors.AccentDark}
-            sx={{
-              padding: '8px 10vw',
-            }}
-            onClick={onSignup} // 👈 Sponsor signup
-          >
-   Sign up
-          </CustomButton>
-        </Box>
+        {/*<Box*/}
+        {/*  sx={{*/}
+        {/*    padding: '1em',*/}
+        {/*    display: 'flex',*/}
+        {/*    justifyContent: 'center',*/}
+        {/*    alignItems: 'center',*/}
+        {/*    gap: '4vw',*/}
+        {/*    position: 'absolute',*/}
+        {/*    bottom: '8%',*/}
+        {/*    left: '50%',*/}
+        {/*    transform: 'translateX(-50%)',*/}
+        {/*    width: '100%',*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <CustomButton*/}
+        {/*    variant='contained'*/}
+        {/*    color='primary'*/}
+        {/*    textColor={colors.AccentDark}*/}
+        {/*    sx={{*/}
+        {/*      padding: '8px 10vw',*/}
+        {/*    }}*/}
+        {/*    onClick={onSubscribe} // 👈 Team signup*/}
+        {/*  >*/}
+        {/*    Subscribe*/}
+        {/*  </CustomButton>*/}
+        {/*  <CustomButton*/}
+        {/*    variant='contained'*/}
+        {/*    color='primary'*/}
+        {/*    bgColor='white'*/}
+        {/*    textColor={colors.AccentDark}*/}
+        {/*    sx={{*/}
+        {/*      padding: '8px 10vw',*/}
+        {/*    }}*/}
+        {/*    onClick={onSignup} // 👈 Sponsor signup*/}
+        {/*  >*/}
+        {/*    Sign up*/}
+        {/*  </CustomButton>*/}
+        {/*</Box>*/}
       </Box>
       {/* Image Slider
       <Box
@@ -129,7 +124,9 @@ const MobileHero = ({ onSubscribe, onSignup }: CTAProps) => {
           backgroundColor: 'grey',
         }}
       /> */}
+
       {/* Slider Photage */}
+
       <Box
         sx={{
           position: 'relative',
@@ -176,7 +173,7 @@ const MobileHero = ({ onSubscribe, onSignup }: CTAProps) => {
                     />
                   </Box>
                 );
-              }),
+              })
             )}
           </Marquee>
         </Box>
@@ -185,8 +182,7 @@ const MobileHero = ({ onSubscribe, onSignup }: CTAProps) => {
   );
 };
 
-const DesktopHero = ({ onSubscribe, onSignup }: CTAProps) => {
- 
+const DesktopHero = () => {
   return (
     <Box
       sx={{
@@ -231,9 +227,8 @@ const DesktopHero = ({ onSubscribe, onSignup }: CTAProps) => {
               marginTop: '.3em',
             }}
           >
-            Built for
-            <br />
-            Warriors
+            Built For
+            <br /> Warriors,
           </Typography>
           <Box
             sx={{
@@ -270,47 +265,39 @@ const DesktopHero = ({ onSubscribe, onSignup }: CTAProps) => {
           </Box>
 
           {/* <h1>hey</h1> */}
-          <Box
-            sx={{
-              // padding: '1em',
-              display: 'flex',
-              // justifyContent: 'center',
-              // alignItems: 'center',
-              // border: '2px solid red',
-              gap: '2vw',
-              // position: 'absolute',
-              // bottom: '8%',
-              // left: '50%',
-              // transform: 'translateX(-50%)',
-              width: '70%',
-            }}
-          >
-            <CustomButton
-              variant='contained'
-              color='primary'
-              textColor={colors.AccentDark}
-              sx={{
-                // padding: '8px 10px',
-                width: '48%',
-              }}
-              onClick={onSubscribe} // 👈 Team signup
-            >
-              Subscribe
-            </CustomButton>
-            <CustomButton
-              variant='contained'
-              color='primary'
-              bgColor='white'
-              textColor={colors.AccentDark}
-              sx={{
-                // padding: '8px 10vw',
-                width: '48%',
-              }}
-              onClick={onSignup} // 👈 Sponsor signup
-            >
-              Sign up
-            </CustomButton>
-          </Box>
+          {/*<Box*/}
+          {/*  sx={{*/}
+          {/*    display: 'flex',*/}
+          {/*    gap: '2vw',*/}
+          {/*    width: '70%',*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <CustomButton*/}
+          {/*    variant='contained'*/}
+          {/*    color='primary'*/}
+          {/*    textColor={colors.AccentDark}*/}
+          {/*    sx={{*/}
+          {/*      // padding: '8px 10px',*/}
+          {/*      width: '48%',*/}
+          {/*    }}*/}
+          {/*    onClick={onSubscribe} // 👈 Team signup*/}
+          {/*  >*/}
+          {/*    Subscribe*/}
+          {/*  </CustomButton>*/}
+          {/*  <CustomButton*/}
+          {/*    variant='contained'*/}
+          {/*    color='primary'*/}
+          {/*    bgColor='white'*/}
+          {/*    textColor={colors.AccentDark}*/}
+          {/*    sx={{*/}
+          {/*      // padding: '8px 10vw',*/}
+          {/*      width: '48%',*/}
+          {/*    }}*/}
+          {/*    onClick={onSignup} // 👈 Sponsor signup*/}
+          {/*  >*/}
+          {/*    Sign up*/}
+          {/*  </CustomButton>*/}
+          {/*</Box>*/}
         </Box>
         <Box
           sx={{
@@ -344,7 +331,9 @@ const DesktopHero = ({ onSubscribe, onSignup }: CTAProps) => {
           </Typography>
         </Box>
       </Box>
+
       {/* Slider Photage */}
+
       <Box
         sx={{
           position: 'relative',
@@ -391,7 +380,7 @@ const DesktopHero = ({ onSubscribe, onSignup }: CTAProps) => {
                     />
                   </Box>
                 );
-              }),
+              })
             )}
           </Marquee>
         </Box>

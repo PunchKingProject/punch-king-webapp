@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
 
 const contentPaddingSx = {
   padding: '1.56em 6.98em',

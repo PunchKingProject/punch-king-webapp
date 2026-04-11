@@ -4,23 +4,23 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
-import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import { useTeamDashboardStats } from './hooks/useTeamDashboardStats';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
+import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import { useTeamDashboardStats } from './hooks/useTeamDashboardStats.ts';
 import debounce from 'lodash.debounce';
-import { useTeamVoteHistory } from './hooks/useTeamVoteHistory';
-import type { MySponsorshipRow } from './components/DesktopMySponsorshipsTable';
-import DesktopMySponsorshipsTable from './components/DesktopMySponsorshipsTable';
+import { useTeamVoteHistory } from './hooks/useTeamVoteHistory.ts';
+import type { MySponsorshipRow } from './components/DesktopMySponsorshipsTable.tsx';
+import DesktopMySponsorshipsTable from './components/DesktopMySponsorshipsTable.tsx';
 import { Box } from '@mui/material';
-import DesktopMySubscriptionsTable, { type MySubscriptionRow } from './components/DesktopMySubscriptionsTable';
-import { useMySubscriptions } from './hooks/useMySubscriptions';
-import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory';
-import DesktopMyLicensesTable, { type MyLicenseRow } from './components/DesktopMyLicensesTable';
-import { useRankedTeams } from './hooks/useRankedTeams';
-import DesktopTeamsByRanking from './components/DesktopTeamsByRanking';
-import { useTeamPosts } from './hooks/useTeamPosts';
-import DesktopMyCatalogue from './components/DesktopMyCatalogue';
+import DesktopMySubscriptionsTable, { type MySubscriptionRow } from './components/DesktopMySubscriptionsTable.tsx';
+import { useMySubscriptions } from './hooks/useMySubscriptions.ts';
+import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory.ts';
+import DesktopMyLicensesTable, { type MyLicenseRow } from './components/DesktopMyLicensesTable.tsx';
+import { useRankedTeams } from './hooks/useRankedTeams.ts';
+import DesktopTeamsByRanking from './components/DesktopTeamsByRanking.tsx';
+import { useTeamPosts } from './hooks/useTeamPosts.ts';
+import DesktopMyCatalogue from './components/DesktopMyCatalogue.tsx';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
@@ -132,23 +132,23 @@ function DesktopDashboardPage() {
   // map api -> table rows
   const rows: MySponsorshipRow[] = useMemo(() => {
     const list = voteData?.data ?? [];
-    const fmtNGN = (n?: number) => {
+    const fmtUSD = (n?: number) => {
       const v = typeof n === 'number' ? n : 0;
       try {
         return new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(v);
       } catch {
-        return `₦${v.toLocaleString()}`;
+        return `$${v.toLocaleString()}`;
       }
     };
     return list.map((r) => ({
       id: r.id,
       sponsor_name: r.sponsor_name,
       units: r.units,
-      amount: fmtNGN(r.equivalent_amount),
+      amount: fmtUSD(r.equivalent_amount),
       created_at: `${dayjs(r.created_at).format('M/D/YYYY')}  ${dayjs(
         r.created_at
       ).format('h:mma')}`,
@@ -191,16 +191,16 @@ function DesktopDashboardPage() {
 
   const subsRows: MySubscriptionRow[] = useMemo(() => {
     const list = subsData?.table.data ?? [];
-    const fmtNGN = (n?: number | null) => {
+    const fmtUSD = (n?: number | null) => {
       const v = typeof n === 'number' ? n : 0;
       try {
         return new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(v);
       } catch {
-        return `₦${v.toLocaleString()}`;
+        return `$${v.toLocaleString()}`;
       }
     };
     const nice = (s?: string | null) => (s ? dayjs(s).format('M/D/YYYY') : '—');
@@ -218,7 +218,7 @@ function DesktopDashboardPage() {
         subscription_type: titleize(r.type),
         start_date: nice(r.start_date),
         end_date: nice(r.end_date),
-        amount_paid: fmtNGN(r.payment_amount),
+        amount_paid: fmtUSD(r.payment_amount),
         status: active ? 'Active' : 'Expired',
       };
     });
@@ -252,16 +252,16 @@ function DesktopDashboardPage() {
 
   const licRows: MyLicenseRow[] = useMemo(() => {
     const list = licData?.data ?? [];
-    const fmtNGN = (n?: number | null) => {
+    const fmtUSD = (n?: number | null) => {
       const v = typeof n === 'number' ? n : 0;
       try {
         return new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(v);
       } catch {
-        return `₦${v.toLocaleString()}`;
+        return `$${v.toLocaleString()}`;
       }
     };
     const nice = (s?: string | null) => (s ? dayjs(s).format('M/D/YYYY') : '—');
@@ -276,7 +276,7 @@ function DesktopDashboardPage() {
         license_name: r.team?.license_number || '—',
         start_date: nice(r.start_date),
         end_date: nice(r.end_date),
-        amount_paid: fmtNGN(r.payment_amount),
+        amount_paid: fmtUSD(r.payment_amount),
         status: active ? 'Active' : 'Expired',
       };
     });

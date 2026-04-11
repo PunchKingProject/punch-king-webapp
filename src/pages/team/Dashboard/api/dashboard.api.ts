@@ -1,5 +1,5 @@
-import { customFetch } from "../../../../Axios";
-import type { DashboardStats, DashboardStatsParams, Envelope, FetchMySubsParams, FetchRankedTeamsParams, FetchTeamLicenseHistoryParams, FetchTeamVoteHistoryParams, RankedTeamsPayload, TeamLicenseHistory, TeamPost, TeamSubHistoryRaw, TeamSubPayload, TeamVoteHistory } from "./dashboard.types";
+import { customFetch } from "../../../../Axios.ts";
+import type { DashboardStats, DashboardStatsParams, Envelope, FetchMySubsParams, FetchRankedTeamsParams, FetchTeamLicenseHistoryParams, FetchTeamVoteHistoryParams, RankedTeamsPayload, TeamLicenseHistory, TeamPost, TeamSubHistoryRaw, TeamSubPayload, TeamVoteHistory } from "./dashboard.types.ts";
 
 
 export async function getDashboardStats(params: DashboardStatsParams):Promise<DashboardStats> {

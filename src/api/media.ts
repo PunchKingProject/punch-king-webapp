@@ -1,6 +1,6 @@
 // src/api/media.ts
 
-import { customFetch } from "../Axios";
+import { customFetch } from "../Axios.ts";
 
 export type ApiMeta = { message: string; code: number; status: string };
 export type ApiResponse<T> = { meta: ApiMeta; data: T };

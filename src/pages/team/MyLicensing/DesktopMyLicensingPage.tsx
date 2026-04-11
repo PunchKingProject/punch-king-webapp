@@ -6,15 +6,15 @@ import type { DateRange } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import TeamBreadcrumbs from '../../../components/breadcrumbs/TeamBreadcrumbs';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
-import ROUTES from '../../../routes/routePath';
-import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import DesktopLicenseHistoryTable from './components/DesktopLicenseHistoryTable';
-import DesktopLicensePaymentHistoryTable from './components/DesktopLicensePaymentHistoryTable';
-import DesktopLicensingStatsCards from './components/DesktopLicensingStatsCards';
-import { useTeamLicenseStats } from './hooks/useTeamLicenseStats';
+import TeamBreadcrumbs from '../../../components/breadcrumbs/TeamBreadcrumbs.tsx';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
+import ROUTES from '../../../routes/routePath.ts';
+import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import DesktopLicenseHistoryTable from './components/DesktopLicenseHistoryTable.tsx';
+import DesktopLicensePaymentHistoryTable from './components/DesktopLicensePaymentHistoryTable.tsx';
+import DesktopLicensingStatsCards from './components/DesktopLicensingStatsCards.tsx';
+import { useTeamLicenseStats } from './hooks/useTeamLicenseStats.ts';
 
 const contentPaddingSx = {
   padding: '1.56em 6.98em',

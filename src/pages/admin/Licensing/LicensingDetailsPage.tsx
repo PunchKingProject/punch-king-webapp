@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopLicensingDetailsPage from './DesktopLicensingDetailsPage';
-import MobileLicensingDetailsPage from './MobileLicensingDetailsPage';
+import DesktopLicensingDetailsPage from './DesktopLicensingDetailsPage.tsx';
+import MobileLicensingDetailsPage from './MobileLicensingDetailsPage.tsx';
 
 
 

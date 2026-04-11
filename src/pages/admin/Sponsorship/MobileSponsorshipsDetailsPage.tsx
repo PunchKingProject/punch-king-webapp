@@ -1,6 +1,8 @@
 
 function MobileSponsorshipsDetailsPage() {
-  return <div>MobileSponsorshipsDetailsPage</div>;
+  return (
+    <div>MobileSponsorshipsDetailsPage</div>
+  )
 }
 
 export default MobileSponsorshipsDetailsPage

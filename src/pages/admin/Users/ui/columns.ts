@@ -1,7 +1,7 @@
-import type { TableColumn } from '../../../../components/tables/PaginatedTable';
-import type { UserTableRow } from '../api/users.types';
-import type { UserPurchaseRow } from '../components/DesktopUserPurchaseHistorySection';
-import type { UserSponsorRow } from '../components/DesktopUserSponsorHistorySection';
+import type { TableColumn } from '../../../../components/tables/PaginatedTable.tsx';
+import type { UserTableRow } from '../api/users.types.ts';
+import type { UserPurchaseRow } from '../components/DesktopUserPurchaseHistorySection.tsx';
+import type { UserSponsorRow } from '../components/DesktopUserSponsorHistorySection.tsx';
 
 export const userTableColumns: TableColumn<UserTableRow>[] = [
   { field: 'user_name', header: 'User name' },

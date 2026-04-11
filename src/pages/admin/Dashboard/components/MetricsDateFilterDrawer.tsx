@@ -1,11 +1,10 @@
-import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
 import { Box, Button, Drawer, IconButton, Typography } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import type { DateRange } from 'react-day-picker';
 import DateFilterIcon from '../../../../assets/filterTimeFrameIcon.svg?react'
-import { colors } from '../../../../theme/colors';
-import DateRangeFilter from '../../../../components/filters/DateRangeFilter';
+import { colors } from '../../../../theme/colors.ts';
+import DateRangeFilter from '../../../../components/filters/DateRangeFilter.tsx';
 
 type Props = {
   range: DateRange | undefined;
@@ -18,10 +17,6 @@ export default function MetricsDateFilterDrawer({
   onApply,
   title = 'Filter dashboard metrics',
 }: Props) {
-  const {
-    t: t
-  } = useTranslation();
-
   const [open, setOpen] = useState(false);
   const [staged, setStaged] = useState<DateRange | undefined>(range);
 
@@ -36,6 +31,7 @@ export default function MetricsDateFilterDrawer({
       >
         <DateFilterIcon />
       </IconButton>
+
       <Drawer
         anchor='bottom'
         open={open}
@@ -80,7 +76,9 @@ export default function MetricsDateFilterDrawer({
               if (staged?.from && staged.to) onApply(staged);
               setOpen(false);
             }}
-          >{t("apply")}</Button>
+          >
+            Apply
+          </Button>
         </Box>
       </Drawer>
     </>

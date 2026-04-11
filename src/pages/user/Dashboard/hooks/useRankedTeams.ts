@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { FetchRankedTeamsParams } from "../api/dashboard.types";
-import { getRankedTeams } from "../api/dashboard.api";
+import type { FetchRankedTeamsParams } from "../api/dashboard.types.ts";
+import { getRankedTeams } from "../api/dashboard.api.ts";
 
 
 

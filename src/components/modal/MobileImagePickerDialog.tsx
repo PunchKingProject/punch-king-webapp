@@ -31,8 +31,6 @@ export default function MobileImagePickerDialog({
   actionLabel = 'Upload new',
   accept = 'image/*',
 }: Props) {
-  
-
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
@@ -63,7 +61,10 @@ export default function MobileImagePickerDialog({
           pointerEvents: picking ? 'none' : 'auto',
           userSelect: 'none',
         }}
-      >Close</Typography>
+      >
+        Close
+      </Typography>
+
       <DialogContent sx={{ p: 2 }}>
         {/* Preview frame */}
         <Box
@@ -96,7 +97,7 @@ export default function MobileImagePickerDialog({
                 }}
               />
             ) : (
-              <Typography sx={{ color: '#777' }}>No Image</Typography>
+              <Typography sx={{ color: '#777' }}>No image</Typography>
             )}
           </Box>
         </Box>

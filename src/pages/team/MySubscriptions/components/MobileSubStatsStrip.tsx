@@ -1,4 +1,3 @@
-
 import { Box, Button, Skeleton, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
@@ -30,8 +29,6 @@ const cardSx = {
 };
 
 function planLabelFrom(type?: string | null): string {
- 
-
   if (!type) return '—';
   const t = type.toLowerCase();
   if (t.includes('semi') || t.includes('6')) return '6 months subscription';
@@ -78,17 +75,22 @@ export default function MobileSubStatsStrip({
                 color: '#EDEDED',
                 fontWeight: 700,
               }}
-            >active_subscription</Typography>
+            >
+              Active subscription
+            </Typography>
             {active ? (
               <>
                 <Typography sx={{ color: '#C9C9C9', fontWeight: 600 }}>
                   {planLabelFrom(active.type)}
                 </Typography>
-                <Typography sx={{ color: '#C9C9C9' }}>ends{fmtDate(active.end_date)}
+                <Typography sx={{ color: '#C9C9C9' }}>
+                  Ends {fmtDate(active.end_date)}
                 </Typography>
               </>
             ) : (
-              <Typography sx={{ color: '#C9C9C9' }}>no_active_subscription</Typography>
+              <Typography sx={{ color: '#C9C9C9' }}>
+                No active subscription
+              </Typography>
             )}
             <Box sx={{ textAlign: 'right' }}>
               <Button
@@ -104,11 +106,14 @@ export default function MobileSubStatsStrip({
                   px: 3,
                   '&:hover': { bgcolor: '#E9A600' },
                 }}
-              >"subscribe</Button>
+              >
+                Subscribe
+              </Button>
             </Box>
           </>
         )}
       </Box>
+
       {/* Card 2: Annual count */}
       <Box sx={{ ...cardSx, scrollSnapAlign: 'start' }}>
         {loading ? (
@@ -124,7 +129,9 @@ export default function MobileSubStatsStrip({
                 color: '#EDEDED',
                 fontWeight: 700,
               }}
-            >annual_subscriptions</Typography>
+            >
+              Annual subscriptions
+            </Typography>
             <Typography
               sx={{ color: '#EDEDED', fontWeight: 800, fontSize: 28 }}
             >
@@ -133,6 +140,7 @@ export default function MobileSubStatsStrip({
           </>
         )}
       </Box>
+
       {/* Card 3: 6 months count */}
       <Box sx={{ ...cardSx, scrollSnapAlign: 'start' }}>
         {loading ? (
@@ -148,7 +156,9 @@ export default function MobileSubStatsStrip({
                 color: '#EDEDED',
                 fontWeight: 700,
               }}
-            >6_months_subscription</Typography>
+            >
+              6 months subscription
+            </Typography>
             <Typography
               sx={{ color: '#EDEDED', fontWeight: 800, fontSize: 28 }}
             >

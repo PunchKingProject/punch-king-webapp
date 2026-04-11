@@ -32,8 +32,6 @@ type Props = {
 
 
 export default function DesktopLicenseTeamDetailsSection({ loading, team }: Props) {
-
-
   if (loading) {
     return (
       <Box sx={{ maxWidth: 880 }}>
@@ -54,7 +52,10 @@ export default function DesktopLicenseTeamDetailsSection({ loading, team }: Prop
       width: '80%',
       mx: 'auto'
     }}>
-      <Typography component='h1' variant='h1' sx={{ fontWeight: 900 }}>TEAM DETAILS</Typography>
+      <Typography component='h1' variant='h1' sx={{ fontWeight: 900 }}>
+        TEAM DETAILS
+      </Typography>
+
       {/* two-column grid, same spacing as your mock */}
       <Box
         sx={{

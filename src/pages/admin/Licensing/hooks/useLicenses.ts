@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchLicenses } from "../api/licensing.api";
-import type { FetchLicensesParams, LicensePayload } from "../api/licensing.types";
+import { fetchLicenses } from "../api/licensing.api.ts";
+import type { FetchLicensesParams, LicensePayload } from "../api/licensing.types.ts";
 
 
 export function useLicenses(params: FetchLicensesParams) {

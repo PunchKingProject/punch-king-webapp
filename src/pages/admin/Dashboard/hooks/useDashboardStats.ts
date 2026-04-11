@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import {
     getDashboardStats,
-} from '../api/dashboard.api';
-import type { DashboardStats, DashboardStatsParams } from '../api/dashboard.types';
+} from '../api/dashboard.api.ts';
+import type { DashboardStats, DashboardStatsParams } from '../api/dashboard.types.ts';
 
 export function useDashboardStats(params: DashboardStatsParams) {
   return useQuery<DashboardStats>({

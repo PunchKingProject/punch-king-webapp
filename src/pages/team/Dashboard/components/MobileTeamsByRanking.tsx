@@ -23,8 +23,6 @@ type Props = {
 };
 
 export default function MobileTeamsByRanking({ rows, loading}: Props) {
-
-
   if (loading) {
     return (
       <Stack spacing={1.25}>
@@ -74,27 +72,14 @@ export default function MobileTeamsByRanking({ rows, loading}: Props) {
           <Typography
             sx={{ color: gold, fontWeight: 700, fontSize: 12, mt: 0.25 }}
           >
-            LC No:
-            <span style={{ color: '#FFF' }}>{t.lc || '—'}</span>
+            LC No: <span style={{ color: '#FFF' }}>{t.lc || '—'}</span>
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: 4, mt: 2 }}>
-            <Metric
-              label='Sponsors'
-              value={t.contributors}
-              image={rankingSmallbox1}
-            />
-            <Metric
-              label='Position'
-              value={t.position.toUpperCase()}
-              image={rankingSmallbox2}
-            />
-            <Metric
-              label='Contributors'
-              value={t.sponsors ?? 0}
-              image={rankingSmallbox3}
-            />
-          </Box>
+                           <Box sx={{ display: 'flex', gap: 4, mt: 2 }}>
+                                      <Metric label='Sponsors' value={t.contributors} image={rankingSmallbox1}/>
+                                      <Metric label='Position' value={t.position.toUpperCase()} image={rankingSmallbox2} />
+                                      <Metric label='Contributors' value={t.sponsors ?? 0} image={rankingSmallbox3}/>
+                                    </Box>
         </Box>
       ))}
     </Stack>

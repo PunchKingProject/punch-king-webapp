@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { UpdateLicenseStatusPayload } from "../api/licensing.types";
-import { updateLicenseStatus } from "../api/licensing.api";
+import type { UpdateLicenseStatusPayload } from "../api/licensing.types.ts";
+import { updateLicenseStatus } from "../api/licensing.api.ts";
 
 export function useUpdateLicenseStatus() {
   const qc = useQueryClient();

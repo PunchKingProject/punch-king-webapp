@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { FetchSponsorVoteHistoryParams, SponsorVoteHistoryResponse } from "../api/users.types";
-import { fetchSponsorVoteHistory } from "../api/users.api";
+import type { FetchSponsorVoteHistoryParams, SponsorVoteHistoryResponse } from "../api/users.types.ts";
+import { fetchSponsorVoteHistory } from "../api/users.api.ts";
 
 
 

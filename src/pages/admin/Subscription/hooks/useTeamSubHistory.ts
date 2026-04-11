@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { FetchTeamSubHistoryParams, TeamSubHistoryResponse } from "../api/subscriptions.types";
-import { fetchTeamSubHistory } from "../api/subscriptions.api";
+import type { FetchTeamSubHistoryParams, TeamSubHistoryResponse } from "../api/subscriptions.types.ts";
+import { fetchTeamSubHistory } from "../api/subscriptions.api.ts";
 
 export function useTeamSubHistory(params: FetchTeamSubHistoryParams) {
   const enabled =

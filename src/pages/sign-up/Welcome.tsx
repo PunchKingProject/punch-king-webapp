@@ -1,4 +1,3 @@
-
 // src/pages/welcome/Welcome.tsx
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Box, Button, Typography } from '@mui/material';
@@ -141,8 +140,6 @@ type JwtPayload = {
 
 /** base64url-safe JSON decode */
 function decodeJwt(token?: string | null): JwtPayload | null {
- 
-
   if (!token) return null;
   try {
     const [, payload] = token.split('.');
@@ -307,7 +304,9 @@ function HeroScreen({
       <Typography sx={{ fontSize: 14, color: MUTED, letterSpacing: 1 }}>
         [{displayName}]
       </Typography>
+
       <Typography sx={{ fontSize: 16, color: MUTED }}>Welcome to</Typography>
+
       <Box
         aria-label='Punch King glove'
         sx={{
@@ -338,6 +337,7 @@ function HeroScreen({
           }}
         />
       </Box>
+
       <Typography sx={{ fontWeight: 800, fontSize: 18 }}>
         Home of champions
       </Typography>
@@ -454,6 +454,7 @@ function SlidesScreen({
           )}
         </Box>
       </Box>
+
       {/* Controls */}
       <Box
         sx={{
@@ -470,7 +471,9 @@ function SlidesScreen({
             disabled={step === 0}
             sx={navBtnSx}
             startIcon={<span style={{ fontSize: 18 }}>◀</span>}
-          >Prev</Button>
+          >
+            Prev
+          </Button>
 
           <Dots total={slides.length} index={step} />
           {step < slides.length - 1 ? (
@@ -478,13 +481,19 @@ function SlidesScreen({
               onClick={() => setStep(Math.min(step + 1, slides.length - 1))}
               sx={navBtnSx}
               endIcon={<span style={{ fontSize: 18 }}>▶</span>}
-            >Next</Button>
+            >
+              Next
+            </Button>
           ) : (
-            <Button onClick={onFinish} sx={navBtnSx}>Finish</Button>
+            <Button onClick={onFinish} sx={navBtnSx}>
+              Finish
+            </Button>
           )}
         </Box>
 
-        <LinkLike onClick={onSkip} color={MUTED}>Skip</LinkLike>
+        <LinkLike onClick={onSkip} color={MUTED}>
+          skip
+        </LinkLike>
       </Box>
     </Box>
   );

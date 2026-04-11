@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createComment, getPostById } from "../api/dashboard.api";
-import type { CommentRow, CreateCommentPayload, PostDetail } from "../api/dashboard.types";
+import { createComment, getPostById } from "../api/dashboard.api.ts";
+import type { CommentRow, CreateCommentPayload, PostDetail } from "../api/dashboard.types.ts";
 
 function normalize(post: PostDetail): PostDetail {
   const mapReplies = (c: CommentRow): CommentRow => ({

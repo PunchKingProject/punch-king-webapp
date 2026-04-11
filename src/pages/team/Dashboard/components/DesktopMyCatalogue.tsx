@@ -1,4 +1,3 @@
-
 import {
   Box,
   Button,
@@ -10,7 +9,7 @@ import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineR
 import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import dayjs from 'dayjs';
-import type { TeamPost } from '../api/dashboard.types';
+import type { TeamPost } from '../api/dashboard.types.ts';
 
 type Props = {
   posts: TeamPost[];
@@ -36,15 +35,21 @@ const textMutedSx = {
   fontSize: 13,
 };
 
+function isVideo(url: string): boolean {
+  return /\.(mp4|mov|webm|ogg|avi)(\?.*)?$/i.test(url);
+}
+
 export default function DesktopMyCatalogue({
   posts,
   loading,
   onViewPost,
 }: Props) {
-
   return (
     <Box sx={{ mt: 6 }}>
-      <Typography variant='h5' sx={{ fontWeight: 900, color: '#fff' }}>My catalogue </Typography>
+      <Typography variant='h5' sx={{ fontWeight: 900, color: '#fff' }}>
+        MY CATALOGUE
+      </Typography>
+
       {loading ? (
         <Box
           sx={{
@@ -73,27 +78,37 @@ export default function DesktopMyCatalogue({
           {posts.map((p) => (
             <Box key={p.id} sx={cardBoxSx}>
               {/* media */}
+              // DesktopMyCatalogue.tsx — only the media box changes
+
+              {/* media */}
               <Box
                 sx={{
                   width: '100%',
-                  aspectRatio: '4 / 3',
+                  height: 220,          // fixed card height keeps the grid uniform
                   bgcolor: '#111',
+                  borderBottom: '1px solid #3B3B3B',
+                  overflow: 'hidden',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderBottom: '1px solid #3B3B3B',
                 }}
               >
                 {p.file_url ? (
-                  <img
-                    src={p.file_url}
-                    alt={p.title || 'post'}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
+                  isVideo(p.file_url) ? (
+                    <video
+                      src={p.file_url}
+                      style={{ maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+                      // no autoplay — user initiates in the detail view
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={p.file_url}
+                      alt={p.title || 'post'}
+                      style={{ maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+                    />
+                  )
                 ) : (
                   <Typography sx={{ color: '#A2A2A2' }}>No media</Typography>
                 )}
@@ -102,7 +117,7 @@ export default function DesktopMyCatalogue({
               {/* body */}
               <Box sx={{ p: 2.5, display: 'grid', gap: 1.25 }}>
                 <Box>
-                  <Typography sx={labelSx}>Caption</Typography>
+                  <Typography sx={labelSx}>Caption:</Typography>
                   <Typography sx={{ ...textMutedSx, mt: 0.5 }}>
                     {p.caption || '—'}
                   </Typography>
@@ -110,14 +125,14 @@ export default function DesktopMyCatalogue({
 
                 <Box sx={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   <Box>
-                    <Typography sx={labelSx}>Posted</Typography>
+                    <Typography sx={labelSx}>Posted:</Typography>
                     <Typography sx={{ fontSize: 13, mt: 0.5 }}>
                       {dayjs(p.created_at).format('M/D/YYYY')}
                     </Typography>
                   </Box>
 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography sx={labelSx}>Comments</Typography>
+                    <Typography sx={labelSx}>Comments:</Typography>
                     <ChatBubbleOutlineRoundedIcon fontSize='small' />
                     <Typography sx={{ fontSize: 13 }}>
                       {p.comments_count ?? 0}
@@ -127,11 +142,13 @@ export default function DesktopMyCatalogue({
                       onClick={() => onViewPost?.(p)}
                       underline='hover'
                       sx={{ color: '#f0c040', ml: 1, fontSize: 13 }}
-                    >View</MLink>
+                    >
+                      View
+                    </MLink>
                   </Box>
 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography sx={labelSx}>Sponsors</Typography>
+                    <Typography sx={labelSx}>Sponsors:</Typography>
                     <PeopleOutlineRoundedIcon fontSize='small' />
                     <Typography sx={{ fontSize: 13 }}>
                       {p.sponsors ?? 0}
@@ -141,7 +158,9 @@ export default function DesktopMyCatalogue({
                       onClick={() => onViewPost?.(p)}
                       underline='hover'
                       sx={{ color: '#f0c040', ml: 1, fontSize: 13 }}
-                    >View</MLink>
+                    >
+                      View
+                    </MLink>
                   </Box>
                 </Box>
 
@@ -158,7 +177,9 @@ export default function DesktopMyCatalogue({
                       px: 2,
                       '&:hover': { borderColor: '#fff' },
                     }}
-                  >View details</Button>
+                  >
+                    View details
+                  </Button>
                 </Box>
               </Box>
             </Box>

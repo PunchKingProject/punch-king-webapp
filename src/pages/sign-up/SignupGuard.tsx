@@ -1,4 +1,3 @@
-
 import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import {
@@ -7,11 +6,11 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import CustomButton from '../../components/buttons/CustomButton';
-import { useAppDispatch } from '../../hooks';
-import { setFlow } from '../../store/registration.slice';
-import { colors } from '../../theme/colors';
-import Footer from '../landing/components/Footer';
+import CustomButton from '../../components/buttons/CustomButton.tsx';
+import { useAppDispatch } from '../../hooks.ts';
+import { setFlow } from '../../store/registration.slice.ts';
+import { colors } from '../../theme/colors.ts';
+import Footer from '../landing/components/Footer.tsx';
 
 const STEP_LABELS: Record<number, string> = {
   1: 'Email verification',
@@ -23,8 +22,6 @@ const STEP_LABELS: Record<number, string> = {
 const TOTAL_STEPS = Object.keys(STEP_LABELS).length;
 
 function useCurrentStep(): number {
-
-
   const { pathname } = useLocation();
   // Matches: /step/2  | /step2  | /step-2  | /step_2  (case-insensitive)
   const m = pathname.match(/\/step(?:[-_/]?)(\d+)/i);
@@ -48,7 +45,7 @@ function SignupGuard() {
       navigate(`/sign-up?flow=${flow}`, { replace: true });
       // return <h1>he;;pw</h1>
     }
-  }, []);
+  }, [dispatch, flow, navigate, token]);
 
   const isCompletePage = pathname.includes('/sign-up/complete'); // 👈 detect
 
@@ -83,13 +80,14 @@ function SignupGuard() {
           color='primary'
           onClick={() => navigate('/sign-in')}
         >
-      Sign in
+          Sign In
         </CustomButton>
       </Box>
       {/* <div>SignupGuard</div> */}
+
       {/* Stepper */}
       <Box>
-        {!isCompletePage && (
+        {(!isCompletePage) && (
           <Box
             textAlign='center'
             mt={2}
@@ -97,9 +95,9 @@ function SignupGuard() {
           >
             <Typography
               variant='bodyTextMilkDefault'
-              sx={{ color: 'white', fontWeight: 700 }}
+              sx={{ color: 'white', fontWeight: 700, textTransform: 'capitalize' }}
             >
-              User Signup steps
+              {flow} signup steps
             </Typography>
             <StepDots total={4} active={step} />
             <Typography variant='body2' sx={{ mt: 1, color: '#C9C9C9' }}>
@@ -109,6 +107,7 @@ function SignupGuard() {
         )}
         <Outlet />
       </Box>
+
       {/* Footer */}
       <Box
         sx={{

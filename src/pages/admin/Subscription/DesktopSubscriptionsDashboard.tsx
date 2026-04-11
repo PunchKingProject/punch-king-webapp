@@ -5,16 +5,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Box } from '@mui/material';
-import AdminSection from '../components/AdminSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import AdminSection from '../components/AdminSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
 import type { DateRange } from 'react-day-picker';
-import type { MetricCard } from '../components/CardGrid';
-import { useSubscriptions } from './hooks/useSubscriptions';
+import type { MetricCard } from '../components/CardGrid.tsx';
+import { useSubscriptions } from './hooks/useSubscriptions.ts';
 import DesktopSubscriptionsSection, {
   type SubRow,
-} from './components/DesktopSubscriptionsSection';
-import ROUTES from '../../../routes/routePath';
+} from './components/DesktopSubscriptionsSection.tsx';
+import ROUTES from '../../../routes/routePath.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 

@@ -1,4 +1,3 @@
-
 // src/pages/admin/Teams/components/MobileTeamsHome.tsx
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
@@ -7,17 +6,17 @@ import debounce from 'lodash.debounce';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 
-import { colors } from '../../../theme/colors';
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../components/ScrollableSection';
+import { colors } from '../../../theme/colors.ts';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
 
 // Reuse the dashboard list contracts
-import type { RankedTeam, Team } from '../Dashboard/api/dashboard.types';
-import { useRankedTeams } from '../Dashboard/hooks/useRankedTeams';
-import { teamFieldData } from './ui/fields';
+import type { RankedTeam, Team } from '../Dashboard/api/dashboard.types.ts';
+import { useRankedTeams } from '../Dashboard/hooks/useRankedTeams.ts';
+import { teamFieldData } from './ui/fields.ts';
 
 // Teams metrics hook
-import { useTeamDashboardStats } from './hooks/useTeamDashboardStats';
+import { useTeamDashboardStats } from './hooks/useTeamDashboardStats.ts';
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,8 +30,6 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 };
 
 export default function MobileTeamsHome() {
-
-
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const secondCardRef = useRef<HTMLDivElement | null>(null);
@@ -165,7 +162,9 @@ export default function MobileTeamsHome() {
           alignItems: 'center',
         }}
       >
-        <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>Teams</Typography>
+        <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>
+          Teams
+        </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography
@@ -188,6 +187,7 @@ export default function MobileTeamsHome() {
           />
         </Box>
       </Box>
+
       {/* Sliding metric cards (identical structure to MobileDashboard) */}
       <Box
         ref={containerRef}
@@ -250,6 +250,7 @@ export default function MobileTeamsHome() {
           </Box>
         ))}
       </Box>
+
       {/* Server-driven Teams list (same ScrollableSection pattern) */}
       <ScrollableSection<Team>
         title='TEAMS table'

@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import {
   clearDraftFromStorage,
   loadDraftFromStorage,
-} from './registration.persist';
+} from './registration.persist.ts';
 
 export type Draft = {
   step1?: { email?: string; username?: string };

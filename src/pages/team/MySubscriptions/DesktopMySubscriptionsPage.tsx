@@ -4,17 +4,17 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
-import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import DesktopTeamSubStatsCards from './components/DesktopTeamSubStatsCards';
-import { useTeamSubStats } from './hooks/useTeamSubStats';
-import DesktopSubHistoryTable, { mapSubHistoryApiToRows, type SubHistoryRow } from './components/DesktopSubHistoryTable';
-import { useTeamSubActiveInactive, useTeamSubPayments } from './hooks/useSubTables';
-import DesktopSubPaymentHistoryTable, { mapPaymentApiToRows, type SubPaymentRow } from './components/DesktopSubPaymentHistoryTable';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
+import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import DesktopTeamSubStatsCards from './components/DesktopTeamSubStatsCards.tsx';
+import { useTeamSubStats } from './hooks/useTeamSubStats.ts';
+import DesktopSubHistoryTable, { mapSubHistoryApiToRows, type SubHistoryRow } from './components/DesktopSubHistoryTable.tsx';
+import { useTeamSubActiveInactive, useTeamSubPayments } from './hooks/useSubTables.ts';
+import DesktopSubPaymentHistoryTable, { mapPaymentApiToRows, type SubPaymentRow } from './components/DesktopSubPaymentHistoryTable.tsx';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import ROUTES from '../../../routes/routePath.ts';
 
 
 

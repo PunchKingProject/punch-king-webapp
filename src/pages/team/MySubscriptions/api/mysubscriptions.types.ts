@@ -60,12 +60,23 @@ export type SubHistoryApiRow = {
 export type SubHistoryPayload = { data: SubHistoryApiRow[]; metadata: Meta };
 
 export type CreateSubBody = {
-  type: 'annual' | 'semi-annual';
+  plan_id: number;
   payment_date: string; // ISO, T00:00:00Z
-  payment_amount: number;
-  payment_slip: string;
-  source_bank_name: string;
-  source_bank_account_name: string;
-  source_bank_account_number: string;
+  name_on_card: string;
 };
+
+export interface CreateSubscriptionResponse {
+  data: string;
+}
+
+export type SubscriptionPlansPayload = {
+  id: number;
+  type: string;
+  price: number;
+  currency: string;
+}
+
+export type SubscriptionPlansResponse = {
+  data: SubscriptionPlansPayload[];
+}
 

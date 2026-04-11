@@ -1,14 +1,14 @@
 import { Box } from '@mui/material';
 import dayjs from 'dayjs';
-import type { TableColumn } from '../../../../components/tables/PaginatedTable';
-import PaginatedTable from '../../../../components/tables/PaginatedTable';
+import type { TableColumn } from '../../../../components/tables/PaginatedTable.tsx';
+import PaginatedTable from '../../../../components/tables/PaginatedTable.tsx';
 
 export type SponsorshipRow = {
   id: string;
   sponsor_id: number; // 👈 add this
   sponsor_name: string;
   date: string; // M/D/YYYY
-  amount: string; // ₦ formatted
+  amount: string; // $ formatted
   qty: number; // units
 };
 
@@ -91,15 +91,15 @@ export default function DesktopSponsorshipHistoryTable({
 }
 
 // ---------- mapper ----------
-function fmtNGN(n: number) {
+function fmtUSD(n: number) {
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 0,
     }).format(n);
   } catch {
-    return `₦${n.toLocaleString()}`;
+    return `$${n.toLocaleString()}`;
   }
 }
 
@@ -130,7 +130,7 @@ export function mapApiToRows(
       sponsor_id: r.sponsor_id,
       sponsor_name: r.sponsor_name,
       date: dayjs(r.sponsorship_date).format('M/D/YYYY'),
-      amount: fmtNGN(cash),
+      amount: fmtUSD(cash),
       qty,
     };
   });

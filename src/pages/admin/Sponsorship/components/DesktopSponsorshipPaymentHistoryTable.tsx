@@ -2,13 +2,13 @@ import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 import { Box, IconButton } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
+} from '../../../../components/tables/PaginatedTable.tsx';
 
 export type PaymentHistoryRow = {
   id: number;
   username: string;
   payment_date: string; // M/D/YYYY
-  amount_paid: string; // formatted NGN
+  amount_paid: string; // formatted USD
   units: number;
   slip?: string | null;
 };

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import type { TeamLicenseStats } from '../api/mylicensing.types';
-import { fetchTeamLicenseStats } from '../api/mylicensing.api';
+import type { TeamLicenseStats } from '../api/mylicensing.types.ts';
+import { fetchTeamLicenseStats } from '../api/mylicensing.api.ts';
 
 export function useTeamLicenseStats(params: {
   start_date: string;

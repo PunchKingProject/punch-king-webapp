@@ -1,21 +1,18 @@
 // ...imports unchanged
-import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import Footer from '../pages/landing/components/Footer.tsx';
+import Navbar from '../components/nav/Navbar.tsx';
 import {
   closeMobileMenuIcon,
   openMobileMenuIcon,
   openProfileIcon,
   punchKingMobileLogo,
 } from '../assets';
-import Navbar from '../components/nav/Navbar';
-import Footer from '../pages/landing/components/Footer';
-import ROUTES from '../routes/routePath';
-import { readClaimsFromStorage } from '../utils/jwt';
+import ROUTES from '../routes/routePath.ts';
 
 function UserMobileMenu() {
-  
-
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
@@ -49,14 +46,9 @@ function UserMobileMenu() {
     localStorage.removeItem('persist:root');
     sessionStorage.clear();
     setProfileOpen(false);
-    navigate(ROUTES.SIGN_IN ?? '/sign-in', { replace: true });
+    navigate(ROUTES.SIGN_IN ?? '/', { replace: true });
   };
 
-  const claims = useMemo(() => readClaimsFromStorage('token'), []);
-  const displayName = claims?.name?.trim() || 'there';
-  const roleLabel = (claims?.role || 'User')
-    .toString()
-    .replace(/^\w/, (c) => c.toUpperCase());
   return (
     <>
       <Box
@@ -101,6 +93,7 @@ function UserMobileMenu() {
           }}
         />
       </Box>
+
       {/* Profile Dropdown */}
       {profileOpen && (
         <>
@@ -130,11 +123,6 @@ function UserMobileMenu() {
               boxShadow: '0px 4px 12px rgba(0,0,0,0.4)',
             }}
           >
-            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>Hello, {displayName}!
-            </Typography>
-            <Typography sx={{ color: '#A2A2A2', fontSize: 12, mb: 0.5 }}>
-              {roleLabel}
-            </Typography>
             <Button
               variant='outlined'
               onClick={handleLogout}
@@ -145,10 +133,13 @@ function UserMobileMenu() {
                 textTransform: 'none',
                 '&:hover': { backgroundColor: '#222', borderColor: '#fff' },
               }}
-            >Logout</Button>
+            >
+              Logout
+            </Button>
           </Box>
         </>
       )}
+
       {/* Main Menu */}
       {open && (
         <>

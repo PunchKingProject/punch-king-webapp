@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopMyLicensingPage from './DesktopMyLicensingPage';
-import MobileMyLicensingPage from './MobileMyLicensingPage';
+import DesktopMyLicensingPage from './DesktopMyLicensingPage.tsx';
+import MobileMyLicensingPage from './MobileMyLicensingPage.tsx';
 
 export default function MyLicensingPage() {
   const isTabletUp = useMediaQuery('(min-width:910px)');

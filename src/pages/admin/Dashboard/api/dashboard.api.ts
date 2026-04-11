@@ -1,4 +1,4 @@
-import { customFetch } from '../../../../Axios';
+import { customFetch } from '../../../../Axios.ts';
 import type {
   DashboardStats,
   DashboardStatsParams,
@@ -8,7 +8,7 @@ import type {
   RankedTeamsParams,
   RankedUser,
   RankedUsersParams,
-} from './dashboard.types';
+} from './dashboard.types.ts';
 
 export async function getDashboardStats(
   params: DashboardStatsParams

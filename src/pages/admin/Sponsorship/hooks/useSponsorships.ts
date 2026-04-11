@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchSponsorships } from '../api/sponsorships.api';
+import { fetchSponsorships } from '../api/sponsorships.api.ts';
 import type {
   FetchSponsorshipsParams,
   SponsorshipPayload,
-} from '../api/sponsorships.types';
+} from '../api/sponsorships.types.ts';
 
 export function useSponsorships(params: FetchSponsorshipsParams) {
   return useQuery<SponsorshipPayload>({

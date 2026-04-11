@@ -4,28 +4,28 @@ import debounce from 'lodash.debounce';
 import * as React from 'react';
 import type { DateRange } from 'react-day-picker';
 
-import MobileMyCatalogue from './components/MobileMyCatalogue';
-import MobileMyLicenses from './components/MobileMyLicenses';
-import MobileMySponsorships from './components/MobileMySponsorships';
-import MobileMySubscriptions from './components/MobileMySubscriptions';
+import MobileMyCatalogue from './components/MobileMyCatalogue.tsx';
+import MobileMyLicenses from './components/MobileMyLicenses.tsx';
+import MobileMySponsorships from './components/MobileMySponsorships.tsx';
+import MobileMySubscriptions from './components/MobileMySubscriptions.tsx';
 
-import MobileTeamsByRanking from './components/MobileTeamsByRanking';
+import MobileTeamsByRanking from './components/MobileTeamsByRanking.tsx';
 
-import { useMySubscriptions } from './hooks/useMySubscriptions';
-import { useRankedTeams } from './hooks/useRankedTeams';
-import { useTeamDashboardStats } from './hooks/useTeamDashboardStats';
-import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory';
-import { useTeamPosts } from './hooks/useTeamPosts';
-import { useTeamVoteHistory } from './hooks/useTeamVoteHistory';
+import { useMySubscriptions } from './hooks/useMySubscriptions.ts';
+import { useRankedTeams } from './hooks/useRankedTeams.ts';
+import { useTeamDashboardStats } from './hooks/useTeamDashboardStats.ts';
+import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory.ts';
+import { useTeamPosts } from './hooks/useTeamPosts.ts';
+import { useTeamVoteHistory } from './hooks/useTeamVoteHistory.ts';
 
 // shared drawer used across your other mobile dashboards
 // ⬇️ adjust path to where your shared drawer actually lives:
-import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer';
+import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer.tsx';
 
 // Types for mapping (strict — no any)
-import type { TeamPost } from './api/dashboard.types';
-import type { MobileMetric } from './components/MobileTeamMetricCards';
-import MobileTeamMetricCards from './components/MobileTeamMetricCards';
+import type { TeamPost } from './api/dashboard.types.ts';
+import type { MobileMetric } from './components/MobileTeamMetricCards.tsx';
+import MobileTeamMetricCards from './components/MobileTeamMetricCards.tsx';
 
 type TeamVoteItem = {
   id: number;
@@ -79,16 +79,16 @@ type RankedTeamsPayload = {
 };
 
 const toYMD = (d: Date) => d.toISOString().slice(0, 10);
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const v = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(v);
   } catch {
-    return `₦${v.toLocaleString()}`;
+    return `$${v.toLocaleString()}`;
   }
 };
 const formatRangeLabel = (from?: Date, to?: Date) => {
@@ -99,8 +99,6 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 };
 
 function ordinal(n: number) {
-
-
   const s = ['th', 'st', 'nd', 'rd'] as const;
   const v = n % 100;
   return `${n}${
@@ -194,7 +192,7 @@ export default function MobileDashboardPage() {
     idx: idx + 1,
     sponsor_name: r.sponsor_name ?? '—',
     date: dayjs(r.created_at).format('D/M/YYYY'),
-    amount_paid: fmtNGN(r.equivalent_amount),
+    amount_paid: fmtUSD(r.equivalent_amount),
     units: r.units ?? 0,
   }));
   const spTotal = votePayload?.metadata.total_count ?? 0;
@@ -225,7 +223,7 @@ export default function MobileDashboardPage() {
       .replace(/\b\w/g, (m) => m.toUpperCase()),
     start_date: r.start_date ? dayjs(r.start_date).format('D/M/YYYY') : '—',
     end_date: r.end_date ? dayjs(r.end_date).format('D/M/YYYY') : '—',
-    amount_paid: fmtNGN(r.payment_amount),
+    amount_paid: fmtUSD(r.payment_amount),
     status: r.end_date
       ? dayjs(r.end_date).isAfter(dayjs())
         ? 'Active'
@@ -247,7 +245,7 @@ export default function MobileDashboardPage() {
     license_name: r.team?.license_number || '—',
     start_date: r.start_date ? dayjs(r.start_date).format('D/M/YYYY') : '—',
     end_date: r.end_date ? dayjs(r.end_date).format('D/M/YYYY') : '—',
-    amount_paid: fmtNGN(r.payment_amount),
+    amount_paid: fmtUSD(r.payment_amount),
     status: r.end_date
       ? dayjs(r.end_date).isAfter(dayjs())
         ? 'Active'
@@ -303,8 +301,10 @@ export default function MobileDashboardPage() {
           />
         </Box>
       </Box>
+
       {/* Sliding metric cards */}
       <MobileTeamMetricCards loading={statsLoading} metrics={metricCards} />
+
       {/* My catalogue */}
       <Box sx={{ mt: 2 }}>
         <Typography sx={{ color: '#fff', fontWeight: 900, mb: 1 }}>
@@ -312,6 +312,7 @@ export default function MobileDashboardPage() {
         </Typography>
         <MobileMyCatalogue rows={catalogue} loading={postsLoading} />
       </Box>
+
       {/* My sponsorships — server search + load more */}
       <Box sx={{ mt: 3 }}>
         <MobileMySponsorships
@@ -323,6 +324,7 @@ export default function MobileDashboardPage() {
           onLoadMore={() => setSpPageSize((s) => s + 10)}
         />
       </Box>
+
       {/* My subscriptions — server search + load more */}
       <Box sx={{ mt: 3 }}>
         <MobileMySubscriptions
@@ -334,10 +336,12 @@ export default function MobileDashboardPage() {
           onLoadMore={() => setSubPageSize((s) => s + 10)}
         />
       </Box>
+
       {/* My licenses — client search */}
       <Box sx={{ mt: 3 }}>
         <MobileMyLicenses rows={licRows} loading={licLoading} />
       </Box>
+
       {/* Team Ranking */}
       <Box sx={{ mt: 3, mb: 6 }}>
         <Typography sx={{ color: '#fff', fontWeight: 900, mb: 1 }}>
@@ -345,6 +349,7 @@ export default function MobileDashboardPage() {
         </Typography>
         <MobileTeamsByRanking rows={ranking} loading={rankLoading} />
       </Box>
+
       <Box sx={{ height: 16 }} />
     </Box>
   );

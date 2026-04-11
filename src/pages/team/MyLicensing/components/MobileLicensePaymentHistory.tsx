@@ -1,8 +1,8 @@
 // src/pages/team/MyLicensing/components/MobileLicensePaymentHistory.tsx
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 import { IconButton } from '@mui/material';
-import { ScrollableSection } from '../../../admin/components/ScrollableSection';
-import { type LicensePaymentRow, licensePaymentFields } from '../ui/fields';
+import { ScrollableSection } from '../../../admin/components/ScrollableSection.tsx';
+import { type LicensePaymentRow, licensePaymentFields } from '../ui/fields.ts';
 
 type Props = {
   rows: LicensePaymentRow[];

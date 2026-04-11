@@ -162,6 +162,7 @@ export const ScrollableSection = <
           </IconButton>
         ) : null}
       </Box>
+
       {/* Search bar (collapsible) */}
       {searchOpen && (
         <Box mb={1}>
@@ -191,6 +192,7 @@ export const ScrollableSection = <
           />
         </Box>
       )}
+
       {/* Scroll container + up/down affordances
        */}
       <Box
@@ -298,7 +300,9 @@ export const ScrollableSection = <
                   <Typography
                     sx={{ cursor: 'pointer', color: 'yellow' }}
                     onClick={onLoadMore}
-                  >Load more</Typography>
+                  >
+                    Load more
+                  </Typography>
                 </Box>
               )}
             </>

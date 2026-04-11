@@ -3,7 +3,7 @@ import {
   Checkbox,
   FormControlLabel,
   Link,
-  Typography,
+  Typography
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { Form, Formik } from 'formik';
@@ -11,17 +11,17 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../assets';
-import CustomAuthButton from '../../components/buttons/CustomAuthButton';
-import CustomButton from '../../components/buttons/CustomButton';
-import FormikTextField from '../../components/form/FormikTextField';
-import { showError } from '../../utils/error/toastError';
-import Footer from '../landing/components/Footer';
-import { resetPassword } from './api/forgotpassword.api';
+import CustomAuthButton from '../../components/buttons/CustomAuthButton.tsx';
+import CustomButton from '../../components/buttons/CustomButton.tsx';
+import FormikTextField from '../../components/form/FormikTextField.tsx';
+import { showError } from '../../utils/error/toastError.ts';
+import Footer from '../landing/components/Footer.tsx';
+import { resetPassword } from './api/forgotpassword.api.ts';
 
 const AdminPasswordChangePage = () => {
-  const [sp] = useSearchParams();
-  const navigate = useNavigate();
-  const token = sp.get('token') || '';
+  const [sp] = useSearchParams()
+  const navigate = useNavigate()
+  const token = sp.get('token') || ''
   const initialValues = {
     password: '',
     confirmPassword: '',
@@ -34,7 +34,7 @@ const AdminPasswordChangePage = () => {
     password: Yup.string()
       .matches(
         passwordRules,
-        'your password does not fulfill the password criteria',
+        'your password does not fulfill the password criteria'
       )
       .required('Password is required'),
     confirmPassword: Yup.string()
@@ -44,22 +44,22 @@ const AdminPasswordChangePage = () => {
 
   const handleSubmit = (values: typeof initialValues) => {
     console.log('Login values:', values);
-    mutation.mutate({
-      token,
-      password: values.password,
-    });
+       mutation.mutate({
+         token,
+         password: values.password,
+       });
   };
 
-  const mutation = useMutation({
-    mutationFn: resetPassword,
-    onSuccess: (res) => {
-      if (res?.meta?.code === 200) {
-        toast.success('Password reset successful!');
-        navigate('/sign-in');
-      }
-    },
-    onError: showError,
-  });
+    const mutation = useMutation({
+      mutationFn: resetPassword,
+      onSuccess: (res) => {
+        if (res?.meta?.code === 200) {
+          toast.success('Password reset successful!');
+          navigate("/sign-in");
+        }
+      },
+      onError: showError,
+    });
 
   return (
     <Box
@@ -165,12 +165,14 @@ const AdminPasswordChangePage = () => {
                     padding: 0,
                   }}
                 />
+
                 {showHint && (
                   <Typography variant='body2' sx={{ mb: 2 }}>
                     Password must be at least 7 characters, must have letters, a
                     special character and digits
                   </Typography>
                 )}
+
                 {showCheckbox && (
                   <FormControlLabel
                     control={
@@ -196,12 +198,11 @@ const AdminPasswordChangePage = () => {
                     }
                   />
                 )}
+
                 <Box
-                  sx={
-                    {
-                      // border: '2px solid red',
-                    }
-                  }
+                  sx={{
+                    // border: '2px solid red',
+                  }}
                 >
                   <CustomAuthButton
                     fullWidth
@@ -212,10 +213,12 @@ const AdminPasswordChangePage = () => {
                     }
                     loading={mutation.isPending}
                     sx={{
+                     
                       width: '90%',
                       display: 'block',
                       marginLeft: 'auto',
                       marginRight: 'auto',
+                    
                     }}
                   >
                     Continue
@@ -226,6 +229,7 @@ const AdminPasswordChangePage = () => {
           }}
         </Formik>
       </Box>
+
       <Box
         sx={{
           // border: '2px solid red',

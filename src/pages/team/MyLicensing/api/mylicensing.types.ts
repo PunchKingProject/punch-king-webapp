@@ -131,13 +131,27 @@ export type FetchLicenseHistoryListParams = {
 
 
 export type CreateLicensePaymentRequest = {
-  payment_date: string; // ISO – set to today
-  payment_amount: number;
-  payment_slip: string; // URL from /img
-  source_bank_name: string; // hard-coded
-  source_bank_account_name: string; // hard-coded
-  source_bank_account_number: string; // hard-coded
+  plan_id: number;
+  payment_date: string;  // hard-coded
 };
+
+
+export interface CreateLicenseResponse {
+  data: string;
+}
+
+export type LicensePlansPayload = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+}
+
+export type LicensePlansResponse = {
+  data: LicensePlansPayload[];
+}
+
 
 export type CreateArgs = {
   payment_amount: number;

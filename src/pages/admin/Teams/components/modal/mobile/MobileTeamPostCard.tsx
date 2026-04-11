@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
-import type { TeamPost } from "../../../api/teams.types";
-import { isVideo } from "../../../../../../utils/helpers";
-import { colors } from "../../../../../../theme/colors";
+import type { TeamPost } from "../../../api/teams.types.ts";
+import { isVideo } from "../../../../../../utils/helpers.ts";
+import { colors } from "../../../../../../theme/colors.ts";
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import RankingIcon from '../../../../../../assets/rankingSmallbox1.svg?react';
-import NeutronIcon from '../../../../../../assets/rankingSmallbox3.svg?react';
+import NeutronIcon from '../../../../../../assets/rankingSmallBox3.svg?react';
 
 
 type Props = {
@@ -14,8 +14,7 @@ type Props = {
 };
 
 function MobileTeamPostCard({ item, onOpen }: Props) {
-
-  const video = isVideo(item.file_url);
+    const video = isVideo(item.file_url);
 
   return (
     <Box
@@ -26,7 +25,7 @@ function MobileTeamPostCard({ item, onOpen }: Props) {
         borderRadius: 2,
         p: 1.5,
         background: '#0f0f0f',
-        border: '2px solid orange',
+        border: '2px solid orange'
       }}
     >
       <Box
@@ -76,6 +75,7 @@ function MobileTeamPostCard({ item, onOpen }: Props) {
           <VisibilityRounded fontSize='small' />
         </Box>
       </Box>
+
       <Box sx={{ mt: 1.25 }}>
         <Typography sx={{ color: colors.Accent, fontWeight: 700 }}>
           Title:
@@ -85,10 +85,11 @@ function MobileTeamPostCard({ item, onOpen }: Props) {
         </Typography>
 
         <Typography sx={{ color: colors.Accent, fontWeight: 700, mt: 1 }}>
-          Comments:
+        Comments:
         </Typography>
         <Typography sx={{ color: '#fff' }}>{item.comments_count}</Typography>
       </Box>
+
       <Box sx={{ display: 'flex', gap: 4, mt: 2 }}>
         <Box>
           <RankingIcon />

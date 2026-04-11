@@ -5,14 +5,14 @@ import dayjs, { Dayjs } from 'dayjs';
 import debounce from 'lodash.debounce';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../components/ScrollableSection';
-import { useLicenses } from './hooks/useLicenses';
-import { colors } from '../../../theme/colors';
-import { licenseFieldData, type LicenseListItem } from './ui/fields';
-import ROUTES from '../../../routes/routePath';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import { useLicenses } from './hooks/useLicenses.ts';
+import { colors } from '../../../theme/colors.ts';
+import { licenseFieldData, type LicenseListItem } from './ui/fields.ts';
+import ROUTES from '../../../routes/routePath.ts';
 import { useNavigate } from 'react-router-dom';
-import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
+import VisibilityRounded from '@mui/icons-material/VisibilityRounded'; 
 
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
@@ -22,9 +22,7 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 };
 
 export default function MobileLicensingDashboard() {
- 
-
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   // ===== metrics-only date range =====
   const [metricRange, setMetricRange] = useState<[Dayjs, Dayjs]>([
@@ -180,6 +178,7 @@ export default function MobileLicensingDashboard() {
           />
         </Box>
       </Box>
+
       {/* Sliding metric cards */}
       <Box
         ref={scrollerRef}
@@ -241,6 +240,7 @@ export default function MobileLicensingDashboard() {
           </Box>
         ))}
       </Box>
+
       {/* LICENSE requests list (server) */}
       <ScrollableSection<LicenseListItem>
         title='LICENSE requests'

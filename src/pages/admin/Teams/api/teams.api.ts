@@ -1,6 +1,6 @@
 
-import { customFetch } from "../../../../Axios";
-import type { Envelope, SingleTeamStats, SingleTeamStatsParams, TeamDashboardStats, TeamDashboardStatsParams, TeamPost, TeamProfile, UpdateTeamPayload, VoteHistoryEnvelope, VoteHistoryParams } from "./teams.types";
+import { customFetch } from "../../../../Axios.ts";
+import type { Envelope, SingleTeamStats, SingleTeamStatsParams, TeamDashboardStats, TeamDashboardStatsParams, TeamPost, TeamProfile, UpdateTeamPayload, VoteHistoryEnvelope, VoteHistoryParams } from "./teams.types.ts";
 
 
 

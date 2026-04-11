@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
-import CustomAuthButton from '../buttons/CustomAuthButton';
+import CustomAuthButton from '../buttons/CustomAuthButton.tsx';
 
 export type PKDialogProps = {
   open: boolean;
@@ -28,8 +28,6 @@ export default function PKDialog({
   fullWidth = true,
   disableCloseWhenBusy = false,
 }: PKDialogProps) {
-
-
   return (
     <Dialog
       open={open}
@@ -59,10 +57,13 @@ export default function PKDialog({
                 // px: 3
               }}
               disabled={disableCloseWhenBusy}
-            >Close</CustomAuthButton>
+            >
+              Close
+            </CustomAuthButton>
           </Box>
         </DialogTitle>
       )}
+
       <DialogContent>
         <Box
        

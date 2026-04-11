@@ -1,6 +1,6 @@
 // src/pages/admin/Teams/ui/fields.ts
-import type { Field } from '../../components/ScrollableSection';
-import type { Team } from '../../Dashboard/api/dashboard.types';
+import type { Field } from '../../components/ScrollableSection.tsx';
+import type { Team } from '../../Dashboard/api/dashboard.types.ts';
 
 export const teamFieldData: Field<Team>[] = [
   { key: 'team_name', label: 'Team name' },

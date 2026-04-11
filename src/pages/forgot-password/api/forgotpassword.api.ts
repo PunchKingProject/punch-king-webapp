@@ -1,4 +1,4 @@
-import { customFetch } from "../../../Axios";
+import { customFetch } from "../../../Axios.ts";
 
 export type ForgotPasswordPayload = {
     email:string;

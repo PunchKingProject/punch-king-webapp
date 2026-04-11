@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import { Box, Typography, Skeleton } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
-import { colors } from '../../theme/colors';
+import { colors } from '../../theme/colors.ts';
 
 type Props = {
   title: string;

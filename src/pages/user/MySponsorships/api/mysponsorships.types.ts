@@ -70,7 +70,7 @@ export type Meta = {
 export type CreatePurchaseInput = {
   /** number of sponsorship units being purchased */
   points: number;
-  /** computed client-side = points × unit price (NGN) */
+  /** computed client-side = points × unit price (USD) */
   payment_amount: number;
   /** local image file (we'll upload it to /img to get a URL) */
   payment_slip_file: File;
@@ -146,7 +146,7 @@ export type CreatePurchaseBody =
   };
 
   export type PurchaseHistoryPayload = {
-    data: PurchaseHistoryItem[] | null;
+    data: PurchaseHistoryItem[];
     metadata: {
       current_page: number;
       page_size: number;
@@ -155,12 +155,39 @@ export type CreatePurchaseBody =
     };
   };
 
-  export type CreateSponsorPurchaseRequest = {
-    payment_date: string; // today in ISO
-    payment_amount: number;
-    points: number;
-    payment_slip: string; // URL string
-    source_bank_name: string;
-    source_bank_account_name: string;
-    source_bank_account_number: string;
-  };
+  // export type CreateSponsorPurchaseRequest = {
+  //   payment_date: string; // today in ISO
+  //   payment_amount: number;
+  //   points: number;
+  //   payment_slip: string; // URL string
+  //   source_bank_name: string;
+  //   source_bank_account_name: string;
+  //   source_bank_account_number: string;
+  // };
+
+export interface CreateSponsorPurchaseRequest {
+  rate_id: number;      // Selected from the dropdown
+  name_on_card: string; // The cardholder name
+}
+
+export interface CreateSponsorPurchaseResponse {
+  data: string; // The Flutterwave checkout URL
+}
+
+export type SponsorshipRate = {
+  id: number;
+  points: number;
+  price: number;
+  currency: string;
+  is_active: boolean;
+};
+
+// This is the fix for your Rates Getting type
+export type SponsorshipRatesResponse = {
+  data: SponsorshipRate[];
+};
+
+// This is the type for the Purchase response (The Flutterwave Link)
+export type PurchaseResponse = {
+  data: string; // The URL string
+};

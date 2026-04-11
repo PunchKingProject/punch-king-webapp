@@ -1,7 +1,7 @@
 // pages/admin/Subscription/hooks/useSubscriptions.ts
 import { useQuery } from '@tanstack/react-query';
-import { fetchSubscriptions } from '../api/subscriptions.api';
-import type { FetchSubsParams, SubPayload } from '../api/subscriptions.types';
+import { fetchSubscriptions } from '../api/subscriptions.api.ts';
+import type { FetchSubsParams, SubPayload } from '../api/subscriptions.types.ts';
 
 export function useSubscriptions(params: FetchSubsParams) {
   return useQuery<SubPayload>({

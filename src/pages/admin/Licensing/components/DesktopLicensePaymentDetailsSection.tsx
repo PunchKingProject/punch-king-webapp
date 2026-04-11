@@ -1,6 +1,6 @@
 import { Box, Typography, Link, Button } from '@mui/material';
 import dayjs from 'dayjs';
-import type { LicenseApiRow, BankInfo } from '../api/licensing.types';
+import type { LicenseApiRow, BankInfo } from '../api/licensing.types.ts';
 
 type Props = {
   loading?: boolean;
@@ -34,16 +34,16 @@ const fmtDateTime = (iso?: string | null) =>
     ? `${dayjs(iso).format('M/D/YYYY')}  ${dayjs(iso).format('h:mma')}`
     : 'N/A';
 
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const val = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(val);
   } catch {
-    return `₦${val.toLocaleString()}`;
+    return `$${val.toLocaleString()}`;
   }
 };
 
@@ -69,12 +69,12 @@ export default function DesktopLicensePaymentDetailsSection({
   entry,
   onViewSlip,
 }: Props) {
-
-  
-
   return (
     <Box id='payment-details' sx={{ mt: 6}}>
-      <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>Payment Details</Typography>
+      <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>
+        PAYMENT DETAILS
+      </Typography>
+
       <Box
         sx={{
           display: 'grid',
@@ -108,7 +108,9 @@ export default function DesktopLicensePaymentDetailsSection({
                 {/* {field('Date and time', fmtDateTime(entry?.payment_date))} */}
                 <Typography
                   sx={{ fontWeight: 800, fontSize: 14, lineHeight: 1.2 }}
-                >Date and time</Typography>
+                >
+                  Date and time
+                </Typography>
                 <Typography
                   sx={{
                     mt: 0.5,
@@ -123,7 +125,9 @@ export default function DesktopLicensePaymentDetailsSection({
               <Box>
                 <Typography
                   sx={{ fontWeight: 800, fontSize: 14, lineHeight: 1.2 }}
-                >Amount paid</Typography>
+                >
+                  amount paid
+                </Typography>
                 <Typography
                   sx={{
                     mt: 0.5,
@@ -132,7 +136,7 @@ export default function DesktopLicensePaymentDetailsSection({
                     color: '#00C853', // bright green like the mock
                   }}
                 >
-                  {fmtNGN(entry?.payment_amount)}
+                  {fmtUSD(entry?.payment_amount)}
                 </Typography>
               </Box>
             </Box>
@@ -144,7 +148,9 @@ export default function DesktopLicensePaymentDetailsSection({
           <Typography
             component='h3'
             sx={{ fontWeight: 900, fontSize: 16, mb: 1 }}
-          >Payment_slip</Typography>
+          >
+            Payment slip
+          </Typography>
 
           <Box
             sx={{
@@ -174,7 +180,9 @@ export default function DesktopLicensePaymentDetailsSection({
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : (
-              <Typography sx={{ color: '#A2A2A2', fontSize: 14 }}>No slip</Typography>
+              <Typography sx={{ color: '#A2A2A2', fontSize: 14 }}>
+                No slip
+              </Typography>
             )}
           </Box>
 
@@ -190,7 +198,9 @@ export default function DesktopLicensePaymentDetailsSection({
                   textTransform: 'none',
                   px: 0,
                 }}
-              >View"</Button>
+              >
+                View
+              </Button>
 
               {/* Optional: keep a direct open-in-new-tab */}
               <Link
@@ -199,7 +209,9 @@ export default function DesktopLicensePaymentDetailsSection({
                 rel='noopener noreferrer'
                 underline='hover'
                 sx={{ color: '#f0c040', fontWeight: 600 }}
-              >Open in new tab</Link>
+              >
+                Open in new tab
+              </Link>
             </Box>
           ) : null}
         </Box>

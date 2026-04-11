@@ -5,9 +5,8 @@ import {
   rankingSmallbox2,
   rankingSmallbox3,
 } from '../../../assets';
-import { colors } from '../../../theme/colors';
-import { gridWidth } from '../../../utils/helpers';
-
+import { colors } from '../../../theme/colors.ts';
+import { gridWidth } from '../../../utils/helpers.ts';
 
 const data = [
   {
@@ -19,8 +18,6 @@ const data = [
   { title: 'Cnt', position: '30', image: rankingSmallbox3 },
 ];
 const TeamRanking = () => {
-   
-  
   return (
     <>
       <Box
@@ -71,6 +68,7 @@ const TeamRanking = () => {
           </Typography>
         </Box>
       </Box>
+
       <Box
         sx={{
           '@media (min-width:910px)': {
@@ -386,7 +384,7 @@ const TeamRanking = () => {
                               20
                             </Typography>
                             <Typography variant='bodyTextMilkDefault'>
-                             Sponsors
+                              Sponsors
                             </Typography>
                           </Box>
                         </Grid>

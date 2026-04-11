@@ -2,32 +2,32 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory';
+import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory.ts';
 import { toast } from 'react-toastify';
-import AdminSection from '../components/AdminSection';
-import AdminBreadCrumbs from '../components/AdminBreadcrumbs';
-import ROUTES from '../../../routes/routePath';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import AdminSection from '../components/AdminSection.tsx';
+import AdminBreadCrumbs from '../components/AdminBreadcrumbs.tsx';
+import ROUTES from '../../../routes/routePath.ts';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
 import type { DateRange } from 'react-day-picker';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DesktopLicenseTeamDetailsSection from './components/DesktopLicenseTeamDetailsSection';
-import type { LicenseHistoryRow } from './components/DesktopLicensingHistoryTable';
-import DesktopLicensingHistoryTable from './components/DesktopLicensingHistoryTable';
+import DesktopLicenseTeamDetailsSection from './components/DesktopLicenseTeamDetailsSection.tsx';
+import type { LicenseHistoryRow } from './components/DesktopLicensingHistoryTable.tsx';
+import DesktopLicensingHistoryTable from './components/DesktopLicensingHistoryTable.tsx';
 import { Box, Typography } from '@mui/material';
-import type { LicenseApiRow } from './api/licensing.types';
-import DesktopLicensePaymentDetailsSection from './components/DesktopLicensePaymentDetailsSection';
-import DesktopLicenseConfirmationSection from './components/DesktopLicenseConfirmationSection';
+import type { LicenseApiRow } from './api/licensing.types.ts';
+import DesktopLicensePaymentDetailsSection from './components/DesktopLicensePaymentDetailsSection.tsx';
+import DesktopLicenseConfirmationSection from './components/DesktopLicenseConfirmationSection.tsx';
 import type {
   LicenseStatus,
   PaymentStatus,
-} from '../../../components/chips/StatusChipDropdown';
-import { useUpdateLicenseStatus } from './hooks/useUpdateLicenseStatus';
-import NoticeModal from '../../../components/modal/NoticeModal';
-import StatusChipDropdown from '../../../components/chips/StatusChipDropdown';
-import PKImageDialog from '../../../components/modal/PkImageDialog';
+} from '../../../components/chips/StatusChipDropdown.tsx';
+import { useUpdateLicenseStatus } from './hooks/useUpdateLicenseStatus.ts';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
+import StatusChipDropdown from '../../../components/chips/StatusChipDropdown.tsx';
+import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
 import WarningIcon from '../../../assets/modalQuestionIcon.svg?react';
 import SuccessIcon from '../../../assets/modalSuccess.svg?react';
-import { useDisclosure } from '../../../hooks/useDisclosure';
+import { useDisclosure } from '../../../hooks/useDisclosure.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
@@ -224,6 +224,7 @@ const DesktopLicensingDetailsPage = () => {
         {/* The TEAM DETAILS block (matches your mock) */}
         <DesktopLicenseTeamDetailsSection loading={isLoading} team={team} />
       </AdminSection>
+
       <Box
         sx={{
           padding: '1.56em 6.98em',
@@ -270,7 +271,9 @@ const DesktopLicensingDetailsPage = () => {
           actions={
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 1 }}>
               <Box>
-                <Typography sx={{ fontWeight: 800, fontSize: 13, mb: 0.5 }}>Payment Confirmation Status:</Typography>
+                <Typography sx={{ fontWeight: 800, fontSize: 13, mb: 0.5 }}>
+                  Payment confirmation status:
+                </Typography>
                 <StatusChipDropdown
                   domain='payment'
                   value={draftPayment}
@@ -282,7 +285,9 @@ const DesktopLicensingDetailsPage = () => {
               </Box>
 
               <Box>
-                <Typography sx={{ fontWeight: 800, fontSize: 13, mb: 0.5 }}>Subscription Status:</Typography>
+                <Typography sx={{ fontWeight: 800, fontSize: 13, mb: 0.5 }}>
+                  Subscription status:
+                </Typography>
                 <StatusChipDropdown
                   domain='license'
                   value={draftLicense}

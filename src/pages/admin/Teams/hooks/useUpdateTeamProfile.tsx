@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateTeamProfile } from '../api/teams.api';
-import type { UpdateTeamPayload } from '../api/teams.types';
+import { updateTeamProfile } from '../api/teams.api.ts';
+import type { UpdateTeamPayload } from '../api/teams.types.ts';
 
 export function useUpdateTeamProfile(teamId: number) {
   const queryClient = useQueryClient();

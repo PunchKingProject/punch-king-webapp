@@ -3,8 +3,8 @@ import { Box, Typography } from '@mui/material';
 import StatusChipDropdown, {
     type PaymentStatus,
     type SubscriptionStatus,
-} from '../../../../components/chips/StatusChipDropdown';
-import type { SubApiRow } from '../api/subscriptions.types';
+} from '../../../../components/chips/StatusChipDropdown.tsx';
+import type { SubApiRow } from '../api/subscriptions.types.ts';
 
 type Props = {
      entry?: SubApiRow | null;
@@ -25,18 +25,17 @@ export default function DesktopSubscriptionConfirmationSection({
   onChangePayment,
   onChangeSub,
 }: Props) {
-
-
   const teamName = entry?.team?.team_name ?? 'this team';
 
 
-
+  
 
   return (
     <Box sx={{ mt: 6 }}>
       <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>
         CONFIRMATION
       </Typography>
+
       <Box
         sx={{
           display: 'grid',
@@ -70,6 +69,8 @@ export default function DesktopSubscriptionConfirmationSection({
           />
         </Box>
       </Box>
+
+  
     </Box>
   );
 }

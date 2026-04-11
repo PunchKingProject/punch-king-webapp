@@ -1,5 +1,5 @@
-import AdminCard from './components/AdminCard';
-import Navbar from './components/Navbar';
+import AdminCard from './components/AdminCard.tsx';
+import Navbar from './components/Navbar.tsx';
 
 const AdminPage = () => {
 

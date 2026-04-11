@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import {type DashboardStats, type DashboardStatsParams } from "../api/dashboard.types";
-import { getDashboardStats } from "../api/dashboard.api";
+import {type DashboardStats, type DashboardStatsParams } from "../api/dashboard.types.ts";
+import { getDashboardStats } from "../api/dashboard.api.ts";
 
 
 export function useTeamDashboardStats(params:DashboardStatsParams) {

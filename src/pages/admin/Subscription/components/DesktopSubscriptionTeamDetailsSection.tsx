@@ -52,6 +52,7 @@ export default function DesktopSubscriptionTeamDetailsSection({
       <Typography component='h1' variant='h1' sx={{ fontWeight: 900 }}>
         TEAM DETAILS
       </Typography>
+
       <Box
         sx={{
           display: 'grid',

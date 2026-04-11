@@ -1156,7 +1156,7 @@
 //                       Amount Sponsored
 //                     </Typography>
 //                     <Typography sx={{ color: colors.Freeze, fontWeight: 700 }}>
-//                       ₦
+//                       $
 //                       {Number(row.total_amount_sponsored ?? 0).toLocaleString()}
 //                     </Typography>
 //                   </Box>

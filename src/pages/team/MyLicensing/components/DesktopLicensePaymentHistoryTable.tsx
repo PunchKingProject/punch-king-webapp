@@ -4,10 +4,10 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import dayjs from 'dayjs';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
-import StatusChip from '../../../../components/chips/StatusChip';
+} from '../../../../components/tables/PaginatedTable.tsx';
+import StatusChip from '../../../../components/chips/StatusChip.tsx';
 import { useEffect, useMemo, useState } from 'react';
-import { useLicensePaymentHistory } from '../hooks/useLicensePaymentHistory';
+import { useLicensePaymentHistory } from '../hooks/useLicensePaymentHistory.ts';
 
 export type LicensePaymentRow = {
   id: number;
@@ -45,14 +45,14 @@ export default function DesktopLicensePaymentHistoryTable({
 
   const rows: LicensePaymentRow[] = useMemo(() => {
     const list = data?.data ?? [];
-    const fmtNGN = (n?: number | null) =>
+    const fmtUSD = (n?: number | null) =>
       new Intl.NumberFormat('en-NG').format(typeof n === 'number' ? n : 0);
     const nice = (s?: string | null) => (s ? dayjs(s).format('M/D/YYYY') : '—');
 
     return list.map((r) => ({
       id: r.id,
       license_type: r.license_type ?? r.team?.license_number ?? '—',
-      amount_paid: fmtNGN(r.payment_amount),
+      amount_paid: fmtUSD(r.payment_amount),
       payment_date: nice(r.payment_date),
       status: String(
         r.license_status ?? r.payment_status ?? r.status ?? 'Pending'

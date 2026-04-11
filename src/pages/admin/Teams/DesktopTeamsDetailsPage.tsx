@@ -1,24 +1,24 @@
 import { Box } from '@mui/material';
-import ROUTES from '../../../routes/routePath';
-import AdminBreadCrumbs from '../components/AdminBreadcrumbs';
-import AdminSection from '../components/AdminSection';
+import ROUTES from '../../../routes/routePath.ts';
+import AdminBreadCrumbs from '../components/AdminBreadcrumbs.tsx';
+import AdminSection from '../components/AdminSection.tsx';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../components/tables/PaginatedTable';
-import type { MetricCard } from '../components/CardGrid';
+} from '../../../components/tables/PaginatedTable.tsx';
+import type { MetricCard } from '../components/CardGrid.tsx';
 import { useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { useSingleTeamStats } from './hooks/useSingleTeamStats';
+import { useSingleTeamStats } from './hooks/useSingleTeamStats.ts';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import TeamDetailsSection from './components/DesktopTeamDetailsSection';
-import TeamPostCarousel from './components/modal/desktop/DesktopTeamPostCarousel';
+import TeamDetailsSection from './components/DesktopTeamDetailsSection.tsx';
+import TeamPostCarousel from './components/modal/desktop/DesktopTeamPostCarousel.tsx';
 import debounce from 'lodash.debounce';
-import { useTeamVoteHistory } from './hooks/useTeamVoteHistory';
+import { useTeamVoteHistory } from './hooks/useTeamVoteHistory.ts';
 
 /** Row for the sponsors table */
 type SponsorRow = {
@@ -138,7 +138,7 @@ export const DesktopTeamsDetailsPage = () => {
       const d = dayjs(it.created_at);
       const value = new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency: 'NGN',
+        currency: 'USD',
         maximumFractionDigits: 2,
       }).format(it.equivalent_amount ?? 0);
 

@@ -3,7 +3,7 @@ import {
   Checkbox,
   CircularProgress,
   FormControlLabel,
-  Typography,
+  Typography
 } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import { useMutation } from '@tanstack/react-query';
@@ -12,25 +12,25 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../../assets';
-import CustomAuthButton from '../../../components/buttons/CustomAuthButton';
-import FormikTextField from '../../../components/form/FormikTextField';
-import NoticeModal from '../../../components/modal/NoticeModal';
-import { useAppDispatch } from '../../../hooks';
-import { mergeDraft, setRid } from '../../../store/registration.slice';
-import { createUser } from '../api/registration';
+import CustomAuthButton from '../../../components/buttons/CustomAuthButton.tsx';
+import FormikTextField from '../../../components/form/FormikTextField.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
+import { useAppDispatch } from '../../../hooks.ts';
+import { mergeDraft, setRid } from '../../../store/registration.slice.ts';
+import { createUser } from '../api/registration.ts';
 import { Link as MLink } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import ROUTES from '../../../routes/routePath.ts';
 
-// --- Validation (UNCHANGED)
+// This adds # and other common symbols to the allowed/required list
 const passwordRules =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]{7,}$/;
 
 const validationSchema = Yup.object({
   password: Yup.string()
     .matches(
       passwordRules,
-      'Password must be at least 7 characters and include letters, a number and a special character.',
+      'Password must be at least 7 characters and include letters, a number and a special character.'
     )
     .required('Required'),
   confirmPassword: Yup.string()
@@ -47,7 +47,7 @@ const validationSchema = Yup.object({
       const matches =
         !!password && !!confirmPassword && password === confirmPassword;
       return !matches || value === true;
-    },
+    }
   ),
 });
 
@@ -69,11 +69,7 @@ function Step2() {
   if (token) params.set('token', token);
   params.set('flow', flow);
 
-  const initialValues: Values = {
-    password: '',
-    confirmPassword: '',
-    agree: false,
-  };
+  const initialValues: Values = { password: '', confirmPassword: '', agree: false };
 
   const mutation = useMutation({
     mutationFn: createUser,
@@ -126,11 +122,7 @@ function Step2() {
           />
         </Box>
 
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {(formik) => {
             const passwordsMatch =
               !!formik.values.password &&
@@ -138,9 +130,7 @@ function Step2() {
               formik.values.password === formik.values.confirmPassword;
 
             // hide rules once the current password value satisfies the regex
-            const passwordPassesRules = passwordRules.test(
-              formik.values.password,
-            );
+            const passwordPassesRules = passwordRules.test(formik.values.password);
 
             return (
               <Form style={{ width: '100%', maxWidth: 400, padding: '0 40px' }}>
@@ -167,28 +157,17 @@ function Step2() {
                       borderRadius: 2,
                     }}
                   >
-                    <Typography
-                      variant='caption'
-                      sx={{ color: '#C9C9C9', fontWeight: 700 }}
-                    >
+                    <Typography variant='caption' sx={{ color: '#C9C9C9', fontWeight: 700 }}>
                       Password must include:
                     </Typography>
-                    <ul
-                      style={{
-                        margin: '6px 0 0 16px',
-                        padding: 0,
-                        color: '#C9C9C9',
-                      }}
-                    >
+                    <ul style={{ margin: '6px 0 0 16px', padding: 0, color: '#C9C9C9' }}>
                       <li>Minimum 8 characters</li>
                       <li>At least one uppercase character</li>
                       <li>At least one lowercase character</li>
                       <li>At least one number</li>
                       <li>
                         At least one symbol from the following{' '}
-                        <code style={{ fontFamily: 'monospace' }}>
-                          {DISPLAY_SYMBOLS}
-                        </code>
+                        <code style={{ fontFamily: 'monospace' }}>{DISPLAY_SYMBOLS}</code>
                       </li>
                     </ul>
                   </Box>
@@ -207,9 +186,7 @@ function Step2() {
                       control={
                         <Checkbox
                           checked={formik.values.agree}
-                          onChange={(e) =>
-                            formik.setFieldValue('agree', e.target.checked)
-                          }
+                          onChange={(e) => formik.setFieldValue('agree', e.target.checked)}
                           sx={{
                             color: '#FFC107',
                             '&.Mui-checked': { color: '#FFC107' },
@@ -247,8 +224,7 @@ function Step2() {
                     !(
                       formik.values.password &&
                       formik.values.confirmPassword &&
-                      formik.values.password ===
-                        formik.values.confirmPassword &&
+                      formik.values.password === formik.values.confirmPassword &&
                       formik.values.agree
                     ) || mutation.isPending
                   }

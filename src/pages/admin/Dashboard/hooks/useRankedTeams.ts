@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchRankedTeams } from '../api/dashboard.api';
-import type { Envelope, Paged, RankedTeam, RankedTeamsParams } from '../api/dashboard.types';
+import { fetchRankedTeams } from '../api/dashboard.api.ts';
+import type { Envelope, Paged, RankedTeam, RankedTeamsParams } from '../api/dashboard.types.ts';
 
 
 

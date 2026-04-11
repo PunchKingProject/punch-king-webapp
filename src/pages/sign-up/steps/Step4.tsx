@@ -7,10 +7,10 @@ import { toast } from 'react-toastify';
 import FailureIcon from '../../../assets/failureIcon.svg?react';
 import HelpIcon from '../../../assets/helpIcon.svg?react';
 import SuccessIcon from '../../../assets/modalSuccess.svg?react';
-import { customFetch } from '../../../Axios'; // your axios instance
-import CustomAuthButton from '../../../components/buttons/CustomAuthButton';
-import { useAppDispatch } from '../../../hooks';
-import { mergeDraft } from '../../../store/registration.slice';
+import { customFetch } from '../../../Axios.ts'; // your axios instance
+import CustomAuthButton from '../../../components/buttons/CustomAuthButton.tsx';
+import { useAppDispatch } from '../../../hooks.ts';
+import { mergeDraft } from '../../../store/registration.slice.ts';
 
 const MAX_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
 const ACCEPT = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
@@ -84,7 +84,7 @@ export default function Step4() {
 
       // Store the server URL in Redux draft
 
-      console.log(resp.data.data);
+      console.log(resp.data.data)
       const serverUrl = resp?.data?.data ?? previewUrl!;
       dispatch(mergeDraft({ step4: { profile_picture: serverUrl } }));
 
@@ -92,11 +92,11 @@ export default function Step4() {
       // await customFetch.post('/registration/advance', { step: 4 });
 
       // navigate(`/sign-up/complete?${params.toString()}`);
-
+      
       toast.success('Image url generated and stored');
-      navigate(`/sign-up/complete`);
+            navigate(`/sign-up/complete`);
     } catch (e) {
-      console.log(e);
+      console.log(e)
       toast.error('Upload failed. Please try again.');
       setError('Upload failed. Please try again.');
     } finally {

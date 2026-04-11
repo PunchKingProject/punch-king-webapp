@@ -14,9 +14,9 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import dayjs from 'dayjs';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
-import { useCreateComment, usePost } from './hooks/usePost';
-import CommentThread from './components/DesktopCommentThread';
-import type { CommentRow } from './api/dashboard.types';
+import { useCreateComment, usePost } from './hooks/usePost.ts';
+import CommentThread from './components/DesktopCommentThread.tsx';
+import type { CommentRow } from './api/dashboard.types.ts';
 
 const cardSx = {
   background: '#1A1A1A',
@@ -26,8 +26,6 @@ const cardSx = {
 };
 
 export default function DesktopFeedViewPage() {
-
-
   const { postId } = useParams();
   const id = useMemo(() => Number(postId), [postId]);
   const navigate = useNavigate();
@@ -36,8 +34,8 @@ export default function DesktopFeedViewPage() {
   const { mutateAsync: addComment, isPending } = useCreateComment(id);
 
   const [newComment, setNewComment] = useState('');
-  //   const [replyFor, setReplyFor] = useState<number | null>(null);
-  //   const [replyText, setReplyText] = useState('');
+//   const [replyFor, setReplyFor] = useState<number | null>(null);
+//   const [replyText, setReplyText] = useState('');
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
@@ -45,16 +43,16 @@ export default function DesktopFeedViewPage() {
     setNewComment('');
   };
 
-  //   const handleReply = async (parentId: number) => {
-  //     if (!replyText.trim()) return;
-  //     await addComment({
-  //       post_id: id,
-  //       parent_comment_id: parentId,
-  //       content: replyText.trim(),
-  //     });
-  //     setReplyText('');
-  //     setReplyFor(null);
-  //   };
+//   const handleReply = async (parentId: number) => {
+//     if (!replyText.trim()) return;
+//     await addComment({
+//       post_id: id,
+//       parent_comment_id: parentId,
+//       content: replyText.trim(),
+//     });
+//     setReplyText('');
+//     setReplyFor(null);
+//   };
 
   return (
     <Box sx={{ p: '1.56em 6.98em' }}>
@@ -80,22 +78,22 @@ export default function DesktopFeedViewPage() {
       >
         Back
       </Button>
+
       <Typography variant='h5' sx={{ color: '#fff', fontWeight: 900, mb: 2 }}>
         FEED VIEW
       </Typography>
+
       {isLoading || !data ? (
-        <Typography sx={{ color: '#9a9a9a' }}>Loading...</Typography>
+        <Typography sx={{ color: '#9a9a9a' }}>Loading…</Typography>
       ) : (
         <>
           {/* Header meta */}
           <Typography sx={{ color: '#EFAF00', fontWeight: 700 }}>
-            {' '}
             TEAM NAME:&nbsp;
             <span style={{ color: '#fff' }}>{data.team_name || '—'}</span>
           </Typography>
           <Typography sx={{ color: '#EFAF00', fontWeight: 700, mb: 2 }}>
-            POSITION:&nbsp;
-            <span style={{ color: '#fff' }}>—</span>
+            POSITION:&nbsp;<span style={{ color: '#fff' }}>—</span>
           </Typography>
 
           {/* Sponsor + share row */}

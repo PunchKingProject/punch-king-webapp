@@ -1,6 +1,6 @@
 import { Box, Typography, Button, Link } from '@mui/material';
 import dayjs from 'dayjs';
-import type { BankInfo, SubApiRow } from '../api/subscriptions.types';
+import type { BankInfo, SubApiRow } from '../api/subscriptions.types.ts';
 
 type Props = {
   loading?: boolean;
@@ -32,16 +32,16 @@ const fmtDateTime = (iso?: string | null) =>
     ? `${dayjs(iso).format('M/D/YYYY')}  ${dayjs(iso).format('h:mma')}`
     : 'N/A';
 
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const v = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(v);
   } catch {
-    return `₦${v.toLocaleString()}`;
+    return `$${v.toLocaleString()}`;
   }
 };
 
@@ -72,6 +72,7 @@ export default function DesktopSubscriptionPaymentDetailsSection({
       <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>
         PAYMENT DETAILS
       </Typography>
+
       <Box
         sx={{
           display: 'grid',
@@ -114,7 +115,7 @@ export default function DesktopSubscriptionPaymentDetailsSection({
                     color: '#00C853',
                   }}
                 >
-                  {fmtNGN(entry?.payment_amount)}
+                  {fmtUSD(entry?.payment_amount)}
                 </Typography>
               </Box>
             </Box>

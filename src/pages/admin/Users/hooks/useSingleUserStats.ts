@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import {type  SingleUserStats, type UseSingleUserStatsArgs } from "../api/users.types"
-import { apiGetSingleUsersStats } from "../api/users.api";
+import {type  SingleUserStats, type UseSingleUserStatsArgs } from "../api/users.types.ts"
+import { apiGetSingleUsersStats } from "../api/users.api.ts";
 
 
 export const useSingleUserStats = ({sponsor_id, start_date, end_date}: UseSingleUserStatsArgs) => {

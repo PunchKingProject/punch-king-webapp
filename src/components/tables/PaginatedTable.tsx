@@ -14,7 +14,7 @@ import {
   IconButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { displayValue } from '../../utils/helpers';
+import { displayValue } from '../../utils/helpers.ts';
 
 /** Generic column config */
 export type TableColumn<Row extends Record<string, unknown>> = {

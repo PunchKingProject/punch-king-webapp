@@ -7,7 +7,7 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
+  // CardMedia,
   IconButton,
   InputBase,
   Skeleton,
@@ -17,8 +17,9 @@ import type { InfiniteData } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { AllPostsPayload, FeedPost } from '../api/dashboard.types';
-import { useAllPosts } from '../hooks/useAllPosts';
+import type { AllPostsPayload, FeedPost } from '../api/dashboard.types.ts';
+import { useAllPosts } from '../hooks/useAllPosts.ts';
+import FeedThumbnail from "./FeedThumbnail.tsx";
 
 type Props = {
   onViewPost?: (id: number) => void;
@@ -33,7 +34,6 @@ const cardStyle = {
 };
 
 export default function DesktopTeamFeeds({ onViewPost, onSponsor }: Props) {
-
   const navigate = useNavigate();
 
   const [search, setSearch] = useState('');
@@ -43,12 +43,7 @@ export default function DesktopTeamFeeds({ onViewPost, onSponsor }: Props) {
   const posts = useMemo<FeedPost[]>(() => {
     const pages =
       (data as InfiniteData<AllPostsPayload, number> | undefined)?.pages ?? [];
-
-    const out: FeedPost[] = [];
-    for (const p of pages) {
-      if (Array.isArray(p.posts)) out.push(...p.posts);
-    }
-    return out;
+    return pages.flatMap((p) => p.posts);
   }, [data]);
 
   const filtered = useMemo(() => {
@@ -67,6 +62,7 @@ export default function DesktopTeamFeeds({ onViewPost, onSponsor }: Props) {
       <Typography variant='h5' sx={{ color: '#fff', fontWeight: 900, mb: 2 }}>
         TEAM FEEDS
       </Typography>
+
       {/* Search */}
       <Box
         sx={{
@@ -92,6 +88,7 @@ export default function DesktopTeamFeeds({ onViewPost, onSponsor }: Props) {
           <SearchIcon fontSize='small' sx={{ color: '#EDEDED' }} />
         </IconButton>
       </Box>
+
       {/* List */}
       <Box sx={{ display: 'grid', gap: 2 }}>
         {isLoading &&
@@ -147,29 +144,12 @@ export default function DesktopTeamFeeds({ onViewPost, onSponsor }: Props) {
                 }}
               >
                 {/* Thumbnail */}
-                {p.file_url ? (
-                  <CardMedia
-                    component='img'
-                    image={p.file_url}
-                    alt={p.title}
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      objectFit: 'cover',
-                      borderRadius: 2,
-                      flex: '0 0 auto', // ⬅️ don't let it shrink
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      borderRadius: 2,
-                      bgcolor: '#2a2a2a',
-                    }}
-                  />
-                )}
+                <FeedThumbnail
+                  url={p.file_url}
+                  title={p.title}
+                  width={120}
+                  height={120}
+                />
 
                 {/* Text */}
                 <CardContent sx={{ p: 0, flex: 1 }}>
@@ -222,8 +202,7 @@ export default function DesktopTeamFeeds({ onViewPost, onSponsor }: Props) {
                       {dayjs(p.created_at).format('M/D/YYYY')}
                     </Typography>
                     <Typography sx={{ color: '#A2A2A2', fontSize: 12 }}>
-                      {p.comments_count}
-                      Comments
+                      {p.comments_count} Comments
                     </Typography>
 
                     <Box sx={{ flex: 1 }} />
@@ -289,6 +268,7 @@ export default function DesktopTeamFeeds({ onViewPost, onSponsor }: Props) {
             </Card>
           ))}
       </Box>
+
       {/* Load more (cursor) */}
       {hasNextPage && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>

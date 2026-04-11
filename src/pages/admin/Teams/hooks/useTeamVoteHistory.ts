@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { VoteHistoryEnvelope, VoteHistoryParams } from "../api/teams.types";
-import { fetchTeamVoteHistory } from "../api/teams.api";
+import type { VoteHistoryEnvelope, VoteHistoryParams } from "../api/teams.types.ts";
+import { fetchTeamVoteHistory } from "../api/teams.api.ts";
 
 
 export function useTeamVoteHistory(params: VoteHistoryParams) {

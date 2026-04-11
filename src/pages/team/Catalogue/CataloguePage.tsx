@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopCataloguePage from './DesktopCataloguePage';
-import MobileCataloguePage from './MobileCataloguePage';
+import DesktopCataloguePage from './DesktopCataloguePage.tsx';
+import MobileCataloguePage from './MobileCataloguePage.tsx';
 
 export default function CataloguePage() {
   const isTabletUp = useMediaQuery('(min-width:910px)');

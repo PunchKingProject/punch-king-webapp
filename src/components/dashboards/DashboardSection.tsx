@@ -1,8 +1,8 @@
 import { Box, Skeleton, type SxProps } from '@mui/material';
 import type { ReactNode } from 'react';
-import type { MetricCard } from '../../pages/admin/components/CardGrid';
-import CardGrid from '../../pages/admin/components/CardGrid';
-import SideNav, { type SideNavItem } from '../nav/SideNav';
+import type { MetricCard } from '../../pages/admin/components/CardGrid.tsx';
+import CardGrid from '../../pages/admin/components/CardGrid.tsx';
+import SideNav, { type SideNavItem } from '../nav/SideNav.tsx';
 
 interface DashboardSectionProps {
   title: ReactNode;
@@ -79,8 +79,7 @@ const DashboardSection = ({
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
-          >
-            <Box>{title}</Box>
+          ><Box>{title}</Box>
             {toolbar}
           </Box>
 

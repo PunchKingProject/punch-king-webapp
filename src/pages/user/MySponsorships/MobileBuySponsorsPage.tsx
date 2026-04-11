@@ -1,8 +1,8 @@
 import { Box, Button, Link, Typography } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import MobileBuySponsorsForm from './components/MobileBuySponsorsForm';
-import ROUTES from '../../../routes/routePath';
+import MobileBuySponsorsForm from './components/MobileBuySponsorsForm.tsx';
+import ROUTES from '../../../routes/routePath.ts';
 
 export default function MobileBuySponsorsPage() {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ export default function MobileBuySponsorsPage() {
       >
         Back
       </Button>
+
       {/* Breadcrumb */}
       <Box
         component='nav'
@@ -77,6 +78,7 @@ export default function MobileBuySponsorsPage() {
           BUY SPONSORS
         </Typography>
       </Box>
+
       <MobileBuySponsorsForm />
     </Box>
   );

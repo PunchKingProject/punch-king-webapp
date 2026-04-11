@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Button, IconButton, Skeleton, Typography } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
@@ -10,24 +9,24 @@ import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../components/ScrollableSection';
-import MobileImagePickerDialog from '../../../components/modal/MobileImagePickerDialog';
-import NoticeModal from '../../../components/modal/NoticeModal';
-import PKImageDialog from '../../../components/modal/PkImageDialog';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import MobileImagePickerDialog from '../../../components/modal/MobileImagePickerDialog.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
+import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
 import { punchKingLogo } from '../../../assets';
-import { useSingleUserStats } from './hooks/useSingleUserStats';
-import { useUserProfile } from './hooks/useUserProfile';
-import { useUpdateUserProfile } from './hooks/useUpdateUserProfile';
-import { useUploadUserImage } from './hooks/useUploadUserImage';
-import { useUserPurchaseHistory } from './hooks/useUserPurchaseHistory';
-import { purchaseFieldData, sponsorFieldData, type PurchaseRow, type SponsorRow } from './ui/fields';
-import { useSponsorVoteHistory } from './hooks/useSponsorVoteHistory';
-import { colors } from '../../../theme/colors';
-import FormikTextField from '../../../components/form/FormikWhiteTextField';
-import FormikSelect from '../../../components/form/FormikSelect';
-import FormikDatePicker from '../../../components/form/FormikDatePicker';
-import type { UpdateUserPayload } from './api/users.types';
+import { useSingleUserStats } from './hooks/useSingleUserStats.ts';
+import { useUserProfile } from './hooks/useUserProfile.ts';
+import { useUpdateUserProfile } from './hooks/useUpdateUserProfile.ts';
+import { useUploadUserImage } from './hooks/useUploadUserImage.ts';
+import { useUserPurchaseHistory } from './hooks/useUserPurchaseHistory.ts';
+import { purchaseFieldData, sponsorFieldData, type PurchaseRow, type SponsorRow } from './ui/fields.ts';
+import { useSponsorVoteHistory } from './hooks/useSponsorVoteHistory.ts';
+import { colors } from '../../../theme/colors.ts';
+import FormikTextField from '../../../components/form/FormikWhiteTextField.tsx';
+import FormikSelect from '../../../components/form/FormikSelect.tsx';
+import FormikDatePicker from '../../../components/form/FormikDatePicker.tsx';
+import type { UpdateUserPayload } from './api/users.types.ts';
 
 // under schema or near top of file
 const GENDER_OPTIONS = [
@@ -97,8 +96,6 @@ const schema = Yup.object({
 });
 
 export default function MobileUsersDetailsPage() {
-
-
   const p = useParams<{ sponsor_id?: string }>();
   const sponsor_id = p.sponsor_id ? Number(p.sponsor_id) : 0;
 
@@ -234,7 +231,7 @@ export default function MobileUsersDetailsPage() {
       return {
         value: new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(it.payment_amount),
         volume: it.sponsorship_points,
@@ -281,7 +278,7 @@ export default function MobileUsersDetailsPage() {
         team_name: it.team_name,
         value: new Intl.NumberFormat(undefined, {
           style: 'currency',
-          currency: 'NGN',
+          currency: 'USD',
           maximumFractionDigits: 2,
         }).format(it.equivalent_amount),
         volume: it.units,
@@ -344,6 +341,7 @@ export default function MobileUsersDetailsPage() {
           />
         </Box>
       </Box>
+
       {/* Sliding cards */}
       <Box
         ref={scrollerRef}
@@ -408,6 +406,7 @@ export default function MobileUsersDetailsPage() {
           </Box>
         ))}
       </Box>
+
       {/* ===== PROFILE EDIT (single column like MobileTeamDetails) ===== */}
       <Box sx={{ px: 2, pb: 4 }}>
         <Typography variant='h6' sx={{ fontWeight: 900, color: '#fff', mb: 1 }}>
@@ -460,9 +459,9 @@ export default function MobileUsersDetailsPage() {
                         acc[k] = true;
                         return acc;
                       },
-                      {},
+                      {}
                     ),
-                    false,
+                    false
                   );
                   return;
                 }
@@ -499,9 +498,7 @@ export default function MobileUsersDetailsPage() {
                           }}
                         />
                       ) : (
-                        <Typography sx={{ color: '#888' }}>
-                          No Image
-                        </Typography>
+                        <Typography sx={{ color: '#888' }}>No image</Typography>
                       )}
                     </Box>
                     <Box sx={{ maxWidth: 340, mx: 'auto', textAlign: 'right' }}>
@@ -519,6 +516,7 @@ export default function MobileUsersDetailsPage() {
                       </Button>
                     </Box>
                   </Box>
+
                   {/* Simple inputs – reuse your existing form components if you prefer */}
                   <Box sx={{ display: 'grid', gap: 1 }}>
                     {/* Replace these with your FormikTextField / FormikSelect if available */}
@@ -597,6 +595,7 @@ export default function MobileUsersDetailsPage() {
                       label='Email'
                     />
                   </Box>
+
                   <Button
                     type='button'
                     variant='text'
@@ -610,8 +609,9 @@ export default function MobileUsersDetailsPage() {
                     disabled={updateUser.isPending}
                     onClick={openConfirm}
                   >
-                 Update
+                    Update
                   </Button>
+
                   {/* Upload image dialog */}
                   <MobileImagePickerDialog
                     open={uploadOpen}
@@ -628,6 +628,7 @@ export default function MobileUsersDetailsPage() {
                       }
                     }}
                   />
+
                   {/* Certificate preview – optional parity */}
                   <PKImageDialog
                     open={false}
@@ -637,6 +638,7 @@ export default function MobileUsersDetailsPage() {
                     frame={false}
                     mobileCertificate
                   />
+
                   {/* Confirm update */}
                   <NoticeModal
                     open={confirmOpen}
@@ -644,8 +646,8 @@ export default function MobileUsersDetailsPage() {
                       updateUser.isPending ? null : setConfirmOpen(false)
                     }
                     onContinue={() => {
-                      if (!pendingValues || updateUser.isPending) return;
-                      updateUser.mutate(toUpdatePayload(pendingValues));
+                     if (!pendingValues || updateUser.isPending) return;
+                     updateUser.mutate(toUpdatePayload(pendingValues));
                     }}
                     title='NOTICE!!!'
                     message={`Are you sure you want to update\n[${
@@ -655,6 +657,7 @@ export default function MobileUsersDetailsPage() {
                     loading={updateUser.isPending}
                     showCloseText
                   />
+
                   {/* Success */}
                   <NoticeModal
                     open={successOpen}
@@ -672,6 +675,7 @@ export default function MobileUsersDetailsPage() {
           </Formik>
         )}
       </Box>
+
       {/* ===== PURCHASE HISTORY (server list) ===== */}
       <ScrollableSection<PurchaseRow>
         title='SPONSORSHIP purchase history'
@@ -688,6 +692,7 @@ export default function MobileUsersDetailsPage() {
         }}
         onLoadMore={() => setPhPage((p) => p + 1)}
       />
+
       {/* ===== SPONSORSHIP HISTORY (server list) ===== */}
       <ScrollableSection<SponsorRow>
         title='SPONSORSHIP history'

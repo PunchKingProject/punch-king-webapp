@@ -1,10 +1,10 @@
 // src/pages/admin/Sponsorships/hooks/useSponsorPurchaseHistory.ts
 import { useQuery } from '@tanstack/react-query';
-import { fetchSponsorPurchaseHistory } from '../api/sponsorships.api';
+import { fetchSponsorPurchaseHistory } from '../api/sponsorships.api.ts';
 import type {
   SponsorPurchaseHistoryPayload,
   SponsorPurchaseHistoryQueryArgs,
-} from '../api/sponsorships.types';
+} from '../api/sponsorships.types.ts';
 
 /**
  * GET /sponsorship/users-purchase-history

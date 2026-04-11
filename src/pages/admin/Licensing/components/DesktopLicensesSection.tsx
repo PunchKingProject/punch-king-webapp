@@ -1,8 +1,8 @@
 import { Box, IconButton } from '@mui/material';
-import type { TableColumn } from '../../../../components/tables/PaginatedTable';
+import type { TableColumn } from '../../../../components/tables/PaginatedTable.tsx';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import PaginatedTable from '../../../../components/tables/PaginatedTable';
-import StatusChip from '../../../../components/chips/StatusChip';
+import PaginatedTable from '../../../../components/tables/PaginatedTable.tsx';
+import StatusChip from '../../../../components/chips/StatusChip.tsx';
 
 export type LicenseRow = {
   id: number;

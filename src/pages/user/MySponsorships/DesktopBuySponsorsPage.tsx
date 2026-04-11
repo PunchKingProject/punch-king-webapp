@@ -3,10 +3,10 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 
-import DesktopBuySponsorsForm from './components/DesktopBuySponsorsForm';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import { USER_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import ROUTES from '../../../routes/routePath';
+import DesktopBuySponsorsForm from './components/DesktopBuySponsorsForm.tsx';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import { USER_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import ROUTES from '../../../routes/routePath.ts';
 
 export default function DesktopBuySponsorsPage() {
   const navigate = useNavigate();
@@ -22,7 +22,6 @@ export default function DesktopBuySponsorsPage() {
               to={ROUTES.USER_MY_SPONSORSHIPS}
               sx={{ color: '#A2A2A2', fontWeight: 600, fontSize: 16 }}
             >
-              {' '}
               USER DASHBOARD
             </Typography>
             <Typography sx={{ color: '#A2A2A2' }}>/</Typography>
@@ -31,7 +30,6 @@ export default function DesktopBuySponsorsPage() {
               to={ROUTES.USER_MY_SPONSORSHIPS}
               sx={{ color: '#A2A2A2', fontWeight: 600, fontSize: 16 }}
             >
-              {' '}
               SPONSORSHIPS
             </Typography>
             <Typography sx={{ color: '#A2A2A2' }}>/</Typography>
@@ -78,6 +76,7 @@ export default function DesktopBuySponsorsPage() {
         <DesktopBuySponsorsForm />
         {/* </Box> */}
       </DashboardSection>
+
       {/* main content under the section header */}
     </>
   );

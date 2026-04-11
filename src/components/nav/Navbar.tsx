@@ -4,11 +4,11 @@ import { Box, IconButton, List, ListItem, Menu, MenuItem, useMediaQuery } from '
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { punchKingLogo } from '../../assets';
-import { useAppDispatch } from '../../hooks';
-import ROUTES from '../../routes/routePath';
-import { logout } from '../../store/registration.slice';
-import { colors } from '../../theme/colors';
-import CustomButton from '../buttons/CustomButton';
+import { useAppDispatch } from '../../hooks.ts';
+import ROUTES from '../../routes/routePath.ts';
+import { logout } from '../../store/registration.slice.ts';
+import { colors } from '../../theme/colors.ts';
+import CustomButton from '../buttons/CustomButton.tsx';
 
 
 type SectionKey = 'about' | 'subscriptions' | 'ranking' | 'posts' | 'contacts';
@@ -25,12 +25,10 @@ const navList: Array<{ text: string; color: string; key: SectionKey }> = [
 const GOLD = '#EFAF00';
 const CREAM = '#FFFCF4';
 const OVERLAY = '#1F1F1F';
-const BTN_H = 44;
+const BTN_H = 44; 
 
 
 function useIsHome() {
-
-
   const { pathname } = useLocation();
   return pathname === '/';
 }
@@ -44,7 +42,7 @@ function useLogout() {
 
     // TODO: clear tokens/session here
     // e.g. localStorage.removeItem('auth'); queryClient.clear(); etc.
-    navigate(ROUTES.SIGN_IN, { replace: true });
+    navigate(ROUTES.HOME, { replace: true });
   };
 }
 // const MobileNavbar = () => {
@@ -151,7 +149,9 @@ const DesktopNavbar: React.FC<NavProps>  = ({ onNav}) => {
               variant='text'
               color='primary'
               onClick={handleOpenRegister}
-            >register</CustomButton>
+            >
+              Register
+            </CustomButton>
             <RegisterMenu
               anchorEl={regAnchor}
               open={regOpen}
@@ -163,7 +163,9 @@ const DesktopNavbar: React.FC<NavProps>  = ({ onNav}) => {
               color='primary'
               textColor={colors.AccentDark}
               onClick={() => navigate(ROUTES.SIGN_IN)}
-            >login</CustomButton>
+            >
+              Login
+            </CustomButton>
           </>
         ) : (
           <>
@@ -172,7 +174,9 @@ const DesktopNavbar: React.FC<NavProps>  = ({ onNav}) => {
               color='primary'
               textColor={colors.AccentDark}
               onClick={logout}
-            >logout</CustomButton>
+            >
+              Logout
+            </CustomButton>
             <IconButton sx={{ color: colors.Accent }} aria-label='account'>
               <AccountCircleIcon />
               <ArrowDropDownIcon />
@@ -328,6 +332,7 @@ function RegisterMenu({
       >
         Register as Boxing team
       </MenuItem>
+
       {/* Cream pill: Register as sponsor */}
       <MenuItem
         disableRipple
@@ -408,7 +413,7 @@ const MobileNavbar: React.FC<NavProps> = () => {
           </>
         ) : (
           <CustomButton variant='contained' color='primary' onClick={logout}>
-  Logout
+            Logout
           </CustomButton>
         )}
 
@@ -430,7 +435,7 @@ const MobileNavbar: React.FC<NavProps> = () => {
             onClick={() => navigate(ROUTES.SIGN_IN)}
           >
             Login
-            </CustomButton>
+          </CustomButton>
         ) : (
           <IconButton sx={{ color: colors.Accent }} aria-label='account'>
             <AccountCircleIcon />

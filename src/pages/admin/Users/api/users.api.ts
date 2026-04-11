@@ -1,4 +1,4 @@
-import { customFetch } from '../../../../Axios';
+import { customFetch } from '../../../../Axios.ts';
 import type {
   ApiResponse,
   FetchSponsorVoteHistoryParams,
@@ -13,7 +13,7 @@ import type {
   UserPurchaseHistoryResponse,
   UserTableApiRow,
   UserTableParams,
-} from './users.types';
+} from './users.types.ts';
 
 export async function getUserDashboardStats(
   params: UserDashboardStatsParams

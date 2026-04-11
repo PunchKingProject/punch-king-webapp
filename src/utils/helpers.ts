@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
-import type { PaymentStatus, SubscriptionStatus } from "../components/chips/StatusChipDropdown";
+import type { PaymentStatus, SubscriptionStatus } from "../components/chips/StatusChipDropdown.tsx";
 import { matchIsValidTel } from "mui-tel-input";
-import type { PurchaseStatus } from "../pages/admin/Sponsorship/api/sponsorships.types";
+import type { PurchaseStatus } from "../pages/admin/Sponsorship/api/sponsorships.types.ts";
 import { isAxiosError, } from 'axios';
 export type SectionKey =
   | 'about'

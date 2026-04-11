@@ -1,12 +1,12 @@
 import { Box } from '@mui/material';
-import type { TableColumn } from '../../../../components/tables/PaginatedTable';
-import PaginatedTable from '../../../../components/tables/PaginatedTable';
+import type { TableColumn } from '../../../../components/tables/PaginatedTable.tsx';
+import PaginatedTable from '../../../../components/tables/PaginatedTable.tsx';
 
 export type MySponsorshipRow = {
   id: number;
   sponsor_name: string;
   units: number;
-  amount: string; //formatted NGN
+  amount: string; //formatted USD
   created_at: string; // formatted local date+time
 };
 

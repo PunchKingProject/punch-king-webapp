@@ -31,8 +31,6 @@ export default function NoticeModal({
   loading = false,
     showCloseText = false,
 }: Props) {
-  
-
   return (
     <Dialog
       open={open}
@@ -62,8 +60,12 @@ export default function NoticeModal({
             cursor: 'pointer',
             userSelect: 'none',
           }}
-        >Close</Typography>
+        >
+          Close
+        </Typography>
       )}
+
+      
       <DialogContent sx={{ p: 2.5 }}>
         <Box display='grid' justifyItems='center' gap={1.25}>
           {/* <CheckCircleRoundedIcon sx={{ color: '#63db6c', fontSize: 36 }} /> */}

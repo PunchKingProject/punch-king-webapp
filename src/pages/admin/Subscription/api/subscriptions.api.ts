@@ -1,5 +1,5 @@
 // pages/admin/Subscription/api/subscriptions.api.ts
-import { customFetch } from '../../../../Axios';
+import { customFetch } from '../../../../Axios.ts';
 import type {
   ApiEnvelope,
   FetchSubsParams,
@@ -7,7 +7,7 @@ import type {
   SubPayload,
   TeamSubHistoryResponse,
   UpdateSubStatusPayload,
-} from './subscriptions.types';
+} from './subscriptions.types.ts';
 
 export async function fetchSubscriptions(
   params: FetchSubsParams

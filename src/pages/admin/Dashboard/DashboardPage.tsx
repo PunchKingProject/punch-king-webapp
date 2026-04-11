@@ -3,8 +3,8 @@ import {
   useMediaQuery
 } from '@mui/material';
 
-import { DesktopDashboard } from './components/DesktopDashboard';
-import MobileDashboard from './components/MobileDashboard';
+import { DesktopDashboard } from './components/DesktopDashboard.tsx';
+import MobileDashboard from './components/MobileDashboard.tsx';
 
 
 const DashboardPage = () => {

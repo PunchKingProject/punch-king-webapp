@@ -4,39 +4,39 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import AdminSection from '../components/AdminSection';
-import AdminBreadCrumbs from '../components/AdminBreadcrumbs';
-import ROUTES from '../../../routes/routePath';
+import AdminSection from '../components/AdminSection.tsx';
+import AdminBreadCrumbs from '../components/AdminBreadcrumbs.tsx';
+import ROUTES from '../../../routes/routePath.ts';
 
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
 import type { DateRange } from 'react-day-picker';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
 
-import { useTeamSubHistory } from './hooks/useTeamSubHistory';
+import { useTeamSubHistory } from './hooks/useTeamSubHistory.ts';
 
-import PKImageDialog from '../../../components/modal/PkImageDialog';
-import NoticeModal from '../../../components/modal/NoticeModal';
+import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
 import StatusChipDropdown, {
   type PaymentStatus,
   type LicenseStatus as SubscriptionStatus,
-} from '../../../components/chips/StatusChipDropdown';
+} from '../../../components/chips/StatusChipDropdown.tsx';
 
 import WarningIcon from '../../../assets/modalQuestionIcon.svg?react';
 import SuccessIcon from '../../../assets/modalSuccess.svg?react';
 import { Box, Typography } from '@mui/material';
-import { useDisclosure } from '../../../hooks/useDisclosure';
-import type { SubApiRow } from './api/subscriptions.types';
-import type { SubHistoryRow } from './components/DesktopSubscriptionHistoryTable';
-import DesktopSubscriptionPaymentDetailsSection from './components/DesktopSubscriptionPaymentDetailsSection';
-import DesktopSubscriptionConfirmationSection from './components/DesktopSubscriptionConfirmationSection';
-import DesktopSubscriptionHistoryTable from './components/DesktopSubscriptionHistoryTable';
-import { useUpdateSubStatus } from './hooks/useUpdateSubStatus';
-import DesktopSubscriptionTeamDetailsSection from './components/DesktopSubscriptionTeamDetailsSection';
+import { useDisclosure } from '../../../hooks/useDisclosure.ts';
+import type { SubApiRow } from './api/subscriptions.types.ts';
+import type { SubHistoryRow } from './components/DesktopSubscriptionHistoryTable.tsx';
+import DesktopSubscriptionPaymentDetailsSection from './components/DesktopSubscriptionPaymentDetailsSection.tsx';
+import DesktopSubscriptionConfirmationSection from './components/DesktopSubscriptionConfirmationSection.tsx';
+import DesktopSubscriptionHistoryTable from './components/DesktopSubscriptionHistoryTable.tsx';
+import { useUpdateSubStatus } from './hooks/useUpdateSubStatus.ts';
+import DesktopSubscriptionTeamDetailsSection from './components/DesktopSubscriptionTeamDetailsSection.tsx';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   normalizePaymentStatus,
   normalizeSubscriptionStatus,
-} from '../../../utils/helpers';
+} from '../../../utils/helpers.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
@@ -111,6 +111,8 @@ export default function DesktopSubscriptionDetailsPage() {
     };
   }, [data]);
 
+
+
   // history mapping
   const historyRows: SubHistoryRow[] = useMemo(() => {
     const list = data?.data ?? [];
@@ -143,7 +145,7 @@ export default function DesktopSubscriptionDetailsPage() {
           qc.invalidateQueries({ queryKey: ['subs'] });
           qc.invalidateQueries({ queryKey: ['team-sub-history', teamId] });
         },
-      },
+      }
     );
     confirm.onClose();
     success.onOpen();
@@ -175,6 +177,7 @@ export default function DesktopSubscriptionDetailsPage() {
           team={team}
         />
       </AdminSection>
+
       <Box
         sx={{
           padding: '1.56em 6.98em',
@@ -206,7 +209,7 @@ export default function DesktopSubscriptionDetailsPage() {
           }}
           onChangeSub={(next) => {
             const cur = normalizeSubscriptionStatus(
-              selected?.subscription_status,
+              selected?.subscription_status
             );
             setDraftSub(next);
             if (next !== cur) confirm.onOpen();
@@ -242,7 +245,7 @@ export default function DesktopSubscriptionDetailsPage() {
                   value={draftPayment}
                   onChange={(n) => {
                     const cur = normalizePaymentStatus(
-                      selected?.payment_status,
+                      selected?.payment_status
                     );
                     setDraftPayment(n);
                     if (n !== cur) confirm.onOpen();
@@ -258,7 +261,7 @@ export default function DesktopSubscriptionDetailsPage() {
                   value={draftSub}
                   onChange={(n) => {
                     const cur = normalizeSubscriptionStatus(
-                      selected?.subscription_status,
+                      selected?.subscription_status
                     );
                     setDraftSub(n);
                     if (n !== cur) confirm.onOpen();

@@ -1,4 +1,3 @@
-
 import { Box, Button, Skeleton, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { Form, Formik } from 'formik';
@@ -6,16 +5,16 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { punchKingLogo } from '../../../../assets';
-import FormikDatePicker from '../../../../components/form/FormikDatePicker';
-import FormikSelect from '../../../../components/form/FormikSelect';
-import FormikTextField from '../../../../components/form/FormikWhiteTextField';
-import MobileImagePickerDialog from '../../../../components/modal/MobileImagePickerDialog';
-import NoticeModal from '../../../../components/modal/NoticeModal';
-import PKImageDialog from '../../../../components/modal/PkImageDialog';
-import { useDisclosure } from '../../../../hooks/useDisclosure';
-import { useUploadTeamImage } from '../../../../hooks/useUploadTeamImage';
-import { useTeamProfile } from '../hooks/useTeamProfile';
-import { useUpdateTeamProfile } from '../hooks/useUpdateTeamProfile';
+import FormikDatePicker from '../../../../components/form/FormikDatePicker.tsx';
+import FormikSelect from '../../../../components/form/FormikSelect.tsx';
+import FormikTextField from '../../../../components/form/FormikWhiteTextField.tsx';
+import MobileImagePickerDialog from '../../../../components/modal/MobileImagePickerDialog.tsx';
+import NoticeModal from '../../../../components/modal/NoticeModal.tsx';
+import PKImageDialog from '../../../../components/modal/PkImageDialog.tsx';
+import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
+import { useUploadTeamImage } from '../../../../hooks/useUploadTeamImage.ts';
+import { useTeamProfile } from '../hooks/useTeamProfile.ts';
+import { useUpdateTeamProfile } from '../hooks/useUpdateTeamProfile.tsx';
 
 const schema = Yup.object({
   team_name: Yup.string().required('Required'),
@@ -218,8 +217,6 @@ const STATE_OPTIONS: Record<string, { value: string; label: string }[]> = {
 };
 
 function MobileTeamDetailsSection({ teamId }: Props) {
-
-
   const { data, isLoading, isError } = useTeamProfile(teamId);
   const updateTeam = useUpdateTeamProfile(teamId);
   const uploadMutation = useUploadTeamImage();
@@ -319,6 +316,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
       <Typography variant='h6' sx={{ fontWeight: 900, color: '#fff', mb: 1 }}>
         TEAM DETAILS
       </Typography>
+
       <Formik
         enableReinitialize
         initialValues={initialValues}
@@ -338,9 +336,9 @@ function MobileTeamDetailsSection({ teamId }: Props) {
               setTouched(
                 Object.keys(errors).reduce(
                   (acc, k) => ({ ...acc, [k]: true }),
-                  {},
+                  {}
                 ),
-                false,
+                false
               );
               return;
             }
@@ -377,7 +375,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                       }}
                     />
                   ) : (
-                    <Typography sx={{ color: '#888' }}>No Image</Typography>
+                    <Typography sx={{ color: '#888' }}>No image</Typography>
                   )}
                 </Box>
 
@@ -396,6 +394,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                   </Button>
                 </Box>
               </Box>
+
               {/* Fields – single column for mobile */}
               <Box sx={{ display: 'grid', gap: 1 }}>
                 <FormikTextField
@@ -483,6 +482,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                   rows={4}
                 />
               </Box>
+
               <Button
                 type='button'
                 variant='text'
@@ -498,6 +498,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
               >
                 Update
               </Button>
+
               {/* Upload dialog */}
               {/* <PKDialog
                 open={uploadDialog.open}
@@ -597,6 +598,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                   }
                 }}
               />
+
               {/* Certificate preview (placeholder) */}
               <PKImageDialog
                 open={certDialog.open}
@@ -606,6 +608,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                 frame={false}
                 mobileCertificate
               />
+
               {/* Confirm update */}
               <NoticeModal
                 open={confirmOpen}
@@ -629,6 +632,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                 loading={updateTeam.isPending}
                 showCloseText
               />
+
               {/* Success message */}
               <NoticeModal
                 open={successOpen}

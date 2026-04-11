@@ -1,6 +1,6 @@
 import { Box, Dialog, DialogContent, IconButton, Typography, useMediaQuery } from "@mui/material";
 import type { ReactNode } from "react";
-import { colors } from "../../../../../../theme/colors";
+import { colors } from "../../../../../../theme/colors.ts";
 import CloseRounded from '@mui/icons-material/CloseRounded';
 
 
@@ -14,9 +14,7 @@ type Props = {
 }
 
 function MobilePostModal({ open, onClose, media, body }: Props) {
-
-
-  const isXs = useMediaQuery('(max-width:600px)');
+      const isXs = useMediaQuery('(max-width:600px)');
 
   return (
     <Dialog
@@ -49,6 +47,7 @@ function MobilePostModal({ open, onClose, media, body }: Props) {
           <CloseRounded />
         </IconButton>
       </Box>
+
       <DialogContent sx={{ pt: 0 }}>
         <Box
           sx={{

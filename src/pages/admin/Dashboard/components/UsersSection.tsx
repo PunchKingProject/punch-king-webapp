@@ -1,7 +1,7 @@
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
-import type { UserSponsorship } from '../api/dashboard.types';
+} from '../../../../components/tables/PaginatedTable.tsx';
+import type { UserSponsorship } from '../api/dashboard.types.ts';
 // import type { UserSponsorship } from '../DashboardPageCopy';
 
 

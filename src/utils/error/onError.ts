@@ -1,7 +1,7 @@
 // utils/onError.ts
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import { showError } from './toastError';
+import { showError } from './toastError.ts';
 
 // Wraps your custom onError so it always shows a toast first
 export function withErrorToast<

@@ -1,13 +1,13 @@
 import type { Dayjs } from "dayjs";
-import { useSingleUserStats } from "../hooks/useSingleUserStats";
+import { useSingleUserStats } from "../hooks/useSingleUserStats.ts";
 import { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
-import ROUTES from "../../../../routes/routePath";
-import AdminSection from "../../components/AdminSection";
-import AdminBreadCrumbs from "../../components/AdminBreadcrumbs";
-import DateRangeFilter from "../../../../components/filters/DateRangeFilter";
+import ROUTES from "../../../../routes/routePath.ts";
+import AdminSection from "../../components/AdminSection.tsx";
+import AdminBreadCrumbs from "../../components/AdminBreadcrumbs.tsx";
+import DateRangeFilter from "../../../../components/filters/DateRangeFilter.tsx";
 import dayjs from "dayjs";
-import type { MetricCard } from "../../components/CardGrid";
+import type { MetricCard } from "../../components/CardGrid.tsx";
 import DateFilterIcon from '../../../../assets/filterTimeFrameIcon.svg?react';
 
 

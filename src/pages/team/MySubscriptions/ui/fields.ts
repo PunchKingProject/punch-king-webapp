@@ -1,4 +1,4 @@
-import type { Field } from '../../../admin/components/ScrollableSection';
+import type { Field } from '../../../admin/components/ScrollableSection.tsx';
 
 export type MobileSubPaymentItem = {
   id: number;

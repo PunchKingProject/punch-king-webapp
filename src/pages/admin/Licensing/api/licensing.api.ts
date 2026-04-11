@@ -1,5 +1,5 @@
-import { customFetch } from "../../../../Axios";
-import type { ApiEnvelope, FetchLicensesParams, FetchTeamLicenseHistoryParams, LicensePayload, TeamLicenseHistoryResponse, UpdateLicenseStatusPayload } from "./licensing.types";
+import { customFetch } from "../../../../Axios.ts";
+import type { ApiEnvelope, FetchLicensesParams, FetchTeamLicenseHistoryParams, LicensePayload, TeamLicenseHistoryResponse, UpdateLicenseStatusPayload } from "./licensing.types.ts";
 
 export async function fetchLicenses(
   params: FetchLicensesParams

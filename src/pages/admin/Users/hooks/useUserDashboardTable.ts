@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchUserDashboardTable } from '../api/users.api';
+import { fetchUserDashboardTable } from '../api/users.api.ts';
 import type {
 
   ApiResponse,
   Paged,
   UserTableApiRow,
   UserTableParams,
-} from '../api/users.types';
+} from '../api/users.types.ts';
 
 export function useUserDashboardTable(params: UserTableParams) {
   return useQuery<ApiResponse<Paged<UserTableApiRow>>>({

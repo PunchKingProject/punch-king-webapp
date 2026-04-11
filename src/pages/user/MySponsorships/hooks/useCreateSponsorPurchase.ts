@@ -1,36 +1,18 @@
-// BEFORE
-// import { createSponsorshipPurchase } from '../api/mysponsorships.api';
-
-// AFTER
-import { createSponsorPurchase } from '../api/mysponsorships.api';
-
+// src/pages/user/MySponsorships/hooks/useCreateSponsorPurchase.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createSponsorPurchase } from '../api/mysponsorships.api.ts';
+import type {CreateSponsorPurchaseRequest, CreateSponsorPurchaseResponse} from "../api/mysponsorships.types.ts";
 
-type CreatePurchaseArgs = {
-  points: number;
-  payment_amount: number;
-  payment_slip: string; // URL already uploaded
-};
-
-// Hard-code implicit fields here and set today's date
 export function useCreateSponsorPurchase() {
   const qc = useQueryClient();
 
-  return useMutation<void, Error, CreatePurchaseArgs>({
-    mutationFn: async ({ points, payment_amount, payment_slip }) => {
-      await createSponsorPurchase({
-        payment_date: new Date().toISOString(), // today
-        payment_amount,
-        points,
-        payment_slip,
-        // hard-coded implicit fields
-        source_bank_name: 'FCMB',
-        source_bank_account_name: 'Akinbulejo Samson',
-        source_bank_account_number: '2003010825',
-      });
+  return useMutation<CreateSponsorPurchaseResponse, Error, CreateSponsorPurchaseRequest>({
+    mutationFn: async (body) => {
+      // The API function now returns the { data: "http..." } object
+      return await createSponsorPurchase(body);
     },
     onSuccess: () => {
-      // keep it simple; refresh balances & history
+      // Invalidate queries to ensure UI is fresh when user returns from Flutterwave
       qc.invalidateQueries({ queryKey: ['user-stats'] });
       qc.invalidateQueries({ queryKey: ['purchase-history'] });
     },

@@ -1,12 +1,11 @@
-
 import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import { teamPostImage1, teamPostImage2, teamPostImage3 } from '../../../assets';
 import FilterIcon from '../../../assets/filterIcon.svg?react';
-import CustomButton from '../../../components/buttons/CustomButton';
-import { colors } from '../../../theme/colors';
+import CustomButton from '../../../components/buttons/CustomButton.tsx';
+import { colors } from '../../../theme/colors.ts';
 
 const images = [
   teamPostImage3,
@@ -17,8 +16,6 @@ const images = [
 ];
 
 const TeamPost = () => {
-
-
   return (
     <Box
       id='posts'
@@ -39,7 +36,7 @@ const TeamPost = () => {
           color: 'white',
         }}
       >
-        TEAM
+        TEAM{' '}
         <span
           style={{
             color: colors.Accent,
@@ -48,6 +45,7 @@ const TeamPost = () => {
           POSTS
         </span>
       </Typography>
+
       <Box display={'flex'} justifyContent={'center'} mb={6}>
         <CustomButton
           variant='outlined'
@@ -80,6 +78,7 @@ const TeamPost = () => {
           </Box>
         </CustomButton>
       </Box>
+
       {/* <OverlappingSliderCarousel /> */}
       <OverlappingCarousel />
     </Box>

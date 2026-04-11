@@ -5,33 +5,33 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { colors } from '../../../theme/colors';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { colors } from '../../../theme/colors.ts';
 
-import PKImageDialog from '../../../components/modal/PkImageDialog';
-import NoticeModal from '../../../components/modal/NoticeModal';
+import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
 import StatusChipDropdown, {
   type PaymentStatus,
   type LicenseStatus as SubscriptionStatus,
-} from '../../../components/chips/StatusChipDropdown';
+} from '../../../components/chips/StatusChipDropdown.tsx';
 
 import WarningIcon from '../../../assets/modalQuestionIcon.svg?react';
 import SuccessIcon from '../../../assets/modalSuccess.svg?react';
 
-import { ScrollableSection } from '../components/ScrollableSection';
-import { useDisclosure } from '../../../hooks/useDisclosure';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import { useDisclosure } from '../../../hooks/useDisclosure.ts';
 
-import { useTeamSubHistory } from './hooks/useTeamSubHistory';
-import { useUpdateSubStatus } from './hooks/useUpdateSubStatus';
-import type { SubApiRow } from './api/subscriptions.types';
+import { useTeamSubHistory } from './hooks/useTeamSubHistory.ts';
+import { useUpdateSubStatus } from './hooks/useUpdateSubStatus.ts';
+import type { SubApiRow } from './api/subscriptions.types.ts';
 
 import {
   normalizePaymentStatus,
   normalizeSubscriptionStatus,
-} from '../../../utils/helpers';
+} from '../../../utils/helpers.ts';
 
 import type { DateRange } from 'react-day-picker';
-import { subHistoryFieldData, type MobileSubHistoryRow } from './ui/fields';
+import { subHistoryFieldData, type MobileSubHistoryRow } from './ui/fields.ts';
 
 // ===== helpers =====
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
@@ -168,6 +168,7 @@ export default function MobileSubscriptionDetailsPage() {
           />
         </Box>
       </Box>
+
       {/* TEAM details (simple stacked labels to match the mock) */}
       <Box sx={{ px: 2, mt: 1 }}>
         <Typography
@@ -209,6 +210,7 @@ export default function MobileSubscriptionDetailsPage() {
           </Box>
         )}
       </Box>
+
       {/* PAYMENT details */}
       <Box id='payment-details' sx={{ px: 2, mt: 4 }}>
         <Typography
@@ -234,7 +236,7 @@ export default function MobileSubscriptionDetailsPage() {
               value={
                 selected?.payment_date
                   ? `${dayjs(selected.payment_date).format(
-                      'M/D/YYYY',
+                      'M/D/YYYY'
                     )}  ${dayjs(selected.payment_date).format('h:mma')}`
                   : 'N/A'
               }
@@ -245,7 +247,7 @@ export default function MobileSubscriptionDetailsPage() {
                 typeof selected?.payment_amount === 'number'
                   ? new Intl.NumberFormat(undefined, {
                       style: 'currency',
-                      currency: 'NGN',
+                      currency: 'USD',
                       maximumFractionDigits: 2,
                     }).format(selected!.payment_amount)
                   : 'N/A'
@@ -320,6 +322,7 @@ export default function MobileSubscriptionDetailsPage() {
           )}
         </Box>
       </Box>
+
       {/* CONFIRMATION (chips) */}
       <Box sx={{ px: 2, mt: 5 }}>
         <Typography
@@ -354,7 +357,7 @@ export default function MobileSubscriptionDetailsPage() {
               value={draftSub}
               onChange={(next) => {
                 const cur = normalizeSubscriptionStatus(
-                  selected?.subscription_status,
+                  selected?.subscription_status
                 );
                 setDraftSub(next);
                 if (next !== cur) confirm.onOpen();
@@ -363,6 +366,7 @@ export default function MobileSubscriptionDetailsPage() {
           </Box>
         </Box>
       </Box>
+
       {/* SUBSCRIPTION history (mobile list + eye icon) */}
       <ScrollableSection<MobileSubHistoryRow>
         title='SUBSCRIPTION history'
@@ -390,6 +394,7 @@ export default function MobileSubscriptionDetailsPage() {
           </IconButton>
         )}
       />
+
       {/* Slip fullscreen dialog (mobile style card) */}
       <PKImageDialog
         open={slip.open}
@@ -398,6 +403,7 @@ export default function MobileSubscriptionDetailsPage() {
         src={selected?.payment_slip ?? undefined}
         mobileCertificate
       />
+
       {/* Confirm / Success */}
       <NoticeModal
         open={confirm.open}
@@ -412,6 +418,7 @@ export default function MobileSubscriptionDetailsPage() {
         secondaryLabel='Cancel'
         icon={<WarningIcon />}
       />
+
       <NoticeModal
         open={success.open}
         onClose={success.onClose}

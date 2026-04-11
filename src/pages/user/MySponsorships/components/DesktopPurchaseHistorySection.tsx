@@ -2,11 +2,11 @@
 import { Box, IconButton } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
-import StatusChip from '../../../../components/chips/StatusChip';
+} from '../../../../components/tables/PaginatedTable.tsx';
+import StatusChip from '../../../../components/chips/StatusChip.tsx';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import dayjs from 'dayjs';
-import type { PurchaseHistoryRow } from '../api/mysponsorships.types';
+import type { PurchaseHistoryRow } from '../api/mysponsorships.types.ts';
 
 export type PurchaseRow = {
   id: number;

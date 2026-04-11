@@ -7,13 +7,13 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 import DateFilterIcon from '../../../../assets/filterTimeFrameIcon.svg?react';
-import DateRangeFilter from '../../../../components/filters/DateRangeFilter';
-import AdminSection from '../../components/AdminSection';
-import type { MetricCard } from '../../components/CardGrid';
+import DateRangeFilter from '../../../../components/filters/DateRangeFilter.tsx';
+import AdminSection from '../../components/AdminSection.tsx';
+import type { MetricCard } from '../../components/CardGrid.tsx';
 import { useDashboardStats, useRankedTeams, useRankedUsers } from '../hooks';
-import { rankedUserColumns, teamColumns } from '../ui/columns';
-import TeamsSection from './TeamsSection';
-import UsersSection from './UsersSection';
+import { rankedUserColumns, teamColumns } from '../ui/columns.ts';
+import TeamsSection from './TeamsSection.tsx';
+import UsersSection from './UsersSection.tsx';
 
 
 

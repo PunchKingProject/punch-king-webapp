@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { SponsorRelatedStats, SponsorRelatedStatsParams } from "../api/mySponsorship.types";
-import { getSponsorRelatedStats } from "../api/mySponsorship.api";
+import type { SponsorRelatedStats, SponsorRelatedStatsParams } from "../api/mySponsorship.types.ts";
+import { getSponsorRelatedStats } from "../api/mySponsorship.api.ts";
 
 export function useSponsorRelatedStats(params: SponsorRelatedStatsParams) {
   return useQuery<SponsorRelatedStats, Error>({

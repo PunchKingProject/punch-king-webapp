@@ -4,35 +4,35 @@ import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import ROUTES from '../../../routes/routePath';
+import ROUTES from '../../../routes/routePath.ts';
 
-import MobileLicenseHistory from './components/MobileLicenseHistory';
-import MobileLicensePaymentHistory from './components/MobileLicensePaymentHistory';
-import MobileLicensingStatsCards from './components/MobileLicensingStatsCards';
+import MobileLicenseHistory from './components/MobileLicenseHistory.tsx';
+import MobileLicensePaymentHistory from './components/MobileLicensePaymentHistory.tsx';
+import MobileLicensingStatsCards from './components/MobileLicensingStatsCards.tsx';
 
-import { useLicenseActiveInactive } from './hooks/useLicenseActiveInactive';
-import { useLicensePaymentHistory } from './hooks/useLicensePaymentHistory';
-import { useTeamLicenseStats } from './hooks/useTeamLicenseStats';
+import { useLicenseActiveInactive } from './hooks/useLicenseActiveInactive.ts';
+import { useLicensePaymentHistory } from './hooks/useLicensePaymentHistory.ts';
+import { useTeamLicenseStats } from './hooks/useTeamLicenseStats.ts';
 
-import TeamMobileBreadcrumbs from '../../../components/breadcrumbs/TeamMobileBreadcrumbs';
+import TeamMobileBreadcrumbs from '../../../components/breadcrumbs/TeamMobileBreadcrumbs.tsx';
 import type {
   LicenseHistoryListRow as ApiLicenseHistoryListRow, // active/inactive list envelope
   LicenseHistoryRow as ApiLicenseHistoryRow, // payment history envelope
   LicenseHistoryList,
   TeamLicenseHistory, // payment history envelope
-} from './api/mylicensing.types';
-import type { LicenseHistoryRow, LicensePaymentRow } from './ui/fields';
+} from './api/mylicensing.types.ts';
+import type { LicenseHistoryRow, LicensePaymentRow } from './ui/fields.ts';
 
-const fmtNGN = (n?: number | null) => {
+const fmtUSD = (n?: number | null) => {
   const v = typeof n === 'number' ? n : 0;
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'USD',
       maximumFractionDigits: 2,
     }).format(v);
   } catch {
-    return `₦${v.toLocaleString()}`;
+    return `$${v.toLocaleString()}`;
   }
 };
 
@@ -109,7 +109,7 @@ export default function MobileMyLicensingPage() {
         return {
           id: r.id,
           license_name: name,
-          amount_paid: fmtNGN(r.payment_amount),
+          amount_paid: fmtUSD(r.payment_amount),
           payment_date: r.payment_date
             ? dayjs(r.payment_date).format('M/D/YYYY')
             : '—',
@@ -160,7 +160,7 @@ export default function MobileMyLicensingPage() {
             ? dayjs(r.start_date).format('M/D/YYYY')
             : '—',
           end_date: r.end_date ? dayjs(r.end_date).format('M/D/YYYY') : '—',
-          amount_paid: fmtNGN(r.amount_paid),
+          amount_paid: fmtUSD(r.amount_paid),
           status: isActive ? 'Active' : 'Expired',
         };
       }) ?? [];

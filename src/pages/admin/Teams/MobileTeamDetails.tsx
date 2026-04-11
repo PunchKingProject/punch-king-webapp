@@ -6,16 +6,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import MobileBreadCrumbs from '../../../components/breadcrumbs/MobileBreadCrumbs';
-import MobileMetricCard from '../../../components/cards/MobileMetricCard';
-import ROUTES from '../../../routes/routePath';
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../components/ScrollableSection';
-import { useSingleTeamStats } from './hooks/useSingleTeamStats';
-import { useTeamVoteHistory } from './hooks/useTeamVoteHistory';
-import { sponsorFieldData, type SponsorRow } from './ui/fields';
-import MobileTeamDetailsSection from './components/MobileTeamDetailsSection';
-import MobileTeamPostCarousel from './components/modal/mobile/MobileTeamPostCarousel';
+import MobileBreadCrumbs from '../../../components/breadcrumbs/MobileBreadCrumbs.tsx';
+import MobileMetricCard from '../../../components/cards/MobileMetricCard.tsx';
+import ROUTES from '../../../routes/routePath.ts';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import { useSingleTeamStats } from './hooks/useSingleTeamStats.ts';
+import { useTeamVoteHistory } from './hooks/useTeamVoteHistory.ts';
+import { sponsorFieldData, type SponsorRow } from './ui/fields.ts';
+import MobileTeamDetailsSection from './components/MobileTeamDetailsSection.tsx';
+import MobileTeamPostCarousel from './components/modal/mobile/MobileTeamPostCarousel.tsx';
 
 // ---- helpers ----
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');

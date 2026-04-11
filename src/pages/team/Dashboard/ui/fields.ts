@@ -1,11 +1,11 @@
-import type { Field } from '../../../admin/components/ScrollableSection';
+import type { Field } from '../../../admin/components/ScrollableSection.tsx';
 
 /* ---------- Sponsorship History ---------- */
 export type TeamSponsorshipRow = {
   idx: number;
   sponsor_name: string;
   date: string;
-  amount_paid: string; // already formatted as NGN string
+  amount_paid: string; // already formatted as USD string
   units: number;
 };
 
@@ -22,7 +22,7 @@ export type TeamSubscriptionRow = {
   subscription_type: string;
   start_date: string;
   end_date: string;
-  amount_paid: string; // NGN string
+  amount_paid: string; // USD string
   status: string; // "Active" | "Expired" | "—"
 };
 
@@ -40,7 +40,7 @@ export type TeamLicenseRow = {
   license_name: string;
   start_date: string;
   end_date: string;
-  amount_paid: string; // NGN string
+  amount_paid: string; // USD string
   status: string;
 };
 

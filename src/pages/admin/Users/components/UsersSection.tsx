@@ -1,7 +1,7 @@
 import { Box, IconButton } from '@mui/material';
-import type { TableColumn } from '../../../../components/tables/PaginatedTable';
-import PaginatedTable from '../../../../components/tables/PaginatedTable';
-import type { UserTableRow } from '../api/users.types';
+import type { TableColumn } from '../../../../components/tables/PaginatedTable.tsx';
+import PaginatedTable from '../../../../components/tables/PaginatedTable.tsx';
+import type { UserTableRow } from '../api/users.types.ts';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 type Props = {

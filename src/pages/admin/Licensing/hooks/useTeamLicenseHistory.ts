@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { FetchTeamLicenseHistoryParams, TeamLicenseHistoryResponse } from "../api/licensing.types";
-import { fetchTeamLicenseHistory } from "../api/licensing.api";
+import type { FetchTeamLicenseHistoryParams, TeamLicenseHistoryResponse } from "../api/licensing.types.ts";
+import { fetchTeamLicenseHistory } from "../api/licensing.api.ts";
 
 
 export function useTeamLicenseHistory(params: FetchTeamLicenseHistoryParams) {

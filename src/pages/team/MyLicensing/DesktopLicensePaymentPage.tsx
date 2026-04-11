@@ -1,10 +1,10 @@
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Box, Button, Typography } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import ROUTES from '../../../routes/routePath';
-import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import DesktopLicensePaymentForm from './components/DesktopLicensePaymentForm';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import ROUTES from '../../../routes/routePath.ts';
+import { TEAM_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import DesktopLicensePaymentForm from './components/DesktopLicensePaymentForm.tsx';
 
 export default function DesktopLicensePaymentPage() {
   const navigate = useNavigate();
@@ -20,7 +20,6 @@ export default function DesktopLicensePaymentPage() {
               to={ROUTES.TEAM} // or your dashboard root
               sx={{ color: '#A2A2A2', fontWeight: 600, fontSize: 16 }}
             >
-              {' '}
               TEAM DASHBOARD
             </Typography>
             <Typography sx={{ color: '#A2A2A2' }}>/</Typography>
@@ -70,7 +69,7 @@ export default function DesktopLicensePaymentPage() {
             },
           }}
         > */}
-        <DesktopLicensePaymentForm />
+          <DesktopLicensePaymentForm />
         {/* </Box> */}
       </DashboardSection>
     </>

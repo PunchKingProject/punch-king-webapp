@@ -1,7 +1,7 @@
 // pages/admin/components/SideNav.tsx
 import { Box, Button, type SxProps, type Theme } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { colors } from '../../theme/colors';
+import { colors } from '../../theme/colors.ts';
 
 export type SideNavItem = {
   label: string;

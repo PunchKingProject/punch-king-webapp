@@ -1,7 +1,7 @@
 // src/pages/user/FeedView/FeedViewPage.tsx
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopFeedViewPage from './DesktopFeedViewPage';
-import MobileFeedViewPage from './MobileFeedViewPage';
+import DesktopFeedViewPage from './DesktopFeedViewPage.tsx';
+import MobileFeedViewPage from './MobileFeedViewPage.tsx';
 
 
 export default function FeedViewPage() {

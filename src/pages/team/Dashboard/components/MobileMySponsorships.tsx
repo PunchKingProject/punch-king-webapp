@@ -1,8 +1,8 @@
-import { ScrollableSection } from '../../../admin/components/ScrollableSection';
+import { ScrollableSection } from '../../../admin/components/ScrollableSection.tsx';
 import {
     teamSponsorshipFields,
     type TeamSponsorshipRow,
-} from '../../Dashboard/ui/fields';
+} from '../ui/fields.ts';
 
 type Props = {
   rows: TeamSponsorshipRow[];

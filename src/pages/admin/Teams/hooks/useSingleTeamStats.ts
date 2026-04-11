@@ -1,7 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query";
-import type { SingleTeamStats, SingleTeamStatsParams } from "../api/teams.types";
-import { getSingleTeamStats } from "../api/teams.api";
+import type { SingleTeamStats, SingleTeamStatsParams } from "../api/teams.types.ts";
+import { getSingleTeamStats } from "../api/teams.api.ts";
 
 
 export function useSingleTeamStats(params: SingleTeamStatsParams) {

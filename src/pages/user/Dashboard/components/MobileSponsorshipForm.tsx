@@ -4,7 +4,7 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Chip,
+  Chip, CircularProgress,
   TextField,
   Typography,
 } from '@mui/material';
@@ -12,8 +12,8 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import { Formik, Form } from 'formik';
 import { toast } from 'react-toastify';
-import { useVoteForPost } from '../hooks/useVoteForPost';
-import { showError } from '../../../../utils/error/toastError';
+import { useVoteForPost } from '../hooks/useVoteForPost.ts';
+import { showError } from '../../../../utils/error/toastError.ts';
 
 const gold = '#EFAF00';
 
@@ -45,8 +45,6 @@ export default function MobileSponsorshipForm({
   contributors,
 //   onBuy,
 }: Props) {
-
-
   const { mutateAsync, isPending } = useVoteForPost();
 
   return (
@@ -54,7 +52,6 @@ export default function MobileSponsorshipForm({
       {/* Meta */}
       <Box sx={{ display: 'grid', gap: 0.25 }}>
         <Typography sx={{ color: '#EFAF00', fontWeight: 700, fontSize: 12 }}>
-          {' '}
           TEAM NAME:&nbsp;
           <span style={{ color: '#fff' }}>{teamName || '—'}</span>
         </Typography>
@@ -63,6 +60,7 @@ export default function MobileSponsorshipForm({
           <span style={{ color: '#fff' }}>{teamPosition || '—'}</span>
         </Typography>
       </Box>
+
       {/* Media */}
       <Card sx={{ ...cardSx, p: 0.75 }}>
         {mediaUrl ? (
@@ -76,6 +74,7 @@ export default function MobileSponsorshipForm({
           <Box sx={{ height: 200, bgcolor: '#2a2a2a', borderRadius: '10px' }} />
         )}
       </Card>
+
       {/* Chips */}
       <Box sx={{ display: 'flex', gap: 1.25 }}>
         <Chip
@@ -109,6 +108,7 @@ export default function MobileSponsorshipForm({
           }}
         />
       </Box>
+
       {/* Form */}
       <Formik<FormValues>
         initialValues={{ amount: '5' }}
@@ -118,7 +118,7 @@ export default function MobileSponsorshipForm({
           const raw = values.amount.trim();
           if (!raw) errors.amount = 'Amount is required';
           else if (!/^\d+$/.test(raw)) errors.amount = 'Enter a whole number';
-          else if (Number(raw) < 1) errors.amount = 'Amount must be at least 1';
+          else if (Number(raw) < 1) errors.amount = 'Amount must be at least 5';
           return errors;
         }}
         onSubmit={async (vals, helpers) => {
@@ -127,7 +127,7 @@ export default function MobileSponsorshipForm({
             const amount = parseInt(vals.amount.trim(), 10);
             await mutateAsync({ post_id: postId, amount });
             toast.success('Sponsorship submitted successfully.');
-            helpers.resetForm({ values: { amount: '1' } });
+            helpers.resetForm({ values: { amount: '5' } });
           } catch (err: unknown) {
             showError(err);
           }
@@ -140,9 +140,8 @@ export default function MobileSponsorshipForm({
           setFieldValue,
           handleBlur,
           isSubmitting,
+            isValid,
         }) => {
-          const amountValid =
-            /^\d+$/.test(values.amount.trim()) && Number(values.amount) >= 1;
 
           return (
             <Form noValidate>
@@ -164,7 +163,9 @@ export default function MobileSponsorshipForm({
                     }}
                     error={Boolean(touched.amount && errors.amount)}
                     helperText={
-                      touched.amount && errors.amount ? errors.amount : ' '
+                      touched.amount && errors.amount
+                        ? errors.amount
+                        : 'Minimum sponsorship: 5 chips'
                     }
                     sx={{
                       '& .MuiInputBase-root': {
@@ -176,10 +177,11 @@ export default function MobileSponsorshipForm({
                   />
                 </CardContent>
               </Card>
+
               <Box sx={{ display: 'flex', gap: 1.25, mt: 1.25 }}>
                 <Button
                   type='submit'
-                  disabled={!amountValid || isPending || isSubmitting}
+                  disabled={!isValid || isPending || isSubmitting}
                   variant='contained'
                   sx={{
                     bgcolor: gold,
@@ -191,25 +193,13 @@ export default function MobileSponsorshipForm({
                     flex: 1,
                   }}
                 >
-                  {isPending ? 'Submitting…' : 'Sponsor'}
+                  {isPending ? (
+                    <CircularProgress size={20} sx={{ color: '#000' }} />
+                  ) : (
+                    'Sponsor'
+                  )}
                 </Button>
 
-                {/* <Button
-                  type='button'
-                  onClick={onBuy}
-                  variant='outlined'
-                  sx={{
-                    borderColor: gold,
-                    color: gold,
-                    textTransform: 'none',
-                    fontWeight: 700,
-                    height: 44,
-                    borderRadius: '10px',
-                    flex: 1,
-                  }}
-                >
-                  Buy Units
-                </Button> */}
               </Box>
             </Form>
           );

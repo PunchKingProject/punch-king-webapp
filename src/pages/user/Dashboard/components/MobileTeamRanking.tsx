@@ -13,12 +13,11 @@ import {
 } from '@mui/material';
 import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useState } from 'react';
-import { useRankedTeams } from '../hooks/useRankedTeams';
+import { useRankedTeams } from '../hooks/useRankedTeams.ts';
 
 const gold = '#EFAF00';
 
 function ordinal(n: number) {
- 
   const s = ['th', 'st', 'nd', 'rd'];
   const v = n % 100;
   return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`.toUpperCase();
@@ -56,7 +55,7 @@ export default function MobileTeamRanking() {
         }}
       >
         <InputBase
-          placeholder='Search'
+          placeholder="Search"
           value={searchUI}
           onChange={(e) => {
             setSearchUI(e.target.value);
@@ -64,10 +63,11 @@ export default function MobileTeamRanking() {
           }}
           sx={{ color: '#EDEDED', flex: 1, fontSize: 14 }}
         />
-        <IconButton size='small'>
-          <SearchIcon fontSize='small' sx={{ color: '#EDEDED' }} />
+        <IconButton size="small">
+          <SearchIcon fontSize="small" sx={{ color: '#EDEDED' }} />
         </IconButton>
       </Box>
+
       {/* List */}
       <Stack spacing={1.25}>
         {isLoading &&
@@ -82,24 +82,9 @@ export default function MobileTeamRanking() {
                 p: 1.5,
               }}
             >
-              <Skeleton
-                variant='text'
-                animation='wave'
-                width='70%'
-                sx={{ bgcolor: '#2a2a2a' }}
-              />
-              <Skeleton
-                variant='text'
-                animation='wave'
-                width='40%'
-                sx={{ bgcolor: '#2a2a2a' }}
-              />
-              <Skeleton
-                variant='rectangular'
-                animation='wave'
-                height={32}
-                sx={{ bgcolor: '#2a2a2a', mt: 1, borderRadius: 1 }}
-              />
+              <Skeleton variant="text" animation="wave" width="70%" sx={{ bgcolor: '#2a2a2a' }} />
+              <Skeleton variant="text" animation="wave" width="40%" sx={{ bgcolor: '#2a2a2a' }} />
+              <Skeleton variant="rectangular" animation="wave" height={32} sx={{ bgcolor: '#2a2a2a', mt: 1, borderRadius: 1 }} />
             </Box>
           ))}
 
@@ -115,37 +100,16 @@ export default function MobileTeamRanking() {
                 p: 1.5,
               }}
             >
-              <Typography
-                sx={{ color: '#C9C9C9', fontWeight: 700, fontSize: 12 }}
-              >
-                {' '}
+              <Typography sx={{ color: '#C9C9C9', fontWeight: 700, fontSize: 12 }}>
                 Team name:{' '}
-                <span style={{ color: '#FFF', fontWeight: 700 }}>
-                  {t.team_name}
-                </span>
+                <span style={{ color: '#FFF', fontWeight: 700 }}>{t.team_name}</span>
               </Typography>
-              <Typography
-                sx={{
-                  color: '#C9C9C9',
-                  fontWeight: 700,
-                  fontSize: 12,
-                  mt: 0.25,
-                }}
-              >
+              <Typography sx={{ color: '#C9C9C9', fontWeight: 700, fontSize: 12, mt: 0.25 }}>
                 LC No:{' '}
                 <span style={{ color: '#FFF' }}>{t.license_number || '—'}</span>
               </Typography>
 
-              <Stack
-                direction='row'
-                spacing={1}
-                sx={{
-                  mt: 1,
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '8px',
-                }}
-              >
+              <Stack direction="row" spacing={1} sx={{ mt: 1, alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                 <Chip
                   icon={<GroupsIcon sx={{ color: gold }} />}
                   label={
@@ -154,11 +118,7 @@ export default function MobileTeamRanking() {
                       <span style={{ color: '#C9C9C9' }}>Sponsors</span>
                     </span>
                   }
-                  sx={{
-                    bgcolor: 'transparent',
-                    border: '1px solid #3B3B3B',
-                    color: '#fff',
-                  }}
+                  sx={{ bgcolor: 'transparent', border: '1px solid #3B3B3B', color: '#fff' }}
                 />
                 <Chip
                   icon={<EmojiEventsIcon sx={{ color: gold }} />}
@@ -168,27 +128,17 @@ export default function MobileTeamRanking() {
                       <span style={{ color: '#C9C9C9' }}>Position</span>
                     </span>
                   }
-                  sx={{
-                    bgcolor: 'transparent',
-                    border: '1px solid #3B3B3B',
-                    color: '#fff',
-                  }}
+                  sx={{ bgcolor: 'transparent', border: '1px solid #3B3B3B', color: '#fff' }}
                 />
                 <Chip
                   icon={<Diversity3Icon sx={{ color: gold }} />}
                   label={
                     <span style={{ display: 'flex', gap: 6 }}>
                       <b style={{ color: '#fff' }}>{t.contributors ?? 0}</b>
-                      <span style={{ color: '#C9C9C9' }}>
-                       Contributors
-                      </span>
+                      <span style={{ color: '#C9C9C9' }}>Contributors</span>
                     </span>
                   }
-                  sx={{
-                    bgcolor: 'transparent',
-                    border: '1px solid #3B3B3B',
-                    color: '#fff',
-                  }}
+                  sx={{ bgcolor: 'transparent', border: '1px solid #3B3B3B', color: '#fff' }}
                 />
               </Stack>
             </Box>

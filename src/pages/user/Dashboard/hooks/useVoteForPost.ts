@@ -1,8 +1,8 @@
 // src/pages/user/Sponsorship/hooks/useVoteForPost.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import { voteForPost } from '../api/dashboard.api';
-import type { VotePayload, VoteResponse } from '../api/dashboard.types';
+import { voteForPost } from '../api/dashboard.api.ts';
+import type { VotePayload, VoteResponse } from '../api/dashboard.types.ts';
 
 export function useVoteForPost() {
   const qc = useQueryClient();

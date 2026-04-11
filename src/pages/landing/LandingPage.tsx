@@ -9,17 +9,16 @@ import {
   punchKingLogo,
   rankingBoxer,
   rankingSmallbox1,
-  updatedModalImage,
 } from '../../assets';
-import ChampionshipModal from '../../components/modal/ChampionshipModal';
-import Navbar from '../../components/nav/Navbar';
-import ROUTES from '../../routes/routePath';
-import { scrollToSection, type SectionKey } from '../../utils/helpers';
-import Footer from './components/Footer';
-import Hero from './components/Hero';
-import TeamPost from './components/TeamPost';
+import ChampionshipModal from '../../components/modal/ChampionshipModal.tsx';
+import Navbar from '../../components/nav/Navbar.tsx';
+import ROUTES from '../../routes/routePath.ts';
+import { scrollToSection, type SectionKey } from '../../utils/helpers.ts';
+import Footer from './components/Footer.tsx';
+import Hero from './components/Hero.tsx';
+import TeamPost from './components/TeamPost.tsx';
 
-const BANNER_IMG_FALLBACK = updatedModalImage;
+const BANNER_IMG_FALLBACK = heroBoxerLarge;
 
 const LandingPage = () => {
   const [bannerOpen, setBannerOpen] = useState(false);
@@ -73,7 +72,6 @@ const LandingPage = () => {
   return (
     <>
       <Navbar onNav={handleNav} />
-
       <Hero />
       <TeamPost />
       <Footer />

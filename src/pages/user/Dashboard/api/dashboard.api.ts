@@ -1,20 +1,18 @@
-import { customFetch } from '../../../../Axios';
+import { customFetch } from '../../../../Axios.ts';
 import type {
   AllPostsPayload,
   CreateCommentPayload,
   CreateCommentResponse,
   Envelope,
-  FeedPost,
   FetchAllPostsParams,
   FetchRankedTeamsParams,
   PostDetail,
-  RankedTeam,
   RankedTeamsPayload,
   UserStats,
   UserStatsParams,
   VotePayload,
   VoteResponse,
-} from './dashboard.types';
+} from './dashboard.types.ts';
 
 export async function getUserStats(
   params: UserStatsParams
@@ -33,12 +31,7 @@ export async function getAllPosts(
     '/post/all-posts',
     { params }
   );
-   const payload = data.data;
-   // normalize here
-   return {
-     meta: payload?.meta ?? { limit: params.limit, next_cursor: null },
-     posts: Array.isArray(payload?.posts) ? (payload!.posts as FeedPost[]) : [],
-   };
+  return data.data;
 }
 
 export async function getRankedTeams(
@@ -48,16 +41,7 @@ export async function getRankedTeams(
     '/user/ranked-team',
     { params }
   );
-  const payload = data.data;
-  return {
-    data: Array.isArray(payload?.data) ? (payload!.data as RankedTeam[]) : [],
-    metadata: payload?.metadata ?? {
-      current_page: 1,
-      page_size: 0,
-      total_count: 0,
-      last_page: 0,
-    },
-  };
+  return data.data;
 }
 
 export async function getPostById(postId: number): Promise<PostDetail> {

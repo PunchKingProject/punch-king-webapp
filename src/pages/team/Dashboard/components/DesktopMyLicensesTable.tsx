@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
-import StatusChip from '../../../../components/chips/StatusChip';
+} from '../../../../components/tables/PaginatedTable.tsx';
+import StatusChip from '../../../../components/chips/StatusChip.tsx';
 
 export type MyLicenseRow = {
   id: number;

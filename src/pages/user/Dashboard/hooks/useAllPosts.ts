@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getAllPosts } from "../api/dashboard.api";
-import type { AllPostsPayload } from "../api/dashboard.types";
+import { getAllPosts } from "../api/dashboard.api.ts";
+import type { AllPostsPayload } from "../api/dashboard.types.ts";
 
 
 

@@ -1,18 +1,18 @@
 import type { Dayjs } from 'dayjs';
-import DashboardSection from '../../../components/dashboards/DashboardSection';
-import { USER_SIDENAV_ITEMS } from '../../../utils/sidebarPresets';
-import { useMemo, useState } from 'react';
+import DashboardSection from '../../../components/dashboards/DashboardSection.tsx';
+import { USER_SIDENAV_ITEMS } from '../../../utils/sidebarPresets.ts';
+import { useMemo, useState} from 'react';
 import dayjs from 'dayjs';
 import type { DateRange } from 'react-day-picker';
-import { useUserStats } from './hooks/useUserStats';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import { useUserStats } from './hooks/useUserStats.ts';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
-import DesktopUserStatsCards from '../components/DesktopUserStatsCards';
+import DesktopUserStatsCards from '../components/DesktopUserStatsCards.tsx';
 import { Box } from '@mui/material';
-import DesktopTeamFeeds from './components/DesktopTeamFeeds';
-import DesktopTeamRanking from './components/DesktopTeamRanking';
-import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import DesktopTeamFeeds from './components/DesktopTeamFeeds.tsx';
+import DesktopTeamRanking from './components/DesktopTeamRanking.tsx';
+import {useNavigate} from 'react-router-dom';
+import ROUTES from '../../../routes/routePath.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 function DesktopDashboardPage() {

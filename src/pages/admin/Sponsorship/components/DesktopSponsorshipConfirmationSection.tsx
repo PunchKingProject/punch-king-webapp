@@ -2,8 +2,8 @@ import { Box, Typography } from '@mui/material';
 import StatusChipDropdown, {
   type PaymentStatus as ChipPaymentStatus,
   type LicenseStatus as ChipProcessStatus, // reuse dropdown's "license" domain for sponsor processing
-} from '../../../../components/chips/StatusChipDropdown';
-import type { PaymentStatus, PurchaseStatus, SponsorshipApiRow } from '../api/sponsorships.types';
+} from '../../../../components/chips/StatusChipDropdown.tsx';
+import type { PaymentStatus, PurchaseStatus, SponsorshipApiRow } from '../api/sponsorships.types.ts';
 
 type Props = {
   entry?: SponsorshipApiRow | null;
@@ -27,8 +27,6 @@ export default function DesktopSponsorshipConfirmationSection({
   onChangePayment,
   onChangePurchase,
 }: Props) {
-
-
   const teamName = entry?.team?.team_name ?? 'this team';
 
   return (
@@ -36,6 +34,7 @@ export default function DesktopSponsorshipConfirmationSection({
       <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>
         CONFIRMATION
       </Typography>
+
       <Box
         sx={{
           display: 'grid',
@@ -70,6 +69,7 @@ export default function DesktopSponsorshipConfirmationSection({
           />
         </Box>
       </Box>
+
       <Typography sx={{ mt: 2, color: '#A2A2A2', fontSize: 13 }}>
         Update statuses for <b style={{ color: '#fff' }}>{teamName}</b>. You
         will be asked to confirm before changes are applied.

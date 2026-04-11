@@ -1,6 +1,6 @@
 // src/pages/landing/components/TeamSponsorship.tsx
 import { Box, Typography, useMediaQuery } from '@mui/material';
-import { colors } from '../../../theme/colors';
+import { colors } from '../../../theme/colors.ts';
 import { rankingBoxer } from '../../../assets'; // use any image you prefer
 
 type Props = {
@@ -15,8 +15,6 @@ const PAD_X = {
 };
 
 export default function TeamSponsorship({ imageSrc = rankingBoxer }: Props) {
-
-
   const isTabletUp = useMediaQuery('(min-width:910px)');
 
   return (

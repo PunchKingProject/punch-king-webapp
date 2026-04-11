@@ -8,14 +8,14 @@ import { toast } from 'react-toastify';
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 import { useNavigate } from 'react-router-dom';
 
-import { colors } from '../../../theme/colors';
-import { useUserDashboardStats } from './hooks/useUserDashboardStats';
-import { useUserDashboardTable } from './hooks/useUserDashboardTable';
-import type { UserTableApiRow } from './api/users.types';
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../components/ScrollableSection';
-import ROUTES from '../../../routes/routePath';
-import { userSponsorshipFieldData } from './ui/fields';
+import { colors } from '../../../theme/colors.ts';
+import { useUserDashboardStats } from './hooks/useUserDashboardStats.ts';
+import { useUserDashboardTable } from './hooks/useUserDashboardTable.ts';
+import type { UserTableApiRow } from './api/users.types.ts';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import ROUTES from '../../../routes/routePath.ts';
+import { userSponsorshipFieldData } from './ui/fields.ts';
 
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
@@ -158,8 +158,6 @@ export default function MobileUserDashboard() {
       >
         <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>
           Users
-
-
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -184,6 +182,7 @@ export default function MobileUserDashboard() {
           />
         </Box>
       </Box>
+
       {/* Sliding metric cards */}
       <Box
         ref={containerRef}
@@ -248,6 +247,7 @@ export default function MobileUserDashboard() {
           </Box>
         ))}
       </Box>
+
       {/* Users server list */}
       <ScrollableSection<UserListItem>
         title='USER table'

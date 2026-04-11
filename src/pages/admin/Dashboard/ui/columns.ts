@@ -1,5 +1,5 @@
-import type { TableColumn } from "../../../../components/tables/PaginatedTable";
-import type { Team, UserSponsorship } from "../api/dashboard.types";
+import type { TableColumn } from "../../../../components/tables/PaginatedTable.tsx";
+import type { Team, UserSponsorship } from "../api/dashboard.types.ts";
 
 
 

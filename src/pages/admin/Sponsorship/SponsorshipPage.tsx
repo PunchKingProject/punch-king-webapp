@@ -1,7 +1,7 @@
 // pages/admin/SponsorshipPage.tsx
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopSponsorshipsDashboard from './DesktopSponsorshipsDashboard';
-import MobileSponsorshipsDashboard from './MobileSponsorshipsDashboard';
+import DesktopSponsorshipsDashboard from './DesktopSponsorshipsDashboard.tsx';
+import MobileSponsorshipsDashboard from './MobileSponsorshipsDashboard.tsx';
 
 export type SponsorshipRequest = {
   sponsor_name: string;

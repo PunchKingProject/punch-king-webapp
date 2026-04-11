@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getPostStats } from '../api/catalogue.api';
-import type { PostStats } from '../api/catalogue.types';
+import { getPostStats } from '../api/catalogue.api.ts';
+import type { PostStats } from '../api/catalogue.types.ts';
 
 export function usePostStats() {
   return useQuery<PostStats>({

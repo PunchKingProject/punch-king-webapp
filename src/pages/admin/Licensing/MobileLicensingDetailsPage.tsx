@@ -6,21 +6,21 @@ import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import { ScrollableSection } from '../components/ScrollableSection';
-import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory';
-import type { LicenseApiRow } from './api/licensing.types';
-import PKImageDialog from '../../../components/modal/PkImageDialog';
-import NoticeModal from '../../../components/modal/NoticeModal';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory.ts';
+import type { LicenseApiRow } from './api/licensing.types.ts';
+import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
 import StatusChipDropdown, {
   type LicenseStatus,
   type PaymentStatus,
-} from '../../../components/chips/StatusChipDropdown';
-import { useUpdateLicenseStatus } from './hooks/useUpdateLicenseStatus';
+} from '../../../components/chips/StatusChipDropdown.tsx';
+import { useUpdateLicenseStatus } from './hooks/useUpdateLicenseStatus.ts';
 import WarningIcon from '../../../assets/modalQuestionIcon.svg?react';
 import SuccessIcon from '../../../assets/modalSuccess.svg?react';
-import { historyFieldData, type HistoryRow } from './ui/fields';
-import { colors } from '../../../theme/colors';
+import { historyFieldData, type HistoryRow } from './ui/fields.ts';
+import { colors } from '../../../theme/colors.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 const formatRangeLabel = (from?: Date, to?: Date) => {
@@ -30,8 +30,6 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 
 
 export default function MobileLicensingDetailsPage() {
-
-
   const { team_id } = useParams<{ team_id?: string }>();
   const teamId = team_id ? Number(team_id) : 0;
 
@@ -148,7 +146,6 @@ export default function MobileLicensingDetailsPage() {
         }}
       >
         <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>
-          {' '}
           LICENSING / LICENSING DETAILS PAGE
         </Typography>
 
@@ -169,6 +166,7 @@ export default function MobileLicensingDetailsPage() {
           />
         </Box>
       </Box>
+
       {/* TEAM details */}
       <Box sx={{ px: 2, mt: 1 }}>
         <Typography variant='h6' sx={{ fontWeight: 900, color: '#fff', mb: 1 }}>
@@ -193,6 +191,7 @@ export default function MobileLicensingDetailsPage() {
           </Box>
         ))}
       </Box>
+
       {/* PAYMENT details (compact) */}
       <Box sx={{ px: 2, mt: 3 }}>
         <Typography variant='h6' sx={{ fontWeight: 900, color: '#fff', mb: 1 }}>
@@ -231,7 +230,7 @@ export default function MobileLicensingDetailsPage() {
             value={
               selected?.payment_date
                 ? `${dayjs(selected.payment_date).format('M/D/YYYY')}  ${dayjs(
-                    selected.payment_date,
+                    selected.payment_date
                   ).format('h:mma')}`
                 : 'N/A'
             }
@@ -243,7 +242,7 @@ export default function MobileLicensingDetailsPage() {
               typeof selected?.payment_amount === 'number'
                 ? new Intl.NumberFormat(undefined, {
                     style: 'currency',
-                    currency: 'NGN',
+                    currency: 'USD',
                     maximumFractionDigits: 2,
                   }).format(selected.payment_amount)
                 : 'N/A'
@@ -313,6 +312,7 @@ export default function MobileLicensingDetailsPage() {
           </Box>
         </Box>
       </Box>
+
       {/* CONFIRMATION (chips + confirm modal) */}
       <Box sx={{ px: 2, mt: 4 }}>
         <Typography variant='h6' sx={{ fontWeight: 900, color: '#fff', mb: 1 }}>
@@ -349,6 +349,7 @@ export default function MobileLicensingDetailsPage() {
           </Box>
         </Box>
       </Box>
+
       {/* SUBSCRIPTION history (server list-like, but we already have all rows here) */}
       <ScrollableSection<HistoryRow>
         title='SUBSCRIPTION history'
@@ -377,6 +378,7 @@ export default function MobileLicensingDetailsPage() {
           </IconButton>
         )}
       />
+
       {/* Slip viewer */}
       <PKImageDialog
         open={slipOpen}
@@ -386,6 +388,7 @@ export default function MobileLicensingDetailsPage() {
         mobileCertificate
         actions={null}
       />
+
       {/* Confirm + Success modals */}
       <NoticeModal
         open={confirmOpen}

@@ -3,7 +3,7 @@ import { Box, IconButton } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PaginatedTable, {
   type TableColumn,
-} from '../../../../components/tables/PaginatedTable';
+} from '../../../../components/tables/PaginatedTable.tsx';
 
 export type LicenseHistoryRow = {
   id: number;

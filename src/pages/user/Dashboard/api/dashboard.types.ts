@@ -10,7 +10,7 @@ export type UserStatsParams = {
 export type UserStats = {
   sponsorship_balance: number;
   total_amount_spent: number; // units spent
-  equivalent_amount_spent: number; // NGN cash equivalent
+  equivalent_amount_spent: number; // USD cash equivalent
   distinct_teams_sponsored: number;
   spent_units: number; // if this is the correct name
 };
@@ -36,7 +36,7 @@ export type AllPostsPayload = {
     limit: number;
     next_cursor: number | null;
   };
-  posts: FeedPost[] | null;
+  posts: FeedPost[];
 };
 
 export type FetchAllPostsParams = {
@@ -62,7 +62,7 @@ export type RankedTeam = {
 };
 
 export type RankedTeamsPayload = {
-  data: RankedTeam[] | null;
+  data: RankedTeam[];
   metadata: Meta;
 };
 

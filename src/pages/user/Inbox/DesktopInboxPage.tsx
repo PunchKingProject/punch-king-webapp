@@ -1,6 +1,8 @@
 
 function DesktopInboxPage() {
-  return <div>DesktopInboxPage</div>;
+  return (
+    <div>DesktopInboxPage</div>
+  )
 }
 
 export default DesktopInboxPage

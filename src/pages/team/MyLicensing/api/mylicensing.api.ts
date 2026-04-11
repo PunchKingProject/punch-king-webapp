@@ -1,5 +1,14 @@
-import { customFetch } from "../../../../Axios";
-import type { CreateLicensePaymentRequest, Envelope, FetchLicenseHistoryListParams, FetchLicenseHistoryParams, LicenseHistoryList, TeamLicenseHistory, TeamLicenseStats } from "./mylicensing.types";
+import { customFetch } from "../../../../Axios.ts";
+import type {
+  CreateLicensePaymentRequest,
+  CreateLicenseResponse,
+  Envelope,
+  FetchLicenseHistoryListParams,
+  FetchLicenseHistoryParams,
+  LicenseHistoryList, LicensePlansPayload, LicensePlansResponse,
+  TeamLicenseHistory,
+  TeamLicenseStats
+} from "./mylicensing.types.ts";
 
 export async function fetchTeamLicenseStats(params: {
   start_date: string;
@@ -36,6 +45,14 @@ export async function getLicenseActiveInactive(
 
 export async function createLicensePayment(
   body: CreateLicensePaymentRequest
-): Promise<void> {
-  await customFetch.post('/license/', body);
+): Promise<CreateLicenseResponse> {
+  const {data} = await customFetch.post('/license/', body);
+
+  return data
+}
+
+export async function getLicensePlans(): Promise<LicensePlansPayload[]> {
+  const { data } = await customFetch.get<LicensePlansResponse>('/license/plans');
+
+  return data.data;
 }

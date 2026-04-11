@@ -1,4 +1,3 @@
-
 // src/pages/admin/Teams/components/catalogue/TeamPostModal.tsx
 import {
   Box,
@@ -10,14 +9,12 @@ import {
 } from '@mui/material';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
-import { isVideo } from '../../../../../../utils/helpers';
-import type { TeamPost } from '../../../api/teams.types';
+import { isVideo } from '../../../../../../utils/helpers.ts';
+import type { TeamPost } from '../../../api/teams.types.ts';
 
 type Props = { open: boolean; onClose: () => void; item?: TeamPost | null };
 
 export default function TeamPostModal({ open, onClose, item }: Props) {
-
-
   const isSm = useMediaQuery('(max-width:600px)');
   const video = item ? isVideo(item.file_url) : false;
 

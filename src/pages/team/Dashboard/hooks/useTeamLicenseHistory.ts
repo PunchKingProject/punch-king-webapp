@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { FetchTeamLicenseHistoryParams, TeamLicenseHistory } from "../api/dashboard.types";
-import { getTeamLicenseHistory } from "../api/dashboard.api";
+import type { FetchTeamLicenseHistoryParams, TeamLicenseHistory } from "../api/dashboard.types.ts";
+import { getTeamLicenseHistory } from "../api/dashboard.api.ts";
 
 export function useTeamLicenseHistory(params: FetchTeamLicenseHistoryParams) {
   const enabled =

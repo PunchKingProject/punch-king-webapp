@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { getTeamSponsorshipStats } from '../api/mySponsorship.api';
+import { getTeamSponsorshipStats } from '../api/mySponsorship.api.ts';
 import type {
   TeamSponsorshipStats,
   TeamSponsorshipStatsParams,
-} from '../api/mySponsorship.types';
+} from '../api/mySponsorship.types.ts';
 
 export function useTeamSponsorshipStats(params: TeamSponsorshipStatsParams) {
   const enabled = !!params.start_date && !!params.end_date;

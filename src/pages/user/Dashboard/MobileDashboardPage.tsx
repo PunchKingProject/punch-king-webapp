@@ -1,10 +1,10 @@
 import { Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
-import MobileTeamFeeds from './components/MobileTeamFeeds';
-import MobileTeamRanking from './components/MobileTeamRanking';
-import MobileUserStatsCards from './components/MobileUserStatsCards';
-import { useUserStats } from './hooks/useUserStats';
+import {useNavigate} from 'react-router-dom';
+import ROUTES from '../../../routes/routePath.ts';
+import MobileTeamFeeds from './components/MobileTeamFeeds.tsx';
+import MobileTeamRanking from './components/MobileTeamRanking.tsx';
+import MobileUserStatsCards from './components/MobileUserStatsCards.tsx';
+import { useUserStats } from './hooks/useUserStats.ts';
 
 
 
@@ -16,6 +16,7 @@ const startDate = new Date(today); startDate.setDate(startDate.getDate() - 30);
 const start = startDate.toISOString().slice(0,10)
 
   const navigate = useNavigate();
+
   const { data, isLoading } = useUserStats({
     start_date: start,
     end_date: end,
@@ -25,9 +26,9 @@ const start = startDate.toISOString().slice(0,10)
     <Box sx={{ px: 2, py: 2 }}>
       {/* Page heading */}
       <Typography sx={{ color: '#A2A2A2', fontWeight: 700, fontSize: 12 }}>
-        {' '}
         USER DASHBOARD
       </Typography>
+
       {/* Stats Cards */}
       <Box sx={{ mt: 1.5 }}>
         <MobileUserStatsCards
@@ -42,6 +43,7 @@ const start = startDate.toISOString().slice(0,10)
           onViewSponsored={() => navigate(ROUTES.USER_MY_SPONSORSHIPS)}
         />
       </Box>
+
       {/* Feeds */}
       <Box sx={{ mt: 3 }}>
         <Typography sx={{ color: '#fff', fontWeight: 900, mb: 1 }}>
@@ -54,6 +56,7 @@ const start = startDate.toISOString().slice(0,10)
           onViewPost={(postId) => navigate(`/user/feeds/${postId}`)}
         />
       </Box>
+
       {/* Ranking */}
       <Box sx={{ mt: 4, mb: 6 }}>
         <Typography sx={{ color: '#fff', fontWeight: 900, mb: 1 }}>
@@ -61,6 +64,7 @@ const start = startDate.toISOString().slice(0,10)
         </Typography>
         <MobileTeamRanking />
       </Box>
+
       {/* Footer spacer for any sticky bars */}
       <Box sx={{ height: 16 }} />
     </Box>

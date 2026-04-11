@@ -1,4 +1,4 @@
-import { customFetch } from '../../../../Axios';
+import { customFetch } from '../../../../Axios.ts';
 import type {
   ApiEnvelope,
   FetchSponsorshipsParams,
@@ -11,7 +11,7 @@ import type {
   SponsorshipPayload,
   SponsorVoteHistoryPayload,
   UpdateSponsorshipStatusBody,
-} from './sponsorships.types';
+} from './sponsorships.types.ts';
 
 // GET /sponsorship/purchase-history?search=&page=1&page_size=10&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
 export async function fetchSponsorships(

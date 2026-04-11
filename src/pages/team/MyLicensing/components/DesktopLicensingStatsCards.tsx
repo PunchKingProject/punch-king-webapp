@@ -1,8 +1,7 @@
-
 // src/pages/team/MyLicensing/components/DesktopLicenseStatsCards.tsx
 import { Box, Button, Typography } from '@mui/material';
 import dayjs from 'dayjs';
-import type { LicenseSummary } from '../api/mylicensing.types';
+import type { LicenseSummary } from '../api/mylicensing.types.ts';
 
 type Props = {
   loading?: boolean;
@@ -31,8 +30,6 @@ export default function DesktopLicensingStatsCards({
   onGetLicense,
   onViewAll,
 }: Props) {
-
-
   return (
     <Box
       sx={{
@@ -45,7 +42,6 @@ export default function DesktopLicensingStatsCards({
       {/* Active license */}
       <Box sx={cardSx}>
         <Typography sx={{ color: '#C9C9C9', fontWeight: 600, mb: 0.5 }}>
-          {' '}
           Active License
         </Typography>
 
@@ -83,6 +79,7 @@ export default function DesktopLicensingStatsCards({
           Get license
         </Button>
       </Box>
+
       {/* All licenses */}
       <Box sx={cardSx}>
         <Typography sx={{ color: '#C9C9C9', fontWeight: 600 }}>

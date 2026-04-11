@@ -34,8 +34,6 @@ export default function MobileTeamStatsCards({
   onViewSponsors,
   onViewSponsorships,
 }: Props) {
-  
-
   const Title = ({ children }: { children: React.ReactNode }) =>
     loading ? (
       <Skeleton
@@ -83,7 +81,9 @@ export default function MobileTeamStatsCards({
           px: 0,
           minWidth: 0,
         }}
-      >View</Button>
+      >
+        View
+      </Button>
     );
 
   return (

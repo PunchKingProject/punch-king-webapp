@@ -31,8 +31,6 @@ const titleSx = { color: '#C9C9C9', fontWeight: 700, fontSize: 12, mb: 0.75 };
 const valueSx = { color: '#fff', fontWeight: 800, fontSize: 26, lineHeight: 1 };
 
 function fmtNumber(n?: number) {
-
-
   const v = typeof n === 'number' ? n : 0;
   return new Intl.NumberFormat('en-NG').format(v);
 }
@@ -128,11 +126,12 @@ export default function MobileUserStatsCards({
         {/* Cost of units (just number) */}
         <Box sx={cardSx}>
           <Box>
-            <Title loading={loading}>COST OF CHIPS</Title>
+            <Title loading={loading}>COST OF CHIPS PURCHASED</Title>
             <Value loading={loading}>{fmtNumber(costOfUnits)}</Value>
           </Box>
         </Box>
       </Box>
+
       {/* Row 2: Spent units + Sponsored teams (with View) */}
       <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: '1fr 1fr' }}>
         <Box sx={cardSx}>
@@ -167,7 +166,9 @@ export default function MobileUserStatsCards({
                   minWidth: 0,
                   height: 28,
                 }}
-              ></Button>
+              >
+     
+              </Button>
             ) : null}
           </Box>
         </Box>

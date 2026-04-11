@@ -1,7 +1,7 @@
 // pages/admin/TeamsPage.tsx
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopTeamDashboard from './components/DesktopTeamDashboard';
-import MobileTeamsHome from './MobileTeamsHome';
+import DesktopTeamDashboard from './components/DesktopTeamDashboard.tsx';
+import MobileTeamsHome from './MobileTeamsHome.tsx';
 
 export type TeamRow = {
   team_name: string;

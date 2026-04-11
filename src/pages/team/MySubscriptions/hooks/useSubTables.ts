@@ -4,8 +4,8 @@ import {
   getTeamSubActiveInactive,
 
 
-} from '../api/mysubscriptions.api';
-import type { SubHistoryPayload, SubPaymentPayload } from '../api/mysubscriptions.types';
+} from '../api/mysubscriptions.api.ts';
+import type { SubHistoryPayload, SubPaymentPayload } from '../api/mysubscriptions.types.ts';
 
 export function useTeamSubPayments(params: {
   page: number;

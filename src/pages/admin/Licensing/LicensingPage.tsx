@@ -1,7 +1,7 @@
 import { Box, useMediaQuery } from '@mui/material';
 
-import DesktopLicensingDashboard from './DesktopLicensingDashboard';
-import MobileLicensingDashboard from './MobileLicensingDashboard';
+import DesktopLicensingDashboard from './DesktopLicensingDashboard.tsx';
+import MobileLicensingDashboard from './MobileLicensingDashboard.tsx';
 
 export type LicenseRequests = {
   team_name: string;

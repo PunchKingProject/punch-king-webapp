@@ -9,7 +9,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useField } from 'formik';
 import { useMemo, useState } from 'react';
-import { colors } from '../../theme/colors';
+import { colors } from '../../theme/colors.ts';
 
 type FormikTextFieldProps = {
   name: string;

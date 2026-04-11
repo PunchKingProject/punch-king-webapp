@@ -1,13 +1,12 @@
-
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
 import { Box, IconButton, Skeleton, Typography, useMediaQuery } from "@mui/material";
 import { useMemo, useRef, useState } from "react";
-import { colors } from "../../../../../../theme/colors";
-import type { TeamPost } from "../../../api/teams.types";
-import { useTeamPosts } from "../../../hooks/useTeamPosts";
-import MobilePostModal from "./MobilePostModal";
-import MobileTeamPostCard from "./MobileTeamPostCard";
+import { colors } from "../../../../../../theme/colors.ts";
+import type { TeamPost } from "../../../api/teams.types.ts";
+import { useTeamPosts } from "../../../hooks/useTeamPosts.tsx";
+import MobilePostModal from "./MobilePostModal.tsx";
+import MobileTeamPostCard from "./MobileTeamPostCard.tsx";
 
 
 type Props = { teamId: number; title?: string };
@@ -16,37 +15,37 @@ type Props = { teamId: number; title?: string };
 function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
 
 
-  const { data, isLoading } = useTeamPosts(teamId);
-  const items = data ?? [];
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const [selected, setSelected] = useState<TeamPost | null>(null);
-  const isSm = useMediaQuery('(max-width:600px)');
+    const { data, isLoading } = useTeamPosts(teamId);
+    const items = data ?? [];
+    const scrollerRef = useRef<HTMLDivElement | null>(null);
+    const [selected, setSelected] = useState<TeamPost | null>(null);
+    const isSm = useMediaQuery('(max-width:600px)');
 
-  const cardWidth = isSm ? 300 : 340;
-  const gap = 24;
+    const cardWidth = isSm ? 300 : 340;
+    const gap = 24;
 
-  const [showLeft, showRight] = useMemo(() => {
-    const el = scrollerRef.current;
-    if (!el) return [false, false];
-    const canLeft = el.scrollLeft > 0;
-    const canRight = el.scrollWidth - el.clientWidth - el.scrollLeft > 4;
-    return [canLeft, canRight];
-  }, []); // recalculated only on mount
+    const [showLeft, showRight] = useMemo(() => {
+      const el = scrollerRef.current;
+      if (!el) return [false, false];
+      const canLeft = el.scrollLeft > 0;
+      const canRight = el.scrollWidth - el.clientWidth - el.scrollLeft > 4;
+      return [canLeft, canRight];
+    }, []); // recalculated only on mount
 
-  const updateArrows = () => {
-    // by reading scrollLeft/scrollWidth we trigger re-render via state below if needed,
-    // but we can also just force a render by setting a dummy state if required.
-  };
+    const updateArrows = () => {
+      // by reading scrollLeft/scrollWidth we trigger re-render via state below if needed,
+      // but we can also just force a render by setting a dummy state if required.
+    };
 
-  const scrollBy = (dir: 'left' | 'right') => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({
-      left: dir === 'left' ? -(cardWidth + gap) : cardWidth + gap,
-      behavior: 'smooth',
-    });
-    setTimeout(updateArrows, 260);
-  };
+    const scrollBy = (dir: 'left' | 'right') => {
+      const el = scrollerRef.current;
+      if (!el) return;
+      el.scrollBy({
+        left: dir === 'left' ? -(cardWidth + gap) : cardWidth + gap,
+        behavior: 'smooth',
+      });
+      setTimeout(updateArrows, 260);
+    };
 
 
   return (
@@ -54,6 +53,7 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
       <Typography variant='h6' sx={{ color: '#fff', fontWeight: 900, mb: 1 }}>
         {title}
       </Typography>
+
       <Box sx={{ position: 'relative' }}>
         {showLeft && (
           <IconButton
@@ -96,7 +96,7 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
           onScroll={updateArrows}
           sx={{
             display: 'flex',
-            gap: 4,
+            gap:4,
             overflowX: 'auto',
             scrollSnapType: 'x mandatory',
             scrollbarWidth: 'none',
@@ -114,7 +114,7 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
                   sx={{ bgcolor: '#222', borderRadius: 2 }}
                 />
               ))
-            : [...items, ...items, ...items, ...items].map((it) => (
+            : ([...items, ...items, ...items, ...items]).map((it) => (
                 <MobileTeamPostCard
                   key={it.id}
                   item={it}
@@ -123,6 +123,7 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
               ))}
         </Box>
       </Box>
+
       {/* Mobile modal */}
       <MobilePostModal
         open={!!selected}

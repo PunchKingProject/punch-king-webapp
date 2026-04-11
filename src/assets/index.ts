@@ -4,8 +4,8 @@ import heroBoxerLarge from './heroBoxerLarge.svg';
 import heroSponsors from './heroSponsors.svg';
 import rankingBoxer from './rankingBoxer.svg';
 import rankingSmallbox1 from './rankingSmallbox1.svg';
-import rankingSmallbox2 from './rankingSmallbox2.svg';
-import rankingSmallbox3 from './rankingSmallbox3.svg';
+import rankingSmallbox2 from './rankingSmallBox2.svg';
+import rankingSmallbox3 from './rankingSmallBox3.svg';
 import filterIcon from './filterIcon.svg';
 import consortiumLogo from './consortiumLogo.svg';
 import punchKingLogoFooter from './punchKingLogoFooter.svg';
@@ -29,11 +29,9 @@ import img4 from './img4.svg';
 import img5 from './img5.svg';
 import teamImg1 from './teamImg1.svg';
 import teamImg2 from './teamImg2.svg';
-import teamImg3 from './teamImg3.svg';
-import teamImg4 from './teamImg4.svg';
+import teamImg3 from './teamimg3.svg';
+import teamImg4 from './teamimg4.svg';
 import teamImg5 from './teamImg5.svg';
-import updatedModalImage from './updatedModalImage.png';
-
 export {
   punchKingLogo,
   heroBoxer,
@@ -69,5 +67,4 @@ export {
   teamImg3,
   teamImg4,
   teamImg5,
-  updatedModalImage,
 };

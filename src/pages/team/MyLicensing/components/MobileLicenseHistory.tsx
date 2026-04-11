@@ -1,6 +1,6 @@
 // src/pages/team/MyLicensing/components/MobileLicenseHistory.tsx
-import { ScrollableSection } from '../../../admin/components/ScrollableSection';
-import { type LicenseHistoryRow, licenseHistoryFields } from '../ui/fields';
+import { ScrollableSection } from '../../../admin/components/ScrollableSection.tsx';
+import { type LicenseHistoryRow, licenseHistoryFields } from '../ui/fields.ts';
 
 type Props = {
   rows: LicenseHistoryRow[];

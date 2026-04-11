@@ -6,19 +6,19 @@ import { useEffect, useRef } from 'react';
 import * as Yup from 'yup';
 
 import { toast } from 'react-toastify';
-import CustomAuthButton from '../../../../components/buttons/CustomAuthButton';
-import FormikDatePicker from '../../../../components/form/FormikDatePicker';
-import FormikSelect from '../../../../components/form/FormikSelect';
-import FormikTextField from '../../../../components/form/FormikWhiteTextField';
-import NoticeModal from '../../../../components/modal/NoticeModal';
-import PKDialog from '../../../../components/modal/PkDialog';
-import { useDisclosure } from '../../../../hooks/useDisclosure';
-import { colors } from '../../../../theme/colors';
+import CustomAuthButton from '../../../../components/buttons/CustomAuthButton.tsx';
+import FormikDatePicker from '../../../../components/form/FormikDatePicker.tsx';
+import FormikSelect from '../../../../components/form/FormikSelect.tsx';
+import FormikTextField from '../../../../components/form/FormikWhiteTextField.tsx';
+import NoticeModal from '../../../../components/modal/NoticeModal.tsx';
+import PKDialog from '../../../../components/modal/PkDialog.tsx';
+import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
+import { colors } from '../../../../theme/colors.ts';
 
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { useUserProfile } from '../hooks/useUserProfile';
-import { useUpdateUserProfile } from '../hooks/useUpdateUserProfile';
-import { useUploadUserImage } from '../hooks/useUploadUserImage';
+import { useUserProfile } from '../hooks/useUserProfile.ts';
+import { useUpdateUserProfile } from '../hooks/useUpdateUserProfile.ts';
+import { useUploadUserImage } from '../hooks/useUploadUserImage.ts';
 dayjs.extend(isSameOrBefore);
 
 type Props = { sponsor_id: number };
@@ -225,9 +225,7 @@ const GENDER_OPTIONS = [
 ];
 
 
-export default function DesktopUserDetailsSection({ sponsor_id }: Props) {
- 
-
+export default function DesktopUserDetailsSection({ sponsor_id }: Props) { 
   const { data, isLoading, isError } = useUserProfile(sponsor_id);
   const updateUser = useUpdateUserProfile(sponsor_id);
   const uploadMutation = useUploadUserImage();
@@ -251,10 +249,18 @@ export default function DesktopUserDetailsSection({ sponsor_id }: Props) {
   }, [uploadMutation.isError]);
 
   if (isLoading) {
-    return (<Typography sx={{ px: '6.98em', py: 2, color: '#fff' }}>Loading user...</Typography>);
+    return (
+      <Typography sx={{ px: '6.98em', py: 2, color: '#fff' }}>
+        Loading user…
+      </Typography>
+    );
   }
   if (!data) {
-    return (<Typography sx={{ px: '6.98em', py: 2, color: '#fff' }}>User not found</Typography>);
+    return (
+      <Typography sx={{ px: '6.98em', py: 2, color: '#fff' }}>
+        User not found.
+      </Typography>
+    );
   }
 
   const initialValues = {
@@ -270,244 +276,84 @@ export default function DesktopUserDetailsSection({ sponsor_id }: Props) {
 
 
 
-  return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={schema}
-      onSubmit={(values, helpers) => {
-        updateUser.mutate(
-          {
-            phone_number: data.phone_number ?? '',
-            address: values.address || undefined,
-            country: values.country || undefined,
-            state: values.state || undefined,
-            dob: values.dob
-              ? dayjs(values.dob).startOf('day').toISOString()
-              : undefined,
-            gender: values.gender || undefined,
-            bio: values.bio || undefined,
-            profile_picture: values.profile_picture || undefined,
-          },
-          {
-            onSuccess: () => {
-              confirmDlg.onClose();
-              successDlg.onOpen();
+    return (
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={(values, helpers) => {
+          updateUser.mutate(
+            {
+              phone_number: data.phone_number ?? '',
+              address: values.address || undefined,
+              country: values.country || undefined,
+              state: values.state || undefined,
+              dob: values.dob
+                ? dayjs(values.dob).startOf('day').toISOString()
+                : undefined,
+              gender: values.gender || undefined,
+              bio: values.bio || undefined,
+              profile_picture: values.profile_picture || undefined,
             },
-            onSettled: () => helpers.setSubmitting(false),
-          }
-        );
-      }}
-    >
-      {({
-        values,
-        setFieldValue,
-        isSubmitting,
-        validateForm,
-        setTouched,
-        submitForm,
-      }) => {
-        const stateOptions =
-          values.country && STATE_OPTIONS[values.country]
-            ? STATE_OPTIONS[values.country]
-            : [];
+            {
+              onSuccess: () => {
+                confirmDlg.onClose();
+                successDlg.onOpen();
+              },
+              onSettled: () => helpers.setSubmitting(false),
+            }
+          );
+        }}
+      >
+        {({
+          values,
+          setFieldValue,
+          isSubmitting,
+          validateForm,
+          setTouched,
+          submitForm,
+        }) => {
+          const stateOptions =
+            values.country && STATE_OPTIONS[values.country]
+              ? STATE_OPTIONS[values.country]
+              : [];
 
-        return (
-          <Form>
-            <Box
-              sx={{
-                px: '6.98em',
-                pb: 6,
-                '@media (min-width:910px) and (max-width:1000px)': {
-                  px: '2em',
-                },
-                '@media (min-width:1000px) and (max-width:1100px)': {
-                  px: '1em',
-                },
-              }}
-            >
-              <Typography
-                variant='h5'
-                sx={{ fontWeight: 900, color: '#fff', mb: 2 }}
-              >User Details</Typography>
-
-              {/* Avatar + Update link */}
-              <Box>
-                <Box
-                  sx={{
-                    width: 320,
-                    height: 200,
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    border: '1px solid #3B3B3B',
-                    background: '#111',
-                    mb: 1.5,
-                    display: 'grid',
-                    placeItems: 'center',
-                    ml: 'auto',
-                    mr: 'auto',
-                  }}
-                >
-                  {values.profile_picture ? (
-                    <img
-                      src={values.profile_picture}
-                      alt='user'
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        border: `15px solid ${colors.Freeze}`,
-                      }}
-                    />
-                  ) : (
-                    <Typography sx={{ color: '#aaa' }}>No image available</Typography>
-                  )}
-                </Box>
-                <Box
-                  sx={{
-                    width: 320,
-                    ml: 'auto',
-                    mr: 'auto',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    alignItems: 'baseline',
-                    mt: -2,
-                  }}
-                >
-                  <Button
-                    variant='text'
-                    onClick={uploadDialog.onOpen}
-                    sx={{
-                      color: '#EFAF00',
-                      fontWeight: 700,
-                      textTransform: 'none',
-                      px: 0,
-                    }}
-                  >Update</Button>
-                </Box>
-              </Box>
-
-              {/* Form fields grid */}
+          return (
+            <Form>
               <Box
                 sx={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '10px 30px',
-                  maxWidth: '800px',
-                  mx: 'auto',
+                  px: '6.98em',
+                  pb: 6,
+                  '@media (min-width:910px) and (max-width:1000px)': {
+                    px: '2em',
+                  },
+                  '@media (min-width:1000px) and (max-width:1100px)': {
+                    px: '1em',
+                  },
                 }}
               >
-                <FormikTextField
-                  name='username'
-                  label='User name'
-                  placeholder='User name'
-                />
-                <FormikDatePicker name='dob' label='DOB' maxDate={dayjs()} />
+                <Typography
+                  variant='h5'
+                  sx={{ fontWeight: 900, color: '#fff', mb: 2 }}
+                >
+                  USER DETAILS
+                </Typography>
 
-                <FormikSelect
-                  name='country'
-                  label='Country'
-                  placeholder='Select country'
-                  options={COUNTRY_OPTIONS}
-                  onChangeOverride={(v) => {
-                    setFieldValue('country', v);
-                    setFieldValue('state', '');
-                  }}
-                />
-                <FormikSelect
-                  name='state'
-                  label='State'
-                  placeholder={
-                    values.country
-                      ? 'Select state/region'
-                      : 'Select country first'
-                  }
-                  options={stateOptions}
-                  disabled={!values.country}
-                />
-
-                <FormikTextField
-                  name='address'
-                  label='Address'
-                  placeholder='Address'
-                />
-                <FormikSelect
-                  name='gender'
-                  label='Gender'
-                  placeholder='Select gender'
-                  options={GENDER_OPTIONS}
-                />
-              </Box>
-
-              <Box sx={{ maxWidth: '800px', mx: 'auto' }}>
-                <FormikTextField
-                  name='bio'
-                  placeholder='Bio'
-                  label='Bio'
-                  multiline
-                  rows={4}
-                />
-                <Button
-                  sx={{ display: 'block', ml: 'auto' }}
-                  type='button'
-                  variant='contained'
-                  onClick={async () => {
-                    const errors = await validateForm();
-                    if (Object.keys(errors).length) {
-                      setTouched(
-                        Object.keys(errors).reduce(
-                          (acc, k) => ({ ...acc, [k]: true }),
-                          {}
-                        ),
-                        false
-                      );
-                      return;
-                    }
-                    confirmDlg.onOpen();
-                  }}
-                >Update</Button>
-              </Box>
-
-              {/* Upload image dialog */}
-              <PKDialog
-                open={uploadDialog.open}
-                onClose={uploadDialog.onClose}
-                title=''
-                actions={
+                {/* Avatar + Update link */}
+                <Box>
                   <Box
                     sx={{
-                      display: 'flex',
-                      width: '100%',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <CustomAuthButton
-                      onClick={() => fileInputRef.current?.click()}
-                      variant='contained'
-                      fullWidth={false}
-                      disabled={uploadMutation.isPending}
-                      sx={{ py: 1.25, width: '69%' }}
-                    >
-                      {uploadMutation.isPending
-                        ? 'Uploading…'
-                        : 'Upload picture'}
-                    </CustomAuthButton>
-                  </Box>
-                }
-                disableCloseWhenBusy={uploadMutation.isPending}
-              >
-                <Box sx={{ display: 'grid', placeItems: 'center' }}>
-                  <Box
-                    sx={{
-                      width: 520,
-                      maxWidth: '100%',
-                      height: 160,
+                      width: 320,
+                      height: 200,
                       borderRadius: 2,
                       overflow: 'hidden',
-                      border: '1px solid #BDBDBD',
+                      border: '1px solid #3B3B3B',
                       background: '#111',
+                      mb: 1.5,
                       display: 'grid',
                       placeItems: 'center',
+                      ml: 'auto',
+                      mr: 'auto',
                     }}
                   >
                     {values.profile_picture ? (
@@ -522,59 +368,227 @@ export default function DesktopUserDetailsSection({ sponsor_id }: Props) {
                         }}
                       />
                     ) : (
-                      <Typography sx={{ color: '#666' }}>No image available</Typography>
+                      <Typography sx={{ color: '#aaa' }}>No image</Typography>
                     )}
                   </Box>
+                  <Box
+                    sx={{
+                      width: 320,
+                      ml: 'auto',
+                      mr: 'auto',
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'baseline',
+                      mt: -2,
+                    }}
+                  >
+                    <Button
+                      variant='text'
+                      onClick={uploadDialog.onOpen}
+                      sx={{
+                        color: '#EFAF00',
+                        fontWeight: 700,
+                        textTransform: 'none',
+                        px: 0,
+                      }}
+                    >
+                      Update
+                    </Button>
+                  </Box>
+                </Box>
 
-                  <input
-                    ref={fileInputRef}
-                    type='file'
-                    accept='image/*'
-                    style={{ display: 'none' }}
-                    onChange={async (e) => {
-                      const file = e.currentTarget.files?.[0];
-                      if (!file) return;
-                      try {
-                        const url = await uploadMutation.mutateAsync(file);
-                        setFieldValue('profile_picture', url);
-                        uploadDialog.onClose();
-                      } finally {
-                        if (fileInputRef.current)
-                          fileInputRef.current.value = '';
-                      }
+                {/* Form fields grid */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '10px 30px',
+                    maxWidth: '800px',
+                    mx: 'auto',
+                  }}
+                >
+                  <FormikTextField
+                    name='username'
+                    label='User name'
+                    placeholder='User name'
+                  />
+                  <FormikDatePicker name='dob' label='DOB' maxDate={dayjs()} />
+
+                  <FormikSelect
+                    name='country'
+                    label='Country'
+                    placeholder='Select country'
+                    options={COUNTRY_OPTIONS}
+                    onChangeOverride={(v) => {
+                      setFieldValue('country', v);
+                      setFieldValue('state', '');
                     }}
                   />
+                  <FormikSelect
+                    name='state'
+                    label='State'
+                    placeholder={
+                      values.country
+                        ? 'Select state/region'
+                        : 'Select country first'
+                    }
+                    options={stateOptions}
+                    disabled={!values.country}
+                  />
+
+                  <FormikTextField
+                    name='address'
+                    label='Address'
+                    placeholder='Address'
+                  />
+                  <FormikSelect
+                    name='gender'
+                    label='Gender'
+                    placeholder='Select gender'
+                    options={GENDER_OPTIONS}
+                  />
                 </Box>
-              </PKDialog>
-            </Box>
-            {/* confirm + success modals (same behavior as teams) */}
-            <NoticeModal
-              open={confirmDlg.open}
-              onClose={confirmDlg.onClose}
-              onSecondary={confirmDlg.onClose}
-              secondaryLabel='Cancel'
-              onContinue={submitForm}
-              continueLabel='Update'
-              title='NOTICE!!!'
-              loading={isSubmitting || updateUser.isPending}
-              message={`Are you sure you want to update ${
-                values.username || '[User]'
-              } profile`}
-            />
-            <NoticeModal
-              open={successDlg.open}
-              onClose={successDlg.onClose}
-              onContinue={successDlg.onClose}
-              continueLabel='Finish'
-              title='NOTICE!!!'
-              message={`You have successfully updated ${
-                values.username || '[User]'
-              } profile`}
-              icon={<CheckCircleRounded sx={{ color: '#63db6c' }} />}
-            />
-          </Form>
-        );
-      }}
-    </Formik>
-  );
+
+                <Box sx={{ maxWidth: '800px', mx: 'auto' }}>
+                  <FormikTextField
+                    name='bio'
+                    placeholder='Bio'
+                    label='Bio'
+                    multiline
+                    rows={4}
+                  />
+                  <Button
+                    sx={{ display: 'block', ml: 'auto' }}
+                    type='button'
+                    variant='contained'
+                    onClick={async () => {
+                      const errors = await validateForm();
+                      if (Object.keys(errors).length) {
+                        setTouched(
+                          Object.keys(errors).reduce(
+                            (acc, k) => ({ ...acc, [k]: true }),
+                            {}
+                          ),
+                          false
+                        );
+                        return;
+                      }
+                      confirmDlg.onOpen();
+                    }}
+                  >
+                    Update
+                  </Button>
+                </Box>
+
+                {/* Upload image dialog */}
+                <PKDialog
+                  open={uploadDialog.open}
+                  onClose={uploadDialog.onClose}
+                  title=''
+                  actions={
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        width: '100%',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <CustomAuthButton
+                        onClick={() => fileInputRef.current?.click()}
+                        variant='contained'
+                        fullWidth={false}
+                        disabled={uploadMutation.isPending}
+                        sx={{ py: 1.25, width: '69%' }}
+                      >
+                        {uploadMutation.isPending
+                          ? 'Uploading…'
+                          : 'Upload picture'}
+                      </CustomAuthButton>
+                    </Box>
+                  }
+                  disableCloseWhenBusy={uploadMutation.isPending}
+                >
+                  <Box sx={{ display: 'grid', placeItems: 'center' }}>
+                    <Box
+                      sx={{
+                        width: 520,
+                        maxWidth: '100%',
+                        height: 160,
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        border: '1px solid #BDBDBD',
+                        background: '#111',
+                        display: 'grid',
+                        placeItems: 'center',
+                      }}
+                    >
+                      {values.profile_picture ? (
+                        <img
+                          src={values.profile_picture}
+                          alt='user'
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            border: `15px solid ${colors.Freeze}`,
+                          }}
+                        />
+                      ) : (
+                        <Typography sx={{ color: '#666' }}>No image</Typography>
+                      )}
+                    </Box>
+
+                    <input
+                      ref={fileInputRef}
+                      type='file'
+                      accept='image/*'
+                      style={{ display: 'none' }}
+                      onChange={async (e) => {
+                        const file = e.currentTarget.files?.[0];
+                        if (!file) return;
+                        try {
+                          const url = await uploadMutation.mutateAsync(file);
+                          setFieldValue('profile_picture', url);
+                          uploadDialog.onClose();
+                        } finally {
+                          if (fileInputRef.current)
+                            fileInputRef.current.value = '';
+                        }
+                      }}
+                    />
+                  </Box>
+                </PKDialog>
+              </Box>
+
+              {/* confirm + success modals (same behavior as teams) */}
+              <NoticeModal
+                open={confirmDlg.open}
+                onClose={confirmDlg.onClose}
+                onSecondary={confirmDlg.onClose}
+                secondaryLabel='Cancel'
+                onContinue={submitForm}
+                continueLabel='Update'
+                title='NOTICE!!!'
+                loading={isSubmitting || updateUser.isPending}
+                message={`Are you sure you want to update ${
+                  values.username || '[User]'
+                } profile`}
+              />
+
+              <NoticeModal
+                open={successDlg.open}
+                onClose={successDlg.onClose}
+                onContinue={successDlg.onClose}
+                continueLabel='Finish'
+                title='NOTICE!!!'
+                message={`You have successfully updated ${
+                  values.username || '[User]'
+                } profile`}
+                icon={<CheckCircleRounded sx={{ color: '#63db6c' }} />}
+              />
+            </Form>
+          );
+        }}
+      </Formik>
+    );
 }

@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from "@mui/material";
-import DesktopBuySponsorsPage from "./DesktopBuySponsorsPage";
-import MobileBuySponsorsPage from "./MobileBuySponsorsPage";
+import DesktopBuySponsorsPage from "./DesktopBuySponsorsPage.tsx";
+import MobileBuySponsorsPage from "./MobileBuySponsorsPage.tsx";
 
 
 

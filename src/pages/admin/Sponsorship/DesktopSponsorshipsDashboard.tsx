@@ -1,19 +1,19 @@
 import type { Dayjs } from 'dayjs';
 import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useState } from 'react';
-import { useSponsorships } from './hooks/useSponsorships';
+import { useSponsorships } from './hooks/useSponsorships.ts';
 import { toast } from 'react-toastify';
-import type { MetricCard } from '../components/CardGrid';
-import type { SponsorshipRow } from './components/DesktopSponsorshipsSection';
+import type { MetricCard } from '../components/CardGrid.tsx';
+import type { SponsorshipRow } from './components/DesktopSponsorshipsSection.tsx';
 import type { DateRange } from 'react-day-picker';
-import AdminSection from '../components/AdminSection';
-import DateRangeFilter from '../../../components/filters/DateRangeFilter';
+import AdminSection from '../components/AdminSection.tsx';
+import DateRangeFilter from '../../../components/filters/DateRangeFilter.tsx';
 import dayjs from 'dayjs';
 import DateFilterIcon from '../../../assets/filterTimeFrameIcon.svg?react';
 import { Box } from '@mui/material';
-import DesktopSponsorshipsSection from './components/DesktopSponsorshipsSection';
+import DesktopSponsorshipsSection from './components/DesktopSponsorshipsSection.tsx';
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
+import ROUTES from '../../../routes/routePath.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 

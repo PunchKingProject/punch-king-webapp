@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import {
   Box,
   Button,
@@ -11,7 +10,8 @@ import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import dayjs from 'dayjs';
-import type { TeamPost } from '../api/catalogue.types';
+import type { TeamPost } from '../api/catalogue.types.ts';
+import MediaPreview from "./MediaPreview.tsx";
 
 // container around each post
 const postWrapSx = {
@@ -22,7 +22,7 @@ const imageFrameSx = {
   width: '100%',
   maxWidth: 720,
   mx: 'auto',
-  aspectRatio: '3 / 2', // close to your design
+  // aspectRatio: '3 / 2', // close to your design
   border: '1px solid #F0C040', // gold border as in screenshot
   borderRadius: '6px',
   overflow: 'hidden',
@@ -49,10 +49,6 @@ export default function DesktopMyCatalogueList({
   onDelete,
   onViewSponsors,
 }: Props) {
-  const {
-    t: t
-  } = useTranslation();
-
   return (
     <Box sx={{ mt: 5 }}>
       {/* upload button right */}
@@ -62,15 +58,18 @@ export default function DesktopMyCatalogueList({
           variant='contained'
           sx={{
             bgcolor: '#f0c040',
-            color: '#000',
+            color: '#1f1f1f',
             textTransform: 'none',
             fontWeight: 700,
             px: 3,
             borderRadius: '8px',
             '&:hover': { bgcolor: '#ffd465' },
           }}
-        >{t("upload_media")}</Button>
+        >
+          Upload Media
+        </Button>
       </Box>
+
       {loading ? (
         <Box>
           {Array.from({ length: 2 }).map((_, i) => (
@@ -90,38 +89,43 @@ export default function DesktopMyCatalogueList({
         posts.map((p) => (
           <Box key={p.id} sx={postWrapSx}>
             {/* media */}
+            {/*<Box sx={imageFrameSx}>*/}
+            {/*  {p.file_url ? (*/}
+            {/*    <img*/}
+            {/*      src={p.file_url}*/}
+            {/*      alt={p.title || 'post'}*/}
+            {/*      style={{ width: '100%', height: '100%', objectFit: 'cover' }}*/}
+            {/*    />*/}
+            {/*  ) : (*/}
+            {/*    <Box*/}
+            {/*      sx={{*/}
+            {/*        width: '100%',*/}
+            {/*        height: '100%',*/}
+            {/*        display: 'grid',*/}
+            {/*        placeItems: 'center',*/}
+            {/*        color: '#A2A2A2',*/}
+            {/*        fontSize: 14,*/}
+            {/*      }}*/}
+            {/*    >*/}
+            {/*      No media*/}
+            {/*    </Box>*/}
+            {/*  )}*/}
+            {/*</Box>*/}
             <Box sx={imageFrameSx}>
-              {p.file_url ? (
-                <img
-                  src={p.file_url}
-                  alt={p.title || 'post'}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'grid',
-                    placeItems: 'center',
-                    color: '#A2A2A2',
-                    fontSize: 14,
-                  }}
-                >{t("no_media")}</Box>
-              )}
+              <MediaPreview url={p.file_url} />
             </Box>
 
             {/* body */}
             <Box sx={{ maxWidth: 720, mx: 'auto', mt: 2 }}>
               <Box>
-                <Typography sx={labelSx}>{t("caption")}</Typography>
+                <Typography sx={labelSx}>Caption:</Typography>
                 <Typography sx={{ ...dimSx, mt: 0.5 }}>
                   {p.caption || '—'}
                 </Typography>
               </Box>
 
               <Box sx={{ display: 'flex', gap: 1, mt: 1.25 }}>
-                <Typography sx={labelSx}>{t("posted")}</Typography>
+                <Typography sx={labelSx}>Posted:</Typography>
                 <Typography sx={{ color: '#7BEA67', fontSize: 13 }}>
                   {dayjs(p.created_at).format('M/D/YYYY')}
                 </Typography>
@@ -132,10 +136,11 @@ export default function DesktopMyCatalogueList({
                 <Box
                   sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
                 >
-                  <Typography sx={labelSx}>{t("comments")}</Typography>
+                  <Typography sx={labelSx}>Comments:</Typography>
                   <ChatBubbleOutlineRoundedIcon fontSize='small' />
                   <Typography sx={{ fontSize: 13 }}>
-                    {p.comments_count ?? p.comments?.length ?? 0}{t("comments")}</Typography>
+                    {p.comments_count ?? p.comments?.length ?? 0} Comments
+                  </Typography>
                 </Box>
 
                 <Box sx={{ position: 'relative' }}>
@@ -198,7 +203,7 @@ export default function DesktopMyCatalogueList({
                   flexWrap: 'wrap',
                 }}
               >
-                <Typography sx={labelSx}>{t("sponsors")}</Typography>
+                <Typography sx={labelSx}>Sponsors:</Typography>
                 <PeopleOutlineRoundedIcon fontSize='small' />
                 <Typography sx={{ fontSize: 13 }}>{p.sponsors ?? 0}</Typography>
                 <MLink
@@ -206,7 +211,9 @@ export default function DesktopMyCatalogueList({
                   underline='hover'
                   onClick={() => onViewSponsors?.(p)}
                   sx={{ color: '#f0c040', fontSize: 13 }}
-                >{t("view")}</MLink>
+                >
+                  View
+                </MLink>
 
                 <Box sx={{ flex: 1 }} />
 
@@ -223,7 +230,9 @@ export default function DesktopMyCatalogueList({
                     borderRadius: '8px',
                     '&:hover': { bgcolor: '#ffd465' },
                   }}
-                >{t("update")}</Button>
+                >
+                  Update
+                </Button>
                 <Button
                   onClick={() => onDelete?.(p)}
                   variant='outlined'
@@ -235,7 +244,9 @@ export default function DesktopMyCatalogueList({
                     borderRadius: '8px',
                     '&:hover': { borderColor: '#f0c040', color: '#f0c040' },
                   }}
-                >{t("delete")}</Button>
+                >
+                  Delete
+                </Button>
               </Box>
             </Box>
           </Box>

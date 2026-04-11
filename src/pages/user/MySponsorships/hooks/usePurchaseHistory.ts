@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPurchaseHistory } from "../api/mysponsorships.api";
-import type { FetchPurchaseHistoryParams, PurchaseHistoryPayload } from "../api/mysponsorships.types";
+import { getPurchaseHistory } from "../api/mysponsorships.api.ts";
+import type { FetchPurchaseHistoryParams, PurchaseHistoryPayload } from "../api/mysponsorships.types.ts";
 
 
 

@@ -10,33 +10,33 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../routes/routePath';
-import { colors } from '../../../theme/colors';
+import ROUTES from '../../../routes/routePath.ts';
+import { colors } from '../../../theme/colors.ts';
 
-import { ScrollableSection } from '../../admin/components/ScrollableSection';
+import { ScrollableSection } from '../../admin/components/ScrollableSection.tsx';
 
 import {
   mapSubHistoryApiToRows,
   type SubHistoryRow,
-} from './components/DesktopSubHistoryTable';
+} from './components/DesktopSubHistoryTable.tsx';
 import {
   mapPaymentApiToRows,
   type SubPaymentRow,
-} from './components/DesktopSubPaymentHistoryTable';
+} from './components/DesktopSubPaymentHistoryTable.tsx';
 import {
   useTeamSubActiveInactive,
   useTeamSubPayments,
-} from './hooks/useSubTables';
-import { useTeamSubStats } from './hooks/useTeamSubStats';
+} from './hooks/useSubTables.ts';
+import { useTeamSubStats } from './hooks/useTeamSubStats.ts';
 
-import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer';
-import MobileSubStatsStrip from './components/MobileSubStatsStrip';
+import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer.tsx';
+import MobileSubStatsStrip from './components/MobileSubStatsStrip.tsx';
 import {
   subHistoryFieldData,
   subPaymentFieldData,
   type MobileSubHistoryItem,
   type MobileSubPaymentItem,
-} from './ui/fields';
+} from './ui/fields.ts';
 
 const fmtStats = (d: Dayjs) => d.format('DD-MM-YYYY'); // API expects DD-MM-YYYY (same as desktop)
 const formatRangeLabel = (from?: Date, to?: Date) => {
@@ -49,8 +49,6 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 
 
 export default function MobileMySubscriptionsPage() {
-
-
   const navigate = useNavigate();
 
   /** ======== Metrics date filter (consistent with other mobile dashboards) ======== */
@@ -152,7 +150,6 @@ export default function MobileMySubscriptionsPage() {
         }}
       >
         <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>
-          {' '}
           Subscriptions
         </Typography>
 
@@ -176,6 +173,7 @@ export default function MobileMySubscriptionsPage() {
           />
         </Box>
       </Box>
+
       {/* Sliding stats strip (NEW) */}
       <MobileSubStatsStrip
         loading={statsLoading}
@@ -184,6 +182,7 @@ export default function MobileMySubscriptionsPage() {
         semiAnnualCount={stats?.semi_annual_count ?? 0}
         onSubscribe={() => navigate(ROUTES.TEAM_SUBSCRIPTION_PAYMENT)}
       />
+
       {/* Subscription payment history (scrollable list) */}
       <ScrollableSection<MobileSubPaymentItem>
         title='Subscription payment history'
@@ -213,6 +212,7 @@ export default function MobileMySubscriptionsPage() {
           ) : null
         }
       />
+
       {/* Subscription history (scrollable list) */}
       <ScrollableSection<MobileSubHistoryItem>
         title='Subscription history'

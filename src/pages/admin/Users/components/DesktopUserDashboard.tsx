@@ -7,16 +7,16 @@ import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 
 import DateFilterIcon from '../../../../assets/filterTimeFrameIcon.svg?react';
-import DateRangeFilter from '../../../../components/filters/DateRangeFilter';
-import AdminSection from '../../components/AdminSection';
+import DateRangeFilter from '../../../../components/filters/DateRangeFilter.tsx';
+import AdminSection from '../../components/AdminSection.tsx';
 
-import { useUserDashboardStats } from '../hooks/useUserDashboardStats';
-import { useUserDashboardTable } from '../hooks/useUserDashboardTable';
-import { userTableColumns } from '../ui/columns';
-import UsersSection from './UsersSection';
-import type { UserTableRow } from '../api/users.types';
+import { useUserDashboardStats } from '../hooks/useUserDashboardStats.ts';
+import { useUserDashboardTable } from '../hooks/useUserDashboardTable.ts';
+import { userTableColumns } from '../ui/columns.ts';
+import UsersSection from './UsersSection.tsx';
+import type { UserTableRow } from '../api/users.types.ts';
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '../../../../routes/routePath';
+import ROUTES from '../../../../routes/routePath.ts';
 // import { useNavigate } from 'react-router-dom'; // if you’ll route to user details
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');

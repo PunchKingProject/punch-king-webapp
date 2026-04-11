@@ -10,10 +10,10 @@ import {
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
-import type { TeamPost } from '../../../api/teams.types';
-import { useTeamPosts } from '../../../hooks/useTeamPosts';
-import TeamPostCard from './DesktopTeamPostCard';
-import TeamPostModal from './DesktopTeamPostModal';
+import type { TeamPost } from '../../../api/teams.types.ts';
+import { useTeamPosts } from '../../../hooks/useTeamPosts.tsx';
+import TeamPostCard from './DesktopTeamPostCard.tsx';
+import TeamPostModal from './DesktopTeamPostModal.tsx';
 
 type Props = { teamId: number; title?: string };
 

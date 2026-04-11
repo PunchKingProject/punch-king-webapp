@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { getUserDashboardStats } from '../api/users.api';
+import { getUserDashboardStats } from '../api/users.api.ts';
 import type {
   UserDashboardStats,
   UserDashboardStatsParams,
-} from '../api/users.types';
+} from '../api/users.types.ts';
 
 export function useUserDashboardStats(params: UserDashboardStatsParams) {
   return useQuery<UserDashboardStats>({

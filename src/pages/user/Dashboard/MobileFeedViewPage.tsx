@@ -14,8 +14,8 @@ import {
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import type { CommentRow } from './api/dashboard.types';
-import { useCreateComment, usePost } from './hooks/usePost';
+import type { CommentRow } from './api/dashboard.types.ts';
+import { useCreateComment, usePost } from './hooks/usePost.ts';
 
 // ⬅️ adjust this path if your hooks live elsewhere
 
@@ -38,8 +38,6 @@ function MobileCommentNode({
   onReply: (parentId: number, text: string) => Promise<void> | void;
   isPosting?: boolean;
 }) {
-
-
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState('');
   const canReply = depth === 0; // mobile parity with desktop: only top-level
@@ -107,7 +105,6 @@ function MobileCommentNode({
                     height: 34,
                   }}
                 >
-                  {' '}
                   Reply
                 </Button>
                 <Button
@@ -139,12 +136,13 @@ function MobileCommentNode({
                   minWidth: 0,
                 }}
               >
-            Reply
+                Reply
               </Button>
             )
           ) : null}
         </Box>
       </Box>
+
       {(comment.replies ?? []).map((child) => (
         <MobileCommentNode
           key={child.id}
@@ -192,6 +190,7 @@ export default function MobileFeedViewPage() {
       >
         Back
       </Button>
+
       {/* Breadcrumb */}
       <Box
         component='nav'
@@ -210,7 +209,6 @@ export default function MobileFeedViewPage() {
             '&:hover': { textDecoration: 'underline' },
           }}
         >
-          {' '}
           USER DASHBOARD
         </Link>
         <Typography sx={{ mx: 0.75, color: '#A2A2A2' }}>/</Typography>
@@ -240,9 +238,11 @@ export default function MobileFeedViewPage() {
           FEED VIEW
         </Typography>
       </Box>
+
       <Typography sx={{ color: '#fff', fontWeight: 900, mt: 2, mb: 1 }}>
         FEED VIEW
       </Typography>
+
       {isLoading || !data ? (
         <Typography sx={{ color: '#9a9a9a' }}>Loading…</Typography>
       ) : (
@@ -255,8 +255,7 @@ export default function MobileFeedViewPage() {
           <Typography
             sx={{ color: gold, fontWeight: 700, fontSize: 13, mb: 1.5 }}
           >
-            Position:&nbsp;
-            <span style={{ color: '#fff' }}>—</span>
+            Position:&nbsp;<span style={{ color: '#fff' }}>—</span>
           </Typography>
 
           {/* Sponsor + Share */}

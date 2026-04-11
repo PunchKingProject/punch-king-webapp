@@ -1,7 +1,7 @@
 import { Box, useMediaQuery } from '@mui/material';
 
-import { DesktopTeamsDetailsPage } from './DesktopTeamsDetailsPage';
-import MobileTeamDetails from './MobileTeamDetails';
+import { DesktopTeamsDetailsPage } from './DesktopTeamsDetailsPage.tsx';
+import MobileTeamDetails from './MobileTeamDetails.tsx';
 
 
 

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import type { FetchLicenseHistoryListParams, LicenseHistoryList } from "../api/mylicensing.types";
-import { getLicenseActiveInactive } from "../api/mylicensing.api";
+import type { FetchLicenseHistoryListParams, LicenseHistoryList } from "../api/mylicensing.types.ts";
+import { getLicenseActiveInactive } from "../api/mylicensing.api.ts";
 
 
 export function useLicenseActiveInactive(

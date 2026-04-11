@@ -1,6 +1,6 @@
-export * from './useDashboardStats';
-export * from './useRankedTeams';
-export * from './useRankedUsers';
+export * from './useDashboardStats.ts';
+export * from './useRankedTeams.ts';
+export * from './useRankedUsers.ts';
 
 
 

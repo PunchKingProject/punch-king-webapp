@@ -5,13 +5,13 @@ import { jwtDecode } from 'jwt-decode';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../assets';
-import FormikTextField from '../../components/form/FormikTextField';
-import { useAppDispatch } from '../../hooks';
-import ROUTES from '../../routes/routePath';
-import { setRid } from '../../store/registration.slice';
-import { showError } from '../../utils/error/toastError';
-import Footer from '../landing/components/Footer';
-import { loginUser } from '../sign-up/api/registration';
+import FormikTextField from '../../components/form/FormikTextField.tsx';
+import { useAppDispatch } from '../../hooks.ts';
+import ROUTES from '../../routes/routePath.ts';
+import { setRid } from '../../store/registration.slice.ts';
+import { showError } from '../../utils/error/toastError.ts';
+import Footer from '../landing/components/Footer.tsx';
+import { loginUser } from '../sign-up/api/registration.ts';
 
 type Decoded = {
   email?: string;
@@ -137,7 +137,7 @@ const SignInPage = () => {
                   placeholder='Username'
                   type='text'
                 />
-
+            
                 <FormikTextField
                   name='password'
                   placeholder='Password'

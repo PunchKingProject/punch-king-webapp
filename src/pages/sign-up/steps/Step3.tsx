@@ -4,13 +4,13 @@ import debounce from 'lodash.debounce';
 import { useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
-import CustomAuthButton from '../../../components/buttons/CustomAuthButton';
-import { GoldSelect, GoldTextField } from '../../../components/form/GoldInput';
-import GoldPhoneField from '../../../components/form/GoldPhoneField';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { mergeDraft } from '../../../store/registration.slice';
-import { getCountryOptions, getStateOptions } from '../../../utils/geo';
-import { isValidPhone } from '../../../utils/helpers';
+import CustomAuthButton from '../../../components/buttons/CustomAuthButton.tsx';
+import { GoldSelect, GoldTextField } from '../../../components/form/GoldInput.tsx';
+import GoldPhoneField from '../../../components/form/GoldPhoneField.tsx';
+import { useAppDispatch, useAppSelector } from '../../../hooks.ts';
+import { mergeDraft } from '../../../store/registration.slice.ts';
+import { getCountryOptions, getStateOptions } from '../../../utils/geo.ts';
+import { isValidPhone } from '../../../utils/helpers.ts';
 
 type Values = {
   // common
@@ -155,14 +155,14 @@ const AFRICA_NAMES = new Set<string>(
     'Western Sahara',
     'Zambia',
     'Zimbabwe',
-  ].map((n) => n.toLowerCase()),
+  ].map((n) => n.toLowerCase())
 );
 
 // ----- Two schemas: sponsor vs team -----
 const baseCommon = {
   phone: Yup.string()
     .test('is-valid-phone', 'Invalid phone number', (v) =>
-      isValidPhone(v ?? ''),
+      isValidPhone(v ?? '')
     )
     .required('Required'),
   address: Yup.string().min(3, 'Too short').required('Required'),
@@ -234,7 +234,7 @@ function Step3() {
 
   const validationSchema = useMemo(
     () => (isTeam ? teamSchema : sponsorSchema),
-    [isTeam],
+    [isTeam]
   );
 
   const onSubmit = async (values: Values) => {
@@ -271,7 +271,7 @@ function Step3Body({ isTeam }: { isTeam: boolean }) {
   const autosave = useMemo(
     () =>
       debounce((vals: Values) => dispatch(mergeDraft({ step3: vals })), 400),
-    [dispatch],
+    [dispatch]
   );
   useEffect(() => {
     autosave(formik.values);
@@ -285,13 +285,12 @@ function Step3Body({ isTeam }: { isTeam: boolean }) {
 
     // Only African countries for teams
     return all.filter(
-      (o) =>
-        AFRICA_ISO2.has(o.value) || AFRICA_NAMES.has(o.label.toLowerCase()),
+      (o) => AFRICA_ISO2.has(o.value) || AFRICA_NAMES.has(o.label.toLowerCase())
     );
   }, [isTeam]);
   const stateOptions = useMemo(
     () => getStateOptions(formik.values.country),
-    [formik.values.country],
+    [formik.values.country]
   );
 
   // if current state value doesn't exist for selected country, clear it
@@ -343,6 +342,8 @@ function Step3Body({ isTeam }: { isTeam: boolean }) {
           placeholder='State / Region'
           options={stateOptions}
           searchable
+        
+  
         />
 
         {isTeam ? (

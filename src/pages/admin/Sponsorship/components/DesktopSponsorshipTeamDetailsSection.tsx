@@ -31,8 +31,6 @@ export default function DesktopSponsorshipTeamDetailsSection({
   loading,
   team,
 }: Props) {
-
-
   if (loading) {
     return (
       <Box sx={{ maxWidth: 880 }}>
@@ -52,6 +50,7 @@ export default function DesktopSponsorshipTeamDetailsSection({
       <Typography component='h1' variant='h1' sx={{ fontWeight: 900 }}>
         TEAM DETAILS
       </Typography>
+
       <Box
         sx={{
           display: 'grid',

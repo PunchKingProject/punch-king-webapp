@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTeamProfile } from "../api/teams.api";
-import type { TeamProfile } from "../api/teams.types";
+import { getTeamProfile } from "../api/teams.api.ts";
+import type { TeamProfile } from "../api/teams.types.ts";
 
 
 

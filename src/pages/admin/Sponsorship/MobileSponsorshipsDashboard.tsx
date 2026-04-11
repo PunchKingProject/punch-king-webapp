@@ -8,19 +8,18 @@ import type { DateRange } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import ROUTES from '../../../routes/routePath';
-import { colors } from '../../../theme/colors';
-import { ScrollableSection } from '../components/ScrollableSection';
-import { useSponsorships } from './hooks/useSponsorships';
+import ROUTES from '../../../routes/routePath.ts';
+import { colors } from '../../../theme/colors.ts';
+import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import { useSponsorships } from './hooks/useSponsorships.ts';
 
-import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer';
-import type { SponsorshipListItem } from './ui/fields';
-import { sponsorshipFieldData } from './ui/fields';
+import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
+import type { SponsorshipListItem } from './ui/fields.ts';
+import { sponsorshipFieldData } from './ui/fields.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
 export default function MobileSponsorshipsDashboard() {
-
   const navigate = useNavigate();
 
   // ----- date range
@@ -148,6 +147,7 @@ export default function MobileSponsorshipsDashboard() {
           />
         </Box>
       </Box>
+
       {/* cards slider */}
       <Box
         ref={scrollerRef}
@@ -210,6 +210,7 @@ export default function MobileSponsorshipsDashboard() {
           </Box>
         ))}
       </Box>
+
       {/* list */}
       <ScrollableSection<SponsorshipListItem>
         title='SPONSORSHIP requests'
@@ -235,14 +236,15 @@ export default function MobileSponsorshipsDashboard() {
               navigate(
                 ROUTES.SPONSORSHIP_DETAILS.replace(
                   ':sponsor_id',
-                  String(row.team_id),
-                ),
+                  String(row.team_id)
+                )
               )
             }
           >
             <VisibilityRounded />
           </IconButton>
         )}
+      
       />
     </>
   );

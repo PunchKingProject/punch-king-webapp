@@ -1,12 +1,12 @@
-import { customFetch } from '../../../../Axios';
+import { customFetch } from '../../../../Axios.ts';
 import type {
-    CreateSubBody,
+  CreateSubBody, CreateSubscriptionResponse,
   Envelope,
   SubHistoryPayload,
-  SubPaymentPayload,
+  SubPaymentPayload, SubscriptionPlansPayload, SubscriptionPlansResponse,
   TeamSubStats,
   TeamSubStatsParams,
-} from './mysubscriptions.types';
+} from './mysubscriptions.types.ts';
 
 // GET /sub/team-sub-stats?start_date=DD-MM-YYYY&end_date=DD-MM-YYYY
 export async function getTeamSubStats(
@@ -43,6 +43,15 @@ export async function getTeamSubPayments(params: {
   return data.data;
 }
 
-export async function createSubscription(body: CreateSubBody): Promise<void> {
-  await customFetch.post('/sub/', body);
+export async function createSubscription(body: CreateSubBody): Promise<CreateSubscriptionResponse> {
+  const {data} = await customFetch.post<CreateSubscriptionResponse>('/sub/', body);
+
+  return data
+}
+
+
+export async function getSubscriptionPlans(): Promise<SubscriptionPlansPayload[]> {
+  const { data } = await customFetch.get<SubscriptionPlansResponse>('/sub/plans');
+
+  return data.data;
 }

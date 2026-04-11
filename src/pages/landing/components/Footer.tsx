@@ -1,9 +1,8 @@
-
 import { Box, Link, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { consortiumLogo, punchKingLogoFooter } from '../../../assets';
-import ROUTES from '../../../routes/routePath';
-import { colors } from '../../../theme/colors';
+import ROUTES from '../../../routes/routePath.ts';
+import { colors } from '../../../theme/colors.ts';
 
 // SVGs (via Vite SVGR)
 import EmailIcon from '../../../assets/emailLogo.svg?react';
@@ -12,15 +11,17 @@ import FacebookIcon from '../../../assets/facebookLogo.svg?react';
 import PhoneIcon from '../../../assets/phoneLogo.svg?react';
 import WhatsAppIcon from '../../../assets/whatsappLogo.svg?react';
 import YouTubeIcon from '../../../assets/youtubeLogo.svg?react';
-import LanguageSwitcher from "../../.g./components/LanguageSwitcher";
 
-const CONTACT_PRIMARY = '+234 9061287852';
-const CONTACT_EMAIL = 'Info@punchkingboxing.com';
+const CONTACT_PRIMARY = '+234 9061287852'; // WhatsApp + Tel
+const CONTACT_EMAIL = 'info@punchkingboxing.com';
 
+// Social profiles (from your screenshot)
 const INSTAGRAM_URL = 'https://instagram.com/punchkingboxing';
 const YOUTUBE_URL = 'https://www.youtube.com/@Punchkingboxinglimited';
+// If this exact page slug differs, swap it out; name is “Punch King Boxing Limited.”
 const FACEBOOK_URL = 'https://www.facebook.com/PunchKingBoxingLimited';
 
+// Small helper to render icon + text with optional link
 function ContactLine({
   icon: Icon,
   children,
@@ -32,7 +33,6 @@ function ContactLine({
   href?: string;
   label?: string;
 }) {
-
   const content = (
     <Box
       sx={{
@@ -58,6 +58,7 @@ function ContactLine({
       <span>{children}</span>
     </Box>
   );
+
   if (href) {
     const external = href.startsWith('http');
     return (
@@ -80,7 +81,6 @@ function ContactLine({
 const Footer = () => {
   const { pathname } = useLocation();
   const isHome = pathname === '/' || pathname === ROUTES.HOME;
-    
 
   return (
     <Box
@@ -90,45 +90,43 @@ const Footer = () => {
         width: '100%',
         bgcolor: colors.Card,
         borderTop: '1px solid #3B3B3B',
-        px: { xs: 2, md: 3 },
+        px: { xs: 2, md: 6 },
         py: { xs: 3, md: 4 },
       }}
     >
-      {/* <LanguageSwitcher /> */}
-      {/* jebhbhbe */}
-      {/* Keep footer aligned with the rest of the site content */}
       <Box
         sx={{
-          maxWidth: 1200, // 👈 match your desktop content width
-          mx: 'auto',
-          width: '100%',
           display: 'grid',
+          // 1 column on mobile: center → contact → socials (socials at bottom)
           gridTemplateColumns: {
             xs: '1fr',
-            md: isHome ? '1fr 1fr 1fr' : '1fr 1fr 1fr',
+            md: isHome ? '1fr 1fr 1fr' : '1fr 1fr',
           },
           gridTemplateAreas: {
             xs: `"center"
-                 "contact"
-                 "socials"`,
-            md: `"socials center contact"`,
+           "contact"
+           "socials"`,
+            // Desktop: keep previous layout for home (socials left, logo center, contact right)
+            md: isHome
+              ? `"socials center contact"`
+              : // Non-home desktop/tablet: keep two cols; socials can sit below (no design change requested)
+                `"center contact"
+           "socials socials"`,
           },
           alignItems: 'center',
           justifyItems: 'center',
           rowGap: 2,
-          columnGap: { md: 4 },
         }}
       >
         {/* Socials */}
         <Box
           sx={{
-            gridArea: 'socials', // 👈 assign area
             display: 'flex',
             gap: 2.5,
             alignItems: 'center',
-            justifyContent: { xs: 'center', md: 'flex-start' },
+            justifyContent: { xs: 'center', md: 'flex-end' },
             mt: { xs: 1, md: 0 },
-            '& a svg': { width: 28, height: 28 }, // adjust size globally
+            '& a svg': { width: 40, height: 40 },
           }}
           aria-label='Social links'
         >
@@ -161,23 +159,23 @@ const Footer = () => {
           </Link>
         </Box>
 
-        {/* Center: logo + license + (consortium only on home) */}
+        {/* Center block */}
         <Box
+          textAlign='center'
           sx={{
-            gridArea: 'center', // 👈 assign area
-            textAlign: 'center',
             display: 'flex',
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
             flexDirection: 'column',
+            background: colors.Card,
           }}
         >
           <Box
             component='img'
             src={punchKingLogoFooter}
             alt='Punch King'
-            sx={{ width: '10.125rem', display: 'block' }}
+            sx={{ width: '10.125rem', objectFit: 'cover', display: 'block' }}
           />
           <Typography sx={{ color: colors.Freeze }}>
             License No: NBBofC/24/030
@@ -192,24 +190,23 @@ const Footer = () => {
                 component='img'
                 src={consortiumLogo}
                 alt='Technology partner consortium'
-                sx={{ width: '1.75rem', display: 'block' }}
+                sx={{ width: '1.75rem', objectFit: 'cover', display: 'block' }}
               />
             </>
           )}
         </Box>
 
-        {/* Contact */}
+        {/* Contact / “Contact us” */}
         <Box
           sx={{
-            gridArea: 'contact', // 👈 assign area
             display: 'grid',
             gap: 1,
-            justifyItems: { xs: 'center', md: 'end' },
-            textAlign: { xs: 'center', md: 'right' },
+            justifyItems: { xs: 'center', md: 'start' },
+            textAlign: { xs: 'center', md: 'left' },
             fontWeight: 700,
-            width: '100%',
           }}
         >
+          {/* WhatsApp */}
           <ContactLine
             icon={WhatsAppIcon}
             href={`https://wa.me/${CONTACT_PRIMARY.replace(/\D/g, '')}`}
@@ -217,6 +214,8 @@ const Footer = () => {
           >
             {CONTACT_PRIMARY}
           </ContactLine>
+
+          {/* Email */}
           <ContactLine
             icon={EmailIcon}
             href={`mailto:${CONTACT_EMAIL}`}
@@ -224,6 +223,8 @@ const Footer = () => {
           >
             {CONTACT_EMAIL}
           </ContactLine>
+
+          {/* Tel */}
           <ContactLine
             icon={PhoneIcon}
             href={`tel:${CONTACT_PRIMARY.replace(/\s/g, '')}`}

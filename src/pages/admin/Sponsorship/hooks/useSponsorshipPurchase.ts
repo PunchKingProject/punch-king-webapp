@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSponsorshipPurchase } from '../api/sponsorships.api';
-import type { SponsorshipDetails } from '../api/sponsorships.types';
+import { getSponsorshipPurchase } from '../api/sponsorships.api.ts';
+import type { SponsorshipDetails } from '../api/sponsorships.types.ts';
 
 export function useSponsorshipPurchase(purchase_id: number | null) {
   return useQuery<SponsorshipDetails>({

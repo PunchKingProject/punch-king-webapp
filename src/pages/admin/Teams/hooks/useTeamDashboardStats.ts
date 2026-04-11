@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import type {
   TeamDashboardStats,
   TeamDashboardStatsParams,
-} from '../api/teams.types';
-import { getTeamDashboardStats } from '../api/teams.api';
+} from '../api/teams.types.ts';
+import { getTeamDashboardStats } from '../api/teams.api.ts';
 
 export function useTeamDashboardStats(params: TeamDashboardStatsParams) {
   return useQuery<TeamDashboardStats>({

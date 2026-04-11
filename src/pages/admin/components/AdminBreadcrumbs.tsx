@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import CustomButton from '../../../components/buttons/CustomButton';
-import { colors } from '../../../theme/colors';
+import CustomButton from '../../../components/buttons/CustomButton.tsx';
+import { colors } from '../../../theme/colors.ts';
 
 type AdminBreadCrumbsProps = {
   /** The only clickable segment */
@@ -23,8 +23,6 @@ export default function AdminBreadCrumbs({
   separator = ' / ',
 
 }: AdminBreadCrumbsProps) {
-
-
   const navigate = useNavigate()
   return (
     <Box
@@ -47,9 +45,11 @@ export default function AdminBreadCrumbs({
       >
         {rootLabel}
       </Typography>
+
       <Typography component='span' sx={{ mx: 0.5, opacity: 0.7 }}>
         {separator}
       </Typography>
+
       <Typography component='span' sx={{ color: '#EDEDED', fontWeight: 700 }}>
         {currentLabel}
       </Typography>
@@ -58,7 +58,9 @@ export default function AdminBreadCrumbs({
       }} onClick={
         () => navigate(-1)
       
-      }>Back</CustomButton>
+      }>
+        Back
+      </CustomButton>
     </Box>
   );
 }

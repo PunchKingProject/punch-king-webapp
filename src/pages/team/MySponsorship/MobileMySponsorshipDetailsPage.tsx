@@ -14,17 +14,17 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
-import { useSponsorRelatedStats } from './hooks/useSponsorRelatedStats';
-import { useSponsorRelatedList } from './hooks/useSponsorRelatedList';
+import { useSponsorRelatedStats } from './hooks/useSponsorRelatedStats.ts';
+import { useSponsorRelatedList } from './hooks/useSponsorRelatedList.ts';
 import {
   sponsorRelatedFieldData,
   type MobileSponsorRelatedItem,
-} from './ui/fields';
-import ROUTES from '../../../routes/routePath';
-import { colors } from '../../../theme/colors';
-import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer';
-import MobileSponsorStatsStrip from './components/MobileSponsorStatsStrip';
-import { ScrollableSection } from '../../admin/components/ScrollableSection';
+} from './ui/fields.ts';
+import ROUTES from '../../../routes/routePath.ts';
+import { colors } from '../../../theme/colors.ts';
+import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer.tsx';
+import MobileSponsorStatsStrip from './components/MobileSponsorStatsStrip.tsx';
+import { ScrollableSection } from '../../admin/components/ScrollableSection.tsx';
 
 // ---- helpers (this route family uses DD-MM-YYYY) ----
 const fmtDMY = (d: Dayjs) => d.format('DD-MM-YYYY');
@@ -38,8 +38,6 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 };
 
 export default function MobileMySponsorshipDetailsPage() {
- 
-
   const navigate = useNavigate();
   const { sponsorId } = useParams<{ sponsorId: string }>();
   const sponsor_id = Number(sponsorId);
@@ -119,6 +117,7 @@ export default function MobileMySponsorshipDetailsPage() {
       >
         Back
       </Button>
+
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1.5 }}>
         <MLink
           component={RouterLink}
@@ -142,6 +141,7 @@ export default function MobileMySponsorshipDetailsPage() {
           SPONSOR DETAILS
         </Typography>
       </Box>
+
       {/* Header + date filter */}
       <Box
         sx={{
@@ -173,6 +173,7 @@ export default function MobileMySponsorshipDetailsPage() {
           />
         </Box>
       </Box>
+
       {/* Sliding metrics */}
       <MobileSponsorStatsStrip
         loading={statsLoading}
@@ -181,6 +182,7 @@ export default function MobileMySponsorshipDetailsPage() {
         sponsorshipValue={stats?.total_cash ?? 0}
         teamRank={0}
       />
+
       {/* Transactions with this sponsor */}
       <ScrollableSection<MobileSponsorRelatedItem>
         title='Sponsorship history'

@@ -8,9 +8,9 @@ import {
   openProfileIcon,
   punchKingMobileLogo,
 } from '../assets';
-import ROUTES from '../routes/routePath';
-import Footer from '../pages/landing/components/Footer';
-import Navbar from '../components/nav/Navbar';
+import ROUTES from '../routes/routePath.ts';
+import Footer from '../pages/landing/components/Footer.tsx';
+import Navbar from '../components/nav/Navbar.tsx';
 
 const Adminlayout = () => {
   const isTabletUp = useMediaQuery('(min-width:910px)');
@@ -91,6 +91,7 @@ const AdminLayoutMobile = () => {
           }}
         />
       </Box>
+
       {/* Profile Dropdown */}
       {profileOpen && (
         <>
@@ -130,10 +131,13 @@ const AdminLayoutMobile = () => {
                 textTransform: 'none',
                 '&:hover': { backgroundColor: '#222', borderColor: '#fff' },
               }}
-            >Logout</Button>
+            >
+              Logout
+            </Button>
           </Box>
         </>
       )}
+
       {/* Visible Dropdown (Main menu) */}
       {menuOpen && (
         <>
@@ -193,6 +197,7 @@ const AdminLayoutMobile = () => {
           </Box>
         </>
       )}
+
       <Outlet />
       <Footer />
     </>

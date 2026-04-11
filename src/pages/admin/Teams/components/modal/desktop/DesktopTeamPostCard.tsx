@@ -3,9 +3,9 @@ import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton, Typography } from '@mui/material';
 import RankingIcon from '../../../../../../assets/rankingSmallbox1.svg?react';
-import NeutronIcon from '../../../../../../assets/rankingSmallbox3.svg?react';
-import { isVideo } from '../../../../../../utils/helpers';
-import type { TeamPost } from '../../../api/teams.types';
+import NeutronIcon from '../../../../../../assets/rankingSmallBox3.svg?react';
+import { isVideo } from '../../../../../../utils/helpers.ts';
+import type { TeamPost } from '../../../api/teams.types.ts';
 
 type Props = { item: TeamPost; onOpen: (item: TeamPost) => void };
 
@@ -106,6 +106,7 @@ export default function TeamPostCard({ item, onOpen }: Props) {
           </Box>
         </Box>
       </Box> */}
+
       <Box
         sx={{
           border: '2px solid orange',
@@ -219,7 +220,7 @@ export default function TeamPostCard({ item, onOpen }: Props) {
         >
           <Typography
             variant='body2'
-            sx={{ color: '#EFAF00', fontWeight: 700 }}
+            sx={{ color: '#EFAF00', fontWeight: 700,  }}
           >
             Title:
           </Typography>

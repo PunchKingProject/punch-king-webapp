@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { patchUserProfile } from "../api/users.api";
-import type { UpdateUserPayload } from "../api/users.types";
+import { patchUserProfile } from "../api/users.api.ts";
+import type { UpdateUserPayload } from "../api/users.types.ts";
 
 
 export function useUpdateUserProfile(sponsor_id: number) {

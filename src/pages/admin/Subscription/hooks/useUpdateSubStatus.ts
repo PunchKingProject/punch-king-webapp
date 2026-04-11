@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { UpdateSubStatusPayload } from '../api/subscriptions.types';
-import { updateSubStatus } from '../api/subscriptions.api';
+import type { UpdateSubStatusPayload } from '../api/subscriptions.types.ts';
+import { updateSubStatus } from '../api/subscriptions.api.ts';
 
 export function useUpdateSubStatus() {
   const qc = useQueryClient();

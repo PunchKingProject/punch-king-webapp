@@ -5,24 +5,24 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 
-import ROUTES from '../../../routes/routePath';
-import { colors } from '../../../theme/colors';
-import { ScrollableSection } from '../../admin/components/ScrollableSection';
+import ROUTES from '../../../routes/routePath.ts';
+import { colors } from '../../../theme/colors.ts';
+import { ScrollableSection } from '../../admin/components/ScrollableSection.tsx';
 
-import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer';
+import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer.tsx';
 
 import {
   mapApiToRows,
   type SponsorshipRow,
-} from './components/DesktopSponsorshipHistoryTable';
-import { useTeamSponsorshipStats } from './hooks/useTeamSponsorshipStats';
-import { useTeamSponsorshipHistory } from './hooks/useTeamSponsorshipHistory';
+} from './components/DesktopSponsorshipHistoryTable.tsx';
+import { useTeamSponsorshipStats } from './hooks/useTeamSponsorshipStats.ts';
+import { useTeamSponsorshipHistory } from './hooks/useTeamSponsorshipHistory.ts';
 
-import MobileSponsorStatsStrip from './components/MobileSponsorStatsStrip';
+import MobileSponsorStatsStrip from './components/MobileSponsorStatsStrip.tsx';
 import {
   sponsorshipHistoryFieldData,
   type MobileSponsorshipItem,
-} from './ui/fields';
+} from './ui/fields.ts';
 
 // ✅ Stats = YYYY-MM-DD, History = DD-MM-YYYY
 const fmtStatsYMD = (d: Dayjs) => d.format('YYYY-MM-DD');
@@ -36,8 +36,6 @@ const formatRangeLabel = (from?: Date, to?: Date) => {
 };
 
 export default function MobileMySponsorshipPage() {
-
-
   const navigate = useNavigate();
 
   /** ======== Metrics date filter (matches other mobile dashboards) ======== */
@@ -115,7 +113,6 @@ export default function MobileMySponsorshipPage() {
         }}
       >
         <Typography variant='mediumHeaderBold' sx={{ color: colors.Freeze }}>
-          {' '}
           Sponsorships
         </Typography>
 
@@ -139,6 +136,7 @@ export default function MobileMySponsorshipPage() {
           />
         </Box>
       </Box>
+
       {/* Sliding stats strip */}
       <MobileSponsorStatsStrip
         loading={statsLoading}
@@ -147,6 +145,7 @@ export default function MobileMySponsorshipPage() {
         sponsorshipValue={stats?.sponsorship_value ?? 0}
         teamRank={stats?.team_rank ?? 0}
       />
+
       {/* Sponsorship history */}
       <ScrollableSection<MobileSponsorshipItem>
         title='Sponsorship history'
@@ -169,8 +168,8 @@ export default function MobileMySponsorshipPage() {
                 navigate(
                   ROUTES.TEAM_MYSPONSORSHIP_DETAILS.replace(
                     ':sponsorId',
-                    String(r.sponsor_id),
-                  ),
+                    String(r.sponsor_id)
+                  )
                 )
               }
               sx={{ color: '#fff', mt: 0.5 }}

@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopLicensePaymentPage from './DesktopLicensePaymentPage';
-import MobileLicensePaymentPage from './MobileLicensePaymentPage';
+import DesktopLicensePaymentPage from './DesktopLicensePaymentPage.tsx';
+import MobileLicensePaymentPage from './MobileLicensePaymentPage.tsx';
 
 export default function LicensePaymentPage() {
   const isTabletUp = useMediaQuery('(min-width:910px)');

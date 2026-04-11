@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
-import DesktopMySponsorshipPage from './DesktopMySponsorshipPage';
-import MobileMySponsorshipPage from './MobileMySponsorshipPage';
+import DesktopMySponsorshipPage from './DesktopMySponsorshipPage.tsx';
+import MobileMySponsorshipPage from './MobileMySponsorshipPage.tsx';
 
 export default function MySponsorshipPage() {
   const isTabletUp = useMediaQuery('(min-width:910px)');

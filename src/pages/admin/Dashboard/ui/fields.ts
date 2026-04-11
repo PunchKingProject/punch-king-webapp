@@ -1,5 +1,5 @@
-import type { Field } from '../../components/ScrollableSection';
-import type { Team, UserSponsorship } from '../api/dashboard.types';
+import type { Field } from '../../components/ScrollableSection.tsx';
+import type { Team, UserSponsorship } from '../api/dashboard.types.ts';
 
 export const teamFieldData: Field<Team>[] = [
   { key: 'team_name', label: 'Team name' },

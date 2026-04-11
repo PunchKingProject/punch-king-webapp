@@ -6,17 +6,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../../assets';
-import FormikTextField from '../../../components/form/FormikTextField';
-import NoticeModal from '../../../components/modal/NoticeModal';
-import { useAppDispatch } from '../../../hooks';
-import { mergeDraft } from '../../../store/registration.slice';
-import { openInbox } from '../../../utils/helpers';
-import { verifyUser } from '../api/registration';
+import FormikTextField from '../../../components/form/FormikTextField.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx';
+import { useAppDispatch } from '../../../hooks.ts';
+import { mergeDraft } from '../../../store/registration.slice.ts';
+import { openInbox } from '../../../utils/helpers.ts';
+import { verifyUser } from '../api/registration.ts';
 
-import type {} from 'axios';
+import type { } from 'axios';
 import { toast } from 'react-toastify';
-import CustomAuthButton from '../../../components/buttons/CustomAuthButton';
-import { withErrorToast } from '../../../utils/error/onError';
+import CustomAuthButton from '../../../components/buttons/CustomAuthButton.tsx';
+import { withErrorToast } from '../../../utils/error/onError.ts';
 
 function Step1() {
   // const navigate = useNavigate();
@@ -26,9 +26,10 @@ function Step1() {
   const [lastEmail, setLastEmail] = useState<string>('');
   const [sp] = useSearchParams();
 
-  const raw = sp.get('flow') ?? '';
-  const token = raw.split(/[?&]/)[0].toLowerCase();
-  const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
+
+const raw = sp.get('flow') ?? '';
+const token = raw.split(/[?&]/)[0].toLowerCase();
+const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
 
   const initialValues = {
     email: '',
@@ -75,7 +76,7 @@ function Step1() {
     },
     onError: withErrorToast((err) => {
       toast.error(
-        'Failed to send verification email: ' + (err as Error).message,
+        'Failed to send verification email: ' + (err as Error).message
       );
     }),
     // optional: show a toast / set form error on failure
@@ -134,7 +135,7 @@ function Step1() {
             const autoSave = useMemo(
               () =>
                 debounce((vals) => dispatch(mergeDraft({ step1: vals })), 400),
-              [dispatch],
+              [dispatch]
             );
             useEffect(() => {
               autoSave(formik.values);

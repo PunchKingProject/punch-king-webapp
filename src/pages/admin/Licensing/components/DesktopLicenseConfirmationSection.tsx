@@ -3,22 +3,20 @@ import { Box, Typography } from '@mui/material';
 import StatusChipDropdown, {
   type LicenseStatus,
   type PaymentStatus,
-} from '../../../../components/chips/StatusChipDropdown';
-import type { LicenseApiRow } from '../api/licensing.types';
-import { useDisclosure } from '../../../../hooks/useDisclosure';
+} from '../../../../components/chips/StatusChipDropdown.tsx';
+import type { LicenseApiRow } from '../api/licensing.types.ts';
+import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
 import { useEffect, useState } from 'react';
-import { useUpdateLicenseStatus } from '../hooks/useUpdateLicenseStatus';
+import { useUpdateLicenseStatus } from '../hooks/useUpdateLicenseStatus.ts';
 import WarningIcon from '../../../../assets/modalQuestionIcon.svg?react';
 import SuccessIcon from '../../../../assets/modalSuccess.svg?react';
-import NoticeModal from '../../../../components/modal/NoticeModal';
+import NoticeModal from '../../../../components/modal/NoticeModal.tsx';
 
 type Props = {
   entry?: LicenseApiRow | null;
 };
 
 function normalizePayment(s?: string | null): PaymentStatus {
-
-
   switch ((s ?? '').toLowerCase()) {
     case 'confirmed':
       return 'confirmed';
@@ -80,7 +78,10 @@ export default function DesktopLicenseConfirmationSection({ entry }: Props) {
 
   return (
     <Box sx={{ mt: 6 }}>
-      <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>Confirmation</Typography>
+      <Typography component='h2' variant='h2' sx={{ fontWeight: 900, mb: 2 }}>
+        CONFIRMATION
+      </Typography>
+
       <Box
         sx={{
           display: 'grid',
@@ -91,7 +92,9 @@ export default function DesktopLicenseConfirmationSection({ entry }: Props) {
         }}
       >
         <Box>
-          <Typography sx={{ fontWeight: 800, fontSize: 14, mb: 1 }}>Payment Confirmation Status</Typography>
+          <Typography sx={{ fontWeight: 800, fontSize: 14, mb: 1 }}>
+            Payment confirmation status:
+          </Typography>
           {/* <StatusChip label={(entry?.payment_status ?? 'pending') as any} /> */}
           <StatusChipDropdown
             domain='payment'
@@ -104,7 +107,9 @@ export default function DesktopLicenseConfirmationSection({ entry }: Props) {
         </Box>
 
         <Box>
-          <Typography sx={{ fontWeight: 800, fontSize: 14, mb: 1 }}>Subscription Status</Typography>
+          <Typography sx={{ fontWeight: 800, fontSize: 14, mb: 1 }}>
+            Subscription status:
+          </Typography>
           {/* <StatusChip label={(entry?.license_status ?? 'pending') as any} /> */}
           <StatusChipDropdown
             domain='license'
@@ -116,6 +121,7 @@ export default function DesktopLicenseConfirmationSection({ entry }: Props) {
           />
         </Box>
       </Box>
+
       {/* Confirm modal */}
       <NoticeModal
         open={confirm.open}
@@ -128,6 +134,7 @@ export default function DesktopLicenseConfirmationSection({ entry }: Props) {
         secondaryLabel='Cancel'
         icon={<WarningIcon />}
       />
+
       {/* Success modal */}
       <NoticeModal
         open={success.open}

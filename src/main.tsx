@@ -9,14 +9,14 @@ import { ThemeProvider } from '@emotion/react';
 import { Provider } from 'react-redux';
 import theme from './theme/theme.ts';
 import { CssBaseline } from '@mui/material';
-import { store } from './store/index.ts';
+import { store } from './store';
 import { ToastContainer } from 'react-toastify';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <ToastContainer />
+        <ToastContainer limit={1} />
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <App />
