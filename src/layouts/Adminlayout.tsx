@@ -1,7 +1,7 @@
 // ...imports unchanged
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   closeMobileMenuIcon,
   openMobileMenuIcon,
@@ -32,6 +32,7 @@ const AdminLayoutMobile = () => {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
    const handleNav = (path: string) => {
      setMenuOpen(false); // 👈 close menu immediately
@@ -173,6 +174,7 @@ const AdminLayoutMobile = () => {
             }}
           >
             {[
+              { name: 'Dashboard', path: ROUTES.ADMIN },
               { name: 'Teams', path: ROUTES.TEAMS },
               { name: 'Users', path: ROUTES.USERS },
               { name: 'Licensing', path: ROUTES.LICENSING },
@@ -183,12 +185,22 @@ const AdminLayoutMobile = () => {
                 key={item.name}
                 variant='outlined'
                 onClick={() => handleNav(item.path)}
+                disabled={isActiveRoute(item.path)}
                 sx={{
-                  color: '#f0c040',
+                  color: isActiveRoute(item.path) ? '#000' : '#f0c040',
                   borderColor: '#f0c040',
                   width: '200px',
                   borderRadius: '10px',
-                  '&:hover': { backgroundColor: '#222', borderColor: '#fff' },
+                  backgroundColor: isActiveRoute(item.path)
+                    ? '#f0c040'
+                    : 'transparent',
+                  fontWeight: isActiveRoute(item.path) ? 600 : 500,
+                  '&:hover': {
+                    backgroundColor: isActiveRoute(item.path)
+                      ? '#f0c040'
+                      : '#222',
+                    borderColor: '#fff',
+                  },
                 }}
               >
                 {item.name}
