@@ -355,6 +355,7 @@ export default function ChampionshipModal({
   );
 }
 
+
 function PrizeRow({ label, value }: { label: string; value: string }) {
   return (
     <Box
