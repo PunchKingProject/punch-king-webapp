@@ -32,6 +32,9 @@ import teamImg2 from './teamImg2.svg';
 import teamImg3 from './teamimg3.svg';
 import teamImg4 from './teamimg4.svg';
 import teamImg5 from './teamImg5.svg';
+import updatedModalImage from './updatedModalImage.png';
+
+
 export {
   punchKingLogo,
   heroBoxer,
@@ -67,4 +70,5 @@ export {
   teamImg3,
   teamImg4,
   teamImg5,
+  updatedModalImage,
 };

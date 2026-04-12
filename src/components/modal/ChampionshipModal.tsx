@@ -9,8 +9,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { colors } from '../../theme/colors.ts';
-import newModalImage from '../../assets/newModalImage.png'
+import { colors } from '../../theme/colors';
+import { updatedModalImage } from '../../assets';
 
 type Props = {
   open: boolean;
@@ -25,7 +25,7 @@ const GOLD = '#EFAF00';
 export default function ChampionshipModal({
   open,
   onClose,
-//   imageSrc,
+  //   imageSrc,
   logoSrc,
   onSignup,
 }: Props) {
@@ -39,14 +39,12 @@ export default function ChampionshipModal({
       fullWidth
       maxWidth='lg'
       fullScreen={fullScreen}
-      slotProps={{
-        paper: {
-          sx: {
-            bgcolor: '#0E0E0E',
-            border: '1px solid #2C2C2C',
-            borderRadius: fullScreen ? 0 : 3,
-            boxShadow: '0 24px 64px rgba(0,0,0,0.65)',
-          },
+      PaperProps={{
+        sx: {
+          bgcolor: '#0E0E0E',
+          border: '1px solid #2C2C2C',
+          borderRadius: fullScreen ? 0 : 3,
+          boxShadow: '0 24px 64px rgba(0,0,0,0.65)',
         },
       }}
     >
@@ -60,7 +58,7 @@ export default function ChampionshipModal({
             color: colors.Freeze,
           }}
         >
-          Punch King African Championship
+          Punch King African Tournament
         </Typography>
         <Box sx={{ flex: 1 }} />
         <IconButton
@@ -73,7 +71,7 @@ export default function ChampionshipModal({
         </IconButton>
       </Box>
 
-      <DialogContent sx={{ pt: 0 }}>
+      <DialogContent sx={{ pt: 0, maxHeight: '80vh', overflowY: 'auto' }}>
         {/* two-column desktop, stacked mobile */}
         <Box
           sx={{
@@ -143,7 +141,7 @@ export default function ChampionshipModal({
                   // color: colors.Freeze,
                 }}
               >
-                Championship
+                Tournament
               </Typography>
 
               {/* body blocks, kept tight like the mock */}
@@ -166,13 +164,6 @@ export default function ChampionshipModal({
                 Punch King crown.
               </Typography>
 
-              {/* quick facts */}
-              <Box sx={{ display: 'grid', gap: 0.75, mb: 2 }}>
-                <InfoRow label='Bout' value='6 rounds' />
-                <InfoRow label='Weight Categories' value='Welterweight, Lightweight, Middleweight' />
-                <InfoRow label='Age' value='18–25' />
-              </Box>
-
               {/* prizes */}
               <Box
                 sx={{
@@ -185,11 +176,11 @@ export default function ChampionshipModal({
               >
                 <PrizeRow
                   label='Punch King Champion'
-                  value='$50,000 worth of professional contract, continental endorsement deals, and more.'
+                  value='$50,000 USD worth of professional contract, continental endorsement deals, and more.'
                 />
-                <PrizeRow label='Finalist' value='$20,000' />
-                <PrizeRow label='Semi finalist' value='$10,000' />
-                <PrizeRow label='Quarter finalist' value='$5,000' />
+                <PrizeRow label='Finalist' value='$20,000 USD.' />
+                <PrizeRow label='Semi finalist' value='$10,000 USD.' />
+                <PrizeRow label='Quarter finalist' value='$5,000 USD.' />
               </Box>
 
               <Typography
@@ -201,8 +192,91 @@ export default function ChampionshipModal({
                   mb: 2,
                 }}
               >
-                MARCH 25th 2026
+                July 25th 2026
               </Typography>
+
+              {/* EVENT DETAILS */}
+              <Box
+                sx={{
+                  mt: 2,
+                  border: '1px solid #3B3B3B',
+                  borderRadius: 2,
+                  p: 1.5,
+                  bgcolor: 'rgba(255,255,255,0.02)',
+                }}
+              >
+                <SectionTitle>BOUTS</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12, mb: 1 }}>
+                  3 minutes per round. Total of 6 rounds professional fight.
+                  Three fights per weight category to crown the Punch King
+                  Champion.
+                </Typography>
+
+                <SectionTitle>REQUIRED WEIGHTS</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  • Welter weight
+                  <br />
+                  • Light weight
+                  <br />• Middle weight
+                </Typography>
+
+                <SectionTitle>ROUNDS</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  6 rounds for each weight category.
+                </Typography>
+
+                <SectionTitle>QUALIFICATION</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  • Team must subscribe (1 year subscription)
+                  <br />
+                  • Team must have valid licensed
+                  <br />
+                  • Boxer must have valid professional license
+                  <br />• Must be among top 8 most sponsored teams on Punch King
+                  platform
+                </Typography>
+
+                <SectionTitle>FIGHT TYPE</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  Tournament (Quarter-final knockout)
+                </Typography>
+
+                <SectionTitle>COVERAGE</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  Live fight nights televised across Africa and streamed in USA,
+                  UK and Europe.
+                </Typography>
+
+                <SectionTitle>TOURNAMENT DURATION</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  8 weeks (2 months)
+                </Typography>
+
+                <SectionTitle>TOURNAMENT TITLES</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  • Punch King African Welter Weight Champion 2026
+                  <br />
+                  • Punch King African Light Weight Champion 2026
+                  <br />• Punch King African Middle Weight Champion 2026
+                </Typography>
+
+                <SectionTitle>LOCATION</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  Lagos, Nigeria (Maiden Edition 2026)
+                </Typography>
+
+                <SectionTitle>DATE</SectionTitle>
+                <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
+                  25th July, 2026
+                </Typography>
+
+                <SectionTitle>DEADLINE FOR QUALIFICATION</SectionTitle>
+                <Typography
+                  sx={{ color: '#FF4D4D', fontWeight: 700, fontSize: 12 }}
+                >
+                  17th July, 2026
+                </Typography>
+              </Box>
 
               {/* CTA buttons (styled like design) */}
               {/* CTA buttons */}
@@ -263,7 +337,7 @@ export default function ChampionshipModal({
           >
             <Box
               component='img'
-              src={newModalImage}
+              src={updatedModalImage}
               alt='Championship poster'
               sx={{
                 width: '100%',
@@ -278,19 +352,6 @@ export default function ChampionshipModal({
         </Box>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <Box sx={{ display: 'flex', gap: 1 }}>
-      <Typography
-        sx={{ color: '#9E9E9E', fontWeight: 800, minWidth: 130, fontSize: 12 }}
-      >
-        {label}:
-      </Typography>
-      <Typography sx={{ color: '#EDEDED', fontSize: 12 }}>{value}</Typography>
-    </Box>
   );
 }
 
@@ -309,5 +370,22 @@ function PrizeRow({ label, value }: { label: string; value: string }) {
       </Typography>
       <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>{value}</Typography>
     </Box>
+  );
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <Typography
+      sx={{
+        color: GOLD,
+        fontWeight: 900,
+        fontSize: 13,
+        mt: 2,
+        mb: 0.75,
+        letterSpacing: 0.5,
+      }}
+    >
+      {children}
+    </Typography>
   );
 }

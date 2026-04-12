@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { punchKingLogo } from '../../../assets';
 
-const YT_ID = 'BUR_aimjjbc'; // from https://youtu.be/BUR_aimjjbc?si=KVXMGEM8fuD67Rn8
+const YT_ID = 'M86jP92tqvI'; // from https://youtu.be/BUR_aimjjbc?si=KVXMGEM8fuD67Rn8
 
 const About = () => {
   return (

@@ -38,6 +38,11 @@ function TeamMobileMenu() {
     []
   );
 
+  const isRouteActive = (currentPath: string, itemPath: string) => {
+    if (itemPath === '/team') return currentPath === '/team';
+    return currentPath.startsWith(itemPath);
+  };
+
   useEffect(() => {
     setOpen(false);
     setProfileOpen(false);
@@ -175,22 +180,32 @@ function TeamMobileMenu() {
               boxShadow: '0px 4px 12px rgba(0,0,0,0.4)',
             }}
           >
-            {items.map((it) => (
-              <Button
-                key={it.name}
-                variant='outlined'
-                onClick={() => handleNav(it.path)}
-                sx={{
-                  color: '#f0c040',
-                  borderColor: '#f0c040',
-                  width: 200,
-                  borderRadius: '10px',
-                  '&:hover': { backgroundColor: '#222', borderColor: '#fff' },
-                }}
-              >
-                {it.name}
-              </Button>
-            ))}
+            {items.map((it) => { 
+              const isActive = isRouteActive(pathname, it.path);
+              return (
+                <Button
+                  key={it.name}
+                  variant='outlined'
+                  onClick={() => handleNav(it.path)}
+                  disabled={isActive}
+                  sx={{
+                    color: isActive ? '#000' : '#f0c040',
+                    borderColor: '#f0c040',
+                    backgroundColor: isActive ? '#f0c040' : 'transparent',
+                    width: 200,
+                    borderRadius: '10px',
+                    opacity: isActive ? 0.6 : 1,
+                    fontWeight: isActive ? 600 : 500,
+                    cursor: isActive ? 'default' : 'pointer',
+                    '&:hover': {
+                      backgroundColor: isActive ? '#f0c040' : '#222',
+                      borderColor: '#fff',
+                    },
+                  }}
+                >
+                  {it.name}
+                </Button>
+              );})}
           </Box>
         </>
       )}
