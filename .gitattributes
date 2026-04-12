@@ -1,0 +1,4 @@
+docker-compose.yml merge=ours
+Dockerfile merge=ours
+deploy.yml merge=ours
+deploy.sh merge=ours
