@@ -1,6 +1,9 @@
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import XIcon from '@mui/icons-material/X';
 import {
   Box,
   Button,
@@ -11,6 +14,9 @@ import {
   InputBase,
   Skeleton,
   Typography,
+  Dialog,
+  DialogContent,
+  Stack,
 } from '@mui/material';
 import type { InfiniteData } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -35,6 +41,7 @@ const cardStyle = {
 export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [sharePost, setSharePost] = useState<FeedPost | null>(null);
   const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useAllPosts(4);
 
@@ -218,6 +225,7 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
                     <IconButton
                       size='small'
                       sx={{ color: '#EFAF00', flexShrink: 0 }}
+                      onClick={() => setSharePost(p)}
                     >
                       <ShareOutlinedIcon fontSize='inherit' />
                     </IconButton>
@@ -296,6 +304,70 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
           </Button>
         </Box>
       )}
+
+      {/* ✅ SHARE MODAL */}
+      <Dialog open={!!sharePost} onClose={() => setSharePost(null)}>
+        <DialogContent sx={{ background: '#1A1A1A' }}>
+          <Typography sx={{ color: '#fff', mb: 2, fontWeight: 700 }}>
+            Share Post
+          </Typography>
+
+          <Stack spacing={1.5}>
+            <Button
+              startIcon={<ContentCopyIcon />}
+              onClick={async () => {
+                const url = `${window.location.origin}/user/feeds/${sharePost?.id}`;
+                await navigator.clipboard.writeText(url);
+                setSharePost(null);
+              }}
+              sx={{ color: '#EFAF00', justifyContent: 'flex-start' }}
+            >
+              Copy Link
+            </Button>
+
+            <Button
+              startIcon={<WhatsAppIcon />}
+              onClick={() => {
+                const url = `${window.location.origin}/user/feeds/${sharePost?.id}`;
+                window.open(
+                  `https://wa.me/?text=${encodeURIComponent(url)}`,
+                  '_blank',
+                );
+              }}
+              sx={{ color: '#25D366', justifyContent: 'flex-start' }}
+            >
+              WhatsApp
+            </Button>
+
+            <Button
+              startIcon={<XIcon />}
+              onClick={() => {
+                const url = `${window.location.origin}/user/feeds/${sharePost?.id}`;
+                window.open(
+                  `https://twitter.com/intent/tweet?url=${url}`,
+                  '_blank',
+                );
+              }}
+              sx={{ color: '#fff', justifyContent: 'flex-start' }}
+            >
+              Share on X
+            </Button>
+
+            <Button
+              onClick={async () => {
+                const url = `${window.location.origin}/user/feeds/${sharePost?.id}`;
+                if (navigator.share) {
+                  await navigator.share({ url });
+                }
+                setSharePost(null);
+              }}
+              sx={{ color: '#EFAF00', justifyContent: 'flex-start' }}
+            >
+              More Options
+            </Button>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
