@@ -192,7 +192,7 @@ export default function ChampionshipModal({
                   mb: 2,
                 }}
               >
-                July 25th 2026
+                October 10th 2026
               </Typography>
 
               {/* EVENT DETAILS */}
@@ -267,14 +267,14 @@ export default function ChampionshipModal({
 
                 <SectionTitle>DATE</SectionTitle>
                 <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
-                  25th July, 2026
+                  October 10th, 2026
                 </Typography>
 
                 <SectionTitle>DEADLINE FOR QUALIFICATION</SectionTitle>
                 <Typography
                   sx={{ color: '#FF4D4D', fontWeight: 700, fontSize: 12 }}
                 >
-                  17th July, 2026
+                  October 1st, 2026
                 </Typography>
               </Box>
 
