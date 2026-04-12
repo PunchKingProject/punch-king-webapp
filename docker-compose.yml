@@ -1,0 +1,28 @@
+name: punchking-dev-frontend      # ← add this
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_MODE=development
+    image: punch-king-dev-frontend:latest
+    container_name: punch-king-dev-frontend
+    restart: unless-stopped
+    env_file:
+      - .env.development
+    ports:
+      - "3000:80"
+    environment:
+      VITE_API_BASE_URL: https://api-dev.punchkingboxing.com
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+networks:
+  default:
+    name: punch_king_network
+    external: true
