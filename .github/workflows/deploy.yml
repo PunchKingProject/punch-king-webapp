@@ -1,9 +1,9 @@
-name: Deploy Punch King Dev Frontend
+name: Deploy Punch King Prod Frontend
 
 on:
   push:
     branches:
-      - development
+      - main
 
 jobs:
   deploy:
@@ -25,4 +25,4 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 2222
           script: |
-            bash /opt/dev/frontend/punch-king-webapp/deploy.sh
+            bash /opt/prod/frontend/punch-king-webapp/deploy.sh

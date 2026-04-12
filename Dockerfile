@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Accept the mode from docker-compose (defaults to production if not set)
-ARG VITE_MODE=development
+ARG VITE_MODE=production
 
 # Install dependencies
 # Using npm ci for consistent builds in Docker
