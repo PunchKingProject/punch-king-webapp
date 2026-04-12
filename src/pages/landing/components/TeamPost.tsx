@@ -2,12 +2,25 @@ import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
-import { teamPostImage1, teamPostImage2, teamPostImage3 } from '../../../assets';
-import FilterIcon from '../../../assets/filterIcon.svg?react';
-import CustomButton from '../../../components/buttons/CustomButton.tsx';
+import {
+  teamPostImage1,
+  teamPostImage2,
+  teamPostImage3,
+} from '../../../assets';
+// import FilterIcon from '../../../assets/filterIcon.svg?react';
+// import CustomButton from '../../../components/buttons/CustomButton.tsx';
 import { colors } from '../../../theme/colors.ts';
+import { useAllPosts } from '../../user/Dashboard/hooks/useAllPosts';
+import type {
+  AllPostsPayload,
+  FeedPost,
+} from '../../user/Dashboard/api/dashboard.types';
+import type { InfiniteData } from '@tanstack/react-query';
 
-const images = [
+type Post = FeedPost;
+
+// fallback images (same structure as before)
+const fallbackImages = [
   teamPostImage3,
   teamPostImage2,
   teamPostImage1,
@@ -16,6 +29,35 @@ const images = [
 ];
 
 const TeamPost = () => {
+  const { data, isLoading, isError } = useAllPosts(4);
+
+  // ✅ TYPE CAST (SAFE workaround)
+  const infiniteData = data as unknown as
+    | InfiniteData<AllPostsPayload>
+    | undefined;
+
+  const posts: Post[] = infiniteData?.pages.flatMap((page) => page.posts) ?? [];
+
+  // ✅ build images (API first, fallback fills the rest)
+  const images = [
+    ...posts
+      .map((post) => post.file_url)
+      .filter((url): url is string => Boolean(url)),
+    ...fallbackImages,
+  ].slice(0, 5); // keep carousel size stable
+
+  if (isLoading) {
+    return <Typography color='white'>Loading posts...</Typography>;
+  }
+
+  if (isError) {
+    return <Typography color='white'>Failed to load posts</Typography>;
+  }
+
+  if (!posts.length) {
+    return <Typography color='white'>No posts available</Typography>;
+  }
+
   return (
     <Box
       id='posts'
@@ -46,7 +88,7 @@ const TeamPost = () => {
         </span>
       </Typography>
 
-      <Box display={'flex'} justifyContent={'center'} mb={6}>
+      {/* <Box display={'flex'} justifyContent={'center'} mb={6}>
         <CustomButton
           variant='outlined'
           color='primary'
@@ -77,17 +119,17 @@ const TeamPost = () => {
             <FilterIcon />
           </Box>
         </CustomButton>
-      </Box>
+      </Box> */}
 
       {/* <OverlappingSliderCarousel /> */}
-      <OverlappingCarousel />
+      <OverlappingCarousel images={images} />
     </Box>
   );
 };
 
 export default TeamPost;
 
-const OverlappingCarousel = () => {
+const OverlappingCarousel = ({ images }: { images: string[] }) => {
   const [centerIndex, setCenterIndex] = useState(0);
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up('md')); // >= 900px
@@ -189,7 +231,7 @@ const OverlappingCarousel = () => {
               <Box
                 component='img'
                 src={img}
-                alt={`Slide ${i}`}
+                alt='team post'
                 sx={{
                   width: '100%',
                   height: '100%',
