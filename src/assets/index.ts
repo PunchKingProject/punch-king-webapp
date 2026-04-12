@@ -34,7 +34,6 @@ import teamImg4 from './teamimg4.svg';
 import teamImg5 from './teamImg5.svg';
 import updatedModalImage from './updatedModalImage.png';
 
-
 export {
   punchKingLogo,
   heroBoxer,
