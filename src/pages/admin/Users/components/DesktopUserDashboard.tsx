@@ -108,6 +108,8 @@ export default function DesktopUserDashboard() {
       user_name: r.name,
       phone_number: r.phone_number,
       email: r.email,
+      address: r.address,
+      number_of_teams_sponsored: r.number_of_teams_sponsored,
       sponsorships: r.total_amount_given,
       sponsor_units: r.sponsorship_balance,
     }));

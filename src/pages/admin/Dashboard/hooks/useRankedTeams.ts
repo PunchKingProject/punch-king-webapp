@@ -7,7 +7,7 @@ import type { Envelope, Paged, RankedTeam, RankedTeamsParams } from '../api/dash
 
 export function useRankedTeams(params: RankedTeamsParams) {
   return useQuery<Envelope<Paged<RankedTeam>>>({
-    queryKey: ['ranked-teams', params.page, params.page_size, params.search],
+    queryKey: ['ranked-teams', params.page, params.page_size, params.search,params.sort_by],
     queryFn: () => fetchRankedTeams(params),
     staleTime: 60_000, // cache for 1 min
     retry: 1,

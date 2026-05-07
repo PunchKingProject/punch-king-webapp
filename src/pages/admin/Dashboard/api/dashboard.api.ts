@@ -28,6 +28,7 @@ export async function fetchRankedTeams(params: RankedTeamsParams) {
         search: params.search ?? '',
         page: params.page,
         page_size: params.page_size,
+        sort_by: params.sort_by,
       },
     }
   );

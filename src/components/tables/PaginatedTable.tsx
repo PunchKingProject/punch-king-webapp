@@ -89,6 +89,8 @@ export interface PaginatedTableProps<Row extends Record<string, unknown>> {
   totalCount?: number;
   onPageChange?: (newPage: number) => void;
   onRowsPerPageChange?: (newRpp: number) => void;
+
+  toolbar?: React.ReactNode;
 }
 
 export default function PaginatedTable<Row extends Record<string, unknown>>({
@@ -111,7 +113,8 @@ export default function PaginatedTable<Row extends Record<string, unknown>>({
   rowsPerPage: rowsPerPageProp,
   totalCount,
   onPageChange,
-  onRowsPerPageChange
+  onRowsPerPageChange,
+  toolbar
 }: PaginatedTableProps<Row>) {
   // local state only used in client mode / uncontrolled
   const [searchQuery, setSearchQuery] = useState('');
@@ -199,6 +202,8 @@ export default function PaginatedTable<Row extends Record<string, unknown>>({
         <Typography variant='h5' sx={{ fontWeight: 900, color: '#fff' }}>
           {title}
         </Typography>
+
+        {toolbar && <Box>{toolbar}</Box>}
 
         <Box
           sx={{

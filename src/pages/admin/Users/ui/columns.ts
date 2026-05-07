@@ -7,6 +7,8 @@ export const userTableColumns: TableColumn<UserTableRow>[] = [
   { field: 'user_name', header: 'User name' },
   { field: 'phone_number', header: 'Phone number' },
   { field: 'email', header: 'Email' },
+  {field: "address", header: 'Address' },
+  {field: 'number_of_teams_sponsored', header: 'Number of Sponsored Teams' },
   { field: 'sponsorships', header: 'sponsorships', align: 'right' },
   { field: 'sponsor_units', header: 'sponsor Units', align: 'right' },
   // If you want an “eye” column, keep your table’s render prop/onView just like TeamsSection.

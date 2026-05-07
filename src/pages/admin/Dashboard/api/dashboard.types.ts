@@ -17,6 +17,11 @@ export type RankedTeam = {
   team_name: string;
   license_number: string;
   sponsorships: number;
+  email: string;
+  phone_number: string;
+  address: string;
+  has_active_subscription: boolean;
+  subscription_type: string;
   rank: number;
 };
 
@@ -35,6 +40,7 @@ export type RankedTeamsParams = {
   page: number; // 1-based
   page_size: number;
   search?: string;
+  sort_by?: 'newest' | 'ranking';
 };
 
 export type RankedUsersParams = {
