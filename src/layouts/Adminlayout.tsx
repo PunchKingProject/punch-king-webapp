@@ -38,7 +38,6 @@ const AdminLayoutMobile = () => {
     setProfileOpen(false);
     navigate(path);
   };
-
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
     setProfileOpen(false);
