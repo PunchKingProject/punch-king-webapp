@@ -50,7 +50,7 @@ function DesktopTeamDashboard() {
     const s = stats;
     return [
       {
-        title: 'All Teams',
+        title: 'All Registered Teams',
         total: s?.total_teams ?? 0,
         deltaPct: 0,
         trendingUp: true,
@@ -68,13 +68,13 @@ function DesktopTeamDashboard() {
         trendingUp: true,
       },
       {
-        title: 'Without Subscription',
+        title: 'Teams Without Subscription',
         total: s?.teams_without_active_sub ?? 0,
         deltaPct: 0,
         trendingUp: false,
       },
       {
-        title: 'Without License',
+        title: 'Teams Without License',
         total: s?.teams_without_active_license ?? 0,
         deltaPct: 0,
         trendingUp: false,
@@ -87,6 +87,7 @@ function DesktopTeamDashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  const [sortBy, setSortBy] = useState<'newest' | 'ranking'>('newest');
 
   const debouncedApplySearch = useMemo(
     () => debounce((value: string) => setSearch(value), 400),
@@ -103,7 +104,13 @@ function DesktopTeamDashboard() {
     page: page + 1,
     page_size: pageSize,
     search,
+    sort_by: sortBy,
   });
+
+  const handleSortChange = (sort: 'newest' | 'ranking') => {
+    setSortBy(sort);
+    setPage(0);         // ← always go back to first page on sort change
+  };
 
   useEffect(() => {
     if (teamsError) toast.error('Failed to fetch ranked teams.');
@@ -116,6 +123,11 @@ function DesktopTeamDashboard() {
       team_name: rt.team_name,
       license_number: rt.license_number,
       sponsors_accrued: rt.sponsorships,
+      email: rt.email,
+      phone_number: rt.phone_number,
+      address: rt.address,
+      has_subscription: rt.has_active_subscription ? "YES" : "NO",
+      subscription_type: rt.subscription_type ?? "-",
       ranking: rt.rank,
     }));
   }, [teamResp]);
@@ -173,8 +185,9 @@ function DesktopTeamDashboard() {
             debouncedApplySearch(val);
           }}
           onView={handleView}
+          sortBy={sortBy}
+          onSortChange={handleSortChange}
         />
-        ;
       </Box>
     </>
   );

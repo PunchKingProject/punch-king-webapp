@@ -63,31 +63,31 @@ export default function MobileTeamsHome() {
   // Keep the same card look & feel as MobileDashboard
   const metricCards = [
     {
-      title: 'All Teams',
+      title: 'All Registered Teams',
       total: stats?.total_teams ?? 0,
       percentage: '—',
       status: true,
     },
     {
-      title: 'Active Subscriptions',
+      title: 'Teams with Subscriptions',
       total: stats?.teams_with_active_sub ?? 0,
       percentage: '—',
       status: true,
     },
     {
-      title: 'Active Licenses',
+      title: 'Teams with License',
       total: stats?.teams_with_active_license ?? 0,
       percentage: '—',
       status: true,
     },
     {
-      title: 'No Subscription',
+      title: 'Teams Without Subscription',
       total: stats?.teams_without_active_sub ?? 0,
       percentage: '—',
       status: false,
     },
     {
-      title: 'No License',
+      title: 'Teams Without License',
       total: stats?.teams_without_active_license ?? 0,
       percentage: '—',
       status: false,

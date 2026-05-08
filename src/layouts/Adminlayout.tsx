@@ -33,12 +33,11 @@ const AdminLayoutMobile = () => {
 
   const navigate = useNavigate();
 
-   const handleNav = (path: string) => {
-     setMenuOpen(false); // 👈 close menu immediately
-     setProfileOpen(false);
-     navigate(path);
-   };
-
+  const handleNav = (path: string) => {
+    setMenuOpen(false); // 👈 close menu immediately
+    setProfileOpen(false);
+    navigate(path);
+  };
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
     setProfileOpen(false);

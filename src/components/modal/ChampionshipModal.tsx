@@ -214,10 +214,10 @@ export default function ChampionshipModal({
 
                 <SectionTitle>REQUIRED WEIGHTS</SectionTitle>
                 <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
-                  • Welter weight
+                  • Professional Lightweight (Up to 61.23kg / 135lbs)
                   <br />
-                  • Light weight
-                  <br />• Middle weight
+                  • Professional Welterweight (Up to 66.68kg / 147lbs)
+                  <br />• Professional Middleweight (Up to 72.57kg / 160lbs)
                 </Typography>
 
                 <SectionTitle>ROUNDS</SectionTitle>
@@ -228,10 +228,10 @@ export default function ChampionshipModal({
                 <SectionTitle>QUALIFICATION</SectionTitle>
                 <Typography sx={{ color: '#CFCFCF', fontSize: 12 }}>
                   • Team must subscribe (1 year subscription)
-                  <br />
-                  • Team must have valid licensed
-                  <br />
-                  • Boxer must have valid professional license
+                  {/*<br />*/}
+                  {/*• Team must have valid licensed*/}
+                  {/*<br />*/}
+                  {/*• Boxer must have valid professional license*/}
                   <br />• Must be among top 8 most sponsored teams on Punch King
                   platform
                 </Typography>

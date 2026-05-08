@@ -43,6 +43,7 @@ export type UserDashboardStats = {
   total_sponsorships: number;
 };
 
+
 /* ====== Table ====== */
 export type UserTableParams = {
   start_date: string;
@@ -58,6 +59,8 @@ export type UserTableApiRow = {
   name: string;
   email: string;
   phone_number: string;
+  address: string;
+  number_of_teams_sponsored: number;
   sponsorship_balance: number; // “Sponsor Units”
   total_amount_given: number; // “Sponsorships” (money given)
 };
@@ -68,6 +71,8 @@ export type UserTableRow = {
   user_name: string;
   phone_number: string;
   email: string;
+  address: string;
+  number_of_teams_sponsored: number;
   sponsorships: number; // total_amount_given
   sponsor_units: number; // sponsorship_balance
 };
