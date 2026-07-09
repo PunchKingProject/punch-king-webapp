@@ -326,10 +326,14 @@ const CatalogueSkeleton = () => (
     }}
   >
     {Array.from({ length: 6 }).map((_, index) => (
+<<<<<<< HEAD
       <Card
         key={index}
         sx={{ bgcolor: '#111', borderRadius: 4, overflow: 'hidden' }}
       >
+=======
+      <Card key={index} sx={{ bgcolor: '#111', borderRadius: 4, overflow: 'hidden' }}>
+>>>>>>> feature/weight-class-catalogue
         <Skeleton variant='rectangular' height={245} />
         <CardContent>
           <Skeleton width='45%' />

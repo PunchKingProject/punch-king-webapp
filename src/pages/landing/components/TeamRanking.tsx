@@ -1,403 +1,269 @@
-import { Box, Grid, Typography } from '@mui/material';
 import {
-  rankingBoxer,
-  rankingSmallbox1,
-  rankingSmallbox2,
-  rankingSmallbox3,
-} from '../../../assets';
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  Stack,
+  Typography,
+} from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
+import VolunteerActivismOutlinedIcon from '@mui/icons-material/VolunteerActivismOutlined';
+import { useNavigate } from 'react-router-dom';
 import { colors } from '../../../theme/colors.ts';
-import { gridWidth } from '../../../utils/helpers.ts';
 
-const data = [
+const rankedTeams = [
   {
-    title: 'Spns',
-    position: '60',
-    image: rankingSmallbox1,
+    rank: 1,
+    name: 'King of the Jungle Boxing Academy',
+    license: 'NBBofC/30/30',
+    country: 'Nigeria',
+    sponsorships: 60,
+    sponsors: 20,
+    status: 'Top Ranked',
   },
-  { title: 'Pst', position: '12th', image: rankingSmallbox2 },
-  { title: 'Cnt', position: '30', image: rankingSmallbox3 },
+  {
+    rank: 2,
+    name: 'Elite Warriors Boxing Team',
+    license: 'Pending Verification',
+    country: 'Africa',
+    sponsorships: 42,
+    sponsors: 14,
+    status: 'Rising Team',
+  },
+  {
+    rank: 3,
+    name: 'Golden Fist Boxing Club',
+    license: 'Pending Verification',
+    country: 'Africa',
+    sponsorships: 31,
+    sponsors: 9,
+    status: 'Contender',
+  },
 ];
+
 const TeamRanking = () => {
+  const navigate = useNavigate();
+
   return (
-    <>
-      <Box
-      // sx={{
-      //   padding: '1.56em 5.38em',
-      //   '@media (min-width:910px) and (max-width:1000px)': {
-      //     padding: '1.56em 2em', // override between 900px and 1000px
-      //   },
-      //   '@media (min-width:1000px) and (max-width:1100px)': {
-      //     // height: '200px',
-      //     paddingX: '1em', // override between 900px and 1000px
-      //   },
-      //   '@media (min-width:910px)': {
-      //     // padding: '1.56em 2em', // override between 900px and 1000px
-      //     display: 'flex',
-      //     flexDirection: 'row',
-      //     marginTop: '1em',
-      //     gap: '1.5em',
-      //     alignItems: 'baseline',
-      //   },
-      // }}
-      >
-        <Box id='ranking' sx={{}}>
-          {/* Team Ranking */}
+    <Box
+      id='ranking'
+      sx={{
+        bgcolor: '#050505',
+        py: { xs: 7, md: 10 },
+        background:
+          'linear-gradient(180deg, #000000 0%, #090909 45%, #000000 100%)',
+      }}
+    >
+      <Container maxWidth='xl'>
+        <Box textAlign='center' mb={{ xs: 5, md: 7 }}>
           <Typography
-            component={'h1'}
             sx={{
-              textTransform: 'uppercase',
-              fontSize: '5.625rem',
-              fontWeight: 900,
-              textAlign: 'center',
-              lineHeight: 1,
-            }}
-          >
-            Team
-          </Typography>
-          <Typography
-            component={'h2'}
-            sx={{
-              textTransform: 'uppercase',
-              fontSize: '2.5rem',
-              fontWeight: 600,
-              textAlign: 'center',
               color: colors.Accent,
+              fontWeight: 900,
+              letterSpacing: '.18em',
+              textTransform: 'uppercase',
+              fontSize: '.78rem',
+              mb: 1.5,
             }}
           >
-            Ranking
+            African Team Rankings
+          </Typography>
+
+          <Typography
+            component='h2'
+            sx={{
+              color: '#fff',
+              fontSize: { xs: '2rem', sm: '2.7rem', md: '3.4rem' },
+              fontWeight: 950,
+              lineHeight: 1.05,
+            }}
+          >
+            TOP{' '}
+            <Box component='span' sx={{ color: colors.Accent }}>
+              TEAMS
+            </Box>
+          </Typography>
+
+          <Typography
+            sx={{
+              color: 'rgba(255,255,255,.68)',
+              maxWidth: 780,
+              mx: 'auto',
+              mt: 2,
+              lineHeight: 1.7,
+            }}
+          >
+            Team ranking is determined by sponsorship activity, subscription
+            status, verification, catalogue updates and fan engagement.
           </Typography>
         </Box>
-      </Box>
 
-      <Box
-        sx={{
-          '@media (min-width:910px)': {
-            display: 'none',
-          },
-        }}
-      >
-        {[1, 2].map((_, index) => {
-          return (
-            <Box key={index} mb={'5em'}>
-              <Box
-                component={'img'}
-                src={rankingBoxer}
-                sx={{
-                  display: 'block',
-                  width: '193px',
-                  margin: '0 auto',
-                  marginTop: '1.5em',
-                }}
-              />
-              <Box my={2}>
-                <Typography
-                  variant='mediumHeaderBold'
-                  component={'p'}
-                  sx={{
-                    color: colors.Accent,
-                    textAlign: 'center',
-                  }}
-                >
-                  Team name
-                </Typography>
-                <Typography
-                  variant='bodyTextMilkDefault'
-                  component={'p'}
-                  textAlign={'center'}
-                >
-                  King of the jungle boxing academy
-                </Typography>
-              </Box>
-              <Box my={2}>
-                <Typography
-                  variant='mediumHeaderBold'
-                  component={'p'}
-                  sx={{
-                    color: colors.Accent,
-                    textAlign: 'center',
-                  }}
-                >
-                  LC No:
-                </Typography>
-                <Typography
-                  variant='bodyTextMilkDefault'
-                  component={'p'}
-                  textAlign={'center'}
-                >
-                  NBBofC/30/30{' '}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0 8vw',
-                  textAlign: 'center',
-                }}
-              >
-                {data.map((item, index) => {
-                  return (
-                    <Box key={index}>
-                      <Box
-                        component={'img'}
-                        src={rankingSmallbox1}
-                        sx={{
-                          objectFit: 'cover',
-                          width: '53px',
-                        }}
-                      />
-                      <Typography variant='headerBold' component={'p'}>
-                        {item.position}
-                      </Typography>
-                      <Typography variant='bodyTextMilkDefault'>
-                        {item.title}
-                      </Typography>
-                    </Box>
-                  );
-                })}
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-      <Box
-        sx={{
-          padding: '1.56em 5.38em',
-          display: 'none',
-          '@media (min-width:910px)': {
-            display: 'block',
-          },
-          '@media (min-width:910px) and (max-width:1000px)': {
-            padding: '1.56em 2em', // override between 900px and 1000px
-          },
-          '@media (min-width:1000px) and (max-width:1100px)': {
-            // height: '200px',
-            paddingX: '1em', // override between 900px and 1000px
-          },
-        }}
-      >
-        <Grid container>
-          <Grid size={4}>
-            <Box
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: 'repeat(3, 1fr)',
+            },
+            gap: 3,
+          }}
+        >
+          {rankedTeams.map((team) => (
+            <Card
+              key={team.rank}
               sx={{
-                pr: 8,
+                bgcolor: '#111',
+                border: '1px solid rgba(255,255,255,.08)',
+                borderRadius: 4,
+                overflow: 'hidden',
+                height: '100%',
+                boxShadow: '0 18px 45px rgba(0,0,0,.45)',
+                transition: '.25s ease',
+                '&:hover': {
+                  transform: 'translateY(-6px)',
+                  borderColor: 'rgba(239,175,0,.55)',
+                  boxShadow: '0 22px 55px rgba(239,175,0,.12)',
+                },
               }}
             >
-              <Typography
-                variant='bodyTextMilkDefault'
-                component={'p'}
-                sx={{
-                  wordBreak: 'break-word',
-                }}
-              >
-                All teams on the Punch King are treated equally. Team
-                sponsorship activities, verification and subscription are used
-                to determine team ranking.
-              </Typography>
+              <CardContent sx={{ p: 3 }}>
+                <Stack
+                  direction='row'
+                  justifyContent='space-between'
+                  alignItems='center'
+                  mb={2}
+                >
+                  <Chip
+                    icon={<EmojiEventsIcon />}
+                    label={`Rank #${team.rank}`}
+                    sx={{
+                      bgcolor: 'rgba(239,175,0,.13)',
+                      color: colors.Accent,
+                      fontWeight: 900,
+                      '& .MuiChip-icon': {
+                        color: colors.Accent,
+                      },
+                    }}
+                  />
 
-              <Typography
-                my={3}
-                variant='bodyTextMilkDefault'
-                component={'p'}
-                sx={{
-                  wordBreak: 'break-word',
-                }}
-              >
-                Subscribe a plan, engage sponsors and increase your team update
-                regularly to improve your team ranking.
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid size={8} container columnSpacing={2}>
-            {[1, 2].map(() => {
-              return (
-                <>
-                  <Grid size={4} mb={5}>
-                    <Box sx={{}}>
-                      <Box
-                        component={'img'}
-                        src={rankingBoxer}
-                        sx={{
-                          display: 'block',
-                          objectFit: 'cover',
-                          width: '100%',
-                          height: '100%',
-                          // margin: '0 auto',
-                          // marginTop: '1.5em',
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid size={8}>
-                    <Box
-                      sx={{
-                        pt: 5,
-                      }}
-                    >
-                      <Grid
-                        container
-                        alignItems='center'
-                        columnSpacing={0}
-                        rowSpacing={1.5}
-                      >
-                        <Grid
-                          sx={{
-                            '@media (min-width:910px)': {
-                              width: gridWidth(4),
-                            },
-                            '@media (min-width:1100px)': {
-                              width: gridWidth(3.5),
-                            },
-                          }}
-                        >
-                          <Box sx={{}}>
-                            <Typography
-                              variant='mediumHeaderBold'
-                              component={'p'}
-                              sx={{
-                                color: colors.Accent,
-                                // textAlign: 'center',
-                              }}
-                            >
-                              Team name:
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid
-                          sx={{
-                            '@media (min-width:910px)': {
-                              width: gridWidth(7),
-                            },
-                            '@media (min-width:1100px)': {
-                              width: gridWidth(7.5),
-                            },
-                          }}
-                        >
-                          <Box sx={{}}>
-                            <Typography
-                              variant='bodyTextMilkDefault'
-                              component={'p'}
-                              // textAlign={'center'}
-                            >
-                              King of the jungle boxing academy
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid
-                          sx={{
-                            '@media (min-width:910px)': {
-                              width: gridWidth(4),
-                            },
-                            '@media (min-width:1100px)': {
-                              width: gridWidth(3.5),
-                            },
-                          }}
-                        >
-                          <Box sx={{}}>
-                            <Typography
-                              variant='mediumHeaderBold'
-                              component={'p'}
-                              sx={{
-                                color: colors.Accent,
-                                // textAlign: 'center',
-                              }}
-                            >
-                              LC No:
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid
-                          sx={{
-                            '@media (min-width:910px)': {
-                              width: gridWidth(7),
-                            },
-                            '@media (min-width:1100px)': {
-                              width: gridWidth(7.5),
-                            },
-                          }}
-                        >
-                          <Box
-                            sx={
-                              {
-                                // border: '2px solid green',
-                              }
-                            }
-                          >
-                            <Typography
-                              variant='bodyTextMilkDefault'
-                              component={'p'}
-                              // textAlign={'center'}
-                            >
-                              NBBofC/30/30{' '}
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid size={4}>
-                          <Box>
-                            <Box
-                              component={'img'}
-                              src={rankingSmallbox1}
-                              sx={{
-                                objectFit: 'cover',
-                                width: '53px',
-                              }}
-                            />
-                            <Typography variant='headerBold' component={'p'}>
-                              60
-                            </Typography>
-                            <Typography variant='bodyTextMilkDefault'>
-                              Sponsorships
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid size={4}>
-                          <Box>
-                            <Box
-                              component={'img'}
-                              src={rankingSmallbox1}
-                              sx={{
-                                objectFit: 'cover',
-                                width: '53px',
-                              }}
-                            />
-                            <Typography variant='headerBold' component={'p'}>
-                              1st
-                            </Typography>
-                            <Typography variant='bodyTextMilkDefault'>
-                              Position
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid size={4}>
-                          <Box>
-                            <Box
-                              component={'img'}
-                              src={rankingSmallbox1}
-                              sx={{
-                                objectFit: 'cover',
-                                width: '53px',
-                              }}
-                            />
-                            <Typography variant='headerBold' component={'p'}>
-                              20
-                            </Typography>
-                            <Typography variant='bodyTextMilkDefault'>
-                              Sponsors
-                            </Typography>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </Grid>
-                </>
-              );
-            })}
-          </Grid>
-        </Grid>
-      </Box>
-    </>
+                  <Typography
+                    sx={{
+                      color:
+                        team.rank === 1
+                          ? colors.Accent
+                          : 'rgba(255,255,255,.55)',
+                      fontWeight: 900,
+                      fontSize: '1.7rem',
+                    }}
+                  >
+                    {team.rank === 1 ? '🥇' : team.rank === 2 ? '🥈' : '🥉'}
+                  </Typography>
+                </Stack>
+
+                <Typography
+                  sx={{
+                    color: '#fff',
+                    fontWeight: 900,
+                    fontSize: '1.35rem',
+                    lineHeight: 1.25,
+                    mb: 1,
+                    minHeight: { md: 68 },
+                  }}
+                >
+                  {team.name}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: colors.Accent,
+                    fontWeight: 800,
+                    mb: 0.7,
+                  }}
+                >
+                  {team.status}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: 'rgba(255,255,255,.62)',
+                    mb: 2,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  License: {team.license}
+                  <br />
+                  Country: {team.country}
+                </Typography>
+
+                <Stack direction='row' spacing={1} flexWrap='wrap' useFlexGap mb={3}>
+                  <MiniStat
+                    icon={<VolunteerActivismOutlinedIcon />}
+                    label={`${team.sponsorships} sponsorships`}
+                  />
+                  <MiniStat
+                    icon={<Groups2OutlinedIcon />}
+                    label={`${team.sponsors} sponsors`}
+                  />
+                </Stack>
+
+                <Button
+                  fullWidth
+                  endIcon={<ArrowForwardIcon />}
+                  onClick={() => navigate('/admin/teams')}
+                  sx={{
+                    bgcolor: colors.Accent,
+                    color: '#000',
+                    fontWeight: 900,
+                    borderRadius: 999,
+                    py: 1.1,
+                    '&:hover': {
+                      bgcolor: '#FFC533',
+                    },
+                  }}
+                >
+                  View Ranking
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      </Container>
+    </Box>
   );
 };
+
+const MiniStat = ({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) => (
+  <Stack
+    direction='row'
+    alignItems='center'
+    spacing={0.6}
+    sx={{
+      color: 'rgba(255,255,255,.72)',
+      bgcolor: 'rgba(255,255,255,.055)',
+      border: '1px solid rgba(255,255,255,.07)',
+      borderRadius: 999,
+      px: 1.1,
+      py: 0.65,
+      fontSize: '.78rem',
+      '& svg': {
+        fontSize: 15,
+        color: colors.Accent,
+      },
+    }}
+  >
+    {icon}
+    <Box component='span'>{label}</Box>
+  </Stack>
+);
+
 export default TeamRanking;
