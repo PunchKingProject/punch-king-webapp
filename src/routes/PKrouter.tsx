@@ -88,9 +88,7 @@ const SubscriptionDetailsPage = Loadable(
 const SponsorshipDetailsPage = Loadable(
   lazy(() => import('../pages/admin/Sponsorship/SponsorshipDetailsPage.tsx'))
 );
-const PublicPostDetailsPage = Loadable(
-  lazy(() => import('../pages/public/Post/PostDetailsPage.tsx'))
-);
+
 
 const ContinueSignup = Loadable(
   lazy(() => import('../pages/sign-up/ContinueSignup.tsx'))
@@ -162,8 +160,7 @@ const router = createBrowserRouter(
     <>
       <Route path='/' element={<LandingPage />} />
       <Route path='/sign-in' element={<SignInPage />} />
-      <Route path='/posts/:postId' element={<PublicPostDetailsPage />} />
-
+      
       <Route path='/continue-signup' element={<ContinueSignup />} />
 
       {/* <Route path='/sign-up' element={<SignUpPage />} /> */}

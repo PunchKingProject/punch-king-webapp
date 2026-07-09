@@ -17,6 +17,7 @@ import { scrollToSection, type SectionKey } from '../../utils/helpers.ts';
 import Footer from './components/Footer.tsx';
 import Hero from './components/Hero.tsx';
 import TeamPost from './components/TeamPost.tsx';
+import EventActivities from './components/EventActivities.tsx';
 
 const BANNER_IMG_FALLBACK = heroBoxerLarge;
 
@@ -74,6 +75,7 @@ const LandingPage = () => {
       <Navbar onNav={handleNav} />
       <Hero />
       <TeamPost />
+      <EventActivities />
       <Footer />
 
       {/* Championship modal */}
