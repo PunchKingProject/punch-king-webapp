@@ -1,15 +1,22 @@
-import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
-import 'slick-carousel/slick/slick-theme.css';
-import 'slick-carousel/slick/slick.css';
 import {
-  teamPostImage1,
-  teamPostImage2,
-  teamPostImage3,
-} from '../../../assets';
-// import FilterIcon from '../../../assets/filterIcon.svg?react';
-// import CustomButton from '../../../components/buttons/CustomButton.tsx';
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  Container,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
+import VolunteerActivismOutlinedIcon from '@mui/icons-material/VolunteerActivismOutlined';
+import { useNavigate } from 'react-router-dom';
+import { teamPostImage1 } from '../../../assets';
 import { colors } from '../../../theme/colors.ts';
+import ROUTES from '../../../routes/routePath.ts';
 import { useAllPosts } from '../../user/Dashboard/hooks/useAllPosts';
 import type {
   AllPostsPayload,
@@ -19,229 +26,320 @@ import type { InfiniteData } from '@tanstack/react-query';
 
 type Post = FeedPost;
 
-// fallback images (same structure as before)
-const fallbackImages = [
-  teamPostImage3,
-  teamPostImage2,
-  teamPostImage1,
-  teamPostImage3,
-  teamPostImage3,
-];
-
 const TeamPost = () => {
-  const { data, isLoading, isError } = useAllPosts(4);
+  const navigate = useNavigate();
+  const { data, isLoading, isError } = useAllPosts(9);
 
-  // ✅ TYPE CAST (SAFE workaround)
   const infiniteData = data as unknown as
     | InfiniteData<AllPostsPayload>
     | undefined;
 
   const posts: Post[] = infiniteData?.pages.flatMap((page) => page.posts) ?? [];
 
-  // ✅ build images (API first, fallback fills the rest)
-  const images = [
-    ...posts
-      .map((post) => post.file_url)
-      .filter((url): url is string => Boolean(url)),
-    ...fallbackImages,
-  ].slice(0, 5); // keep carousel size stable
-
-  if (isLoading) {
-    return <Typography color='white'>Loading posts...</Typography>;
-  }
-
-  if (isError) {
-    return <Typography color='white'>Failed to load posts</Typography>;
-  }
-
-  if (!posts.length) {
-    return <Typography color='white'>No posts available</Typography>;
-  }
-
   return (
     <Box
       id='posts'
       sx={{
         width: '100%',
-        py: 4,
-        backgroundColor: '#000',
-        minHeight: '100vh',
+        py: { xs: 7, md: 10 },
+        background:
+          'linear-gradient(180deg, #000000 0%, #0B0B0B 45%, #000000 100%)',
       }}
     >
-      <Typography
-        component={'h1'}
-        sx={{
-          fontSize: '3.25rem',
-          fontWeight: 900,
-          textAlign: 'center',
-          mb: 4,
-          color: 'white',
-        }}
-      >
-        TEAM{' '}
-        <span
-          style={{
-            color: colors.Accent,
-          }}
-        >
-          POSTS
-        </span>
-      </Typography>
-
-      {/* <Box display={'flex'} justifyContent={'center'} mb={6}>
-        <CustomButton
-          variant='outlined'
-          color='primary'
-          sx={{
-            border: `2px solid ${colors.Accent}`,
-            width: '80vw',
-            maxWidth: '419px',
-          }}
-        >
-          <Box
+      <Container maxWidth='xl'>
+        <Box textAlign='center' mb={{ xs: 5, md: 7 }}>
+          <Typography
+            component='p'
             sx={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              color: colors.Accent,
+              fontWeight: 800,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              fontSize: '0.78rem',
+              mb: 1.5,
             }}
           >
-            <Typography
-              sx={{
-                color: '#EFAF00',
-                fontWeight: 600,
-                fontSize: '0.875rem',
-                fontFamily: 'Poppins',
-              }}
-            >
-              filter by team(s)
-            </Typography>
-            <FilterIcon />
-          </Box>
-        </CustomButton>
-      </Box> */}
+            Public Catalogue
+          </Typography>
 
-      {/* <OverlappingSliderCarousel /> */}
-      <OverlappingCarousel images={images} />
+          <Typography
+            component='h1'
+            sx={{
+              fontSize: { xs: '2rem', sm: '2.7rem', md: '3.4rem' },
+              fontWeight: 950,
+              color: 'white',
+              lineHeight: 1.05,
+            }}
+          >
+            TEAM{' '}
+            <Box component='span' sx={{ color: colors.Accent }}>
+              POSTS
+            </Box>
+          </Typography>
+
+          <Typography
+            sx={{
+              color: 'rgba(255,255,255,0.68)',
+              maxWidth: 760,
+              mx: 'auto',
+              mt: 2,
+              fontSize: { xs: '0.95rem', md: '1.05rem' },
+              lineHeight: 1.7,
+            }}
+          >
+            Explore media updates, stories, and sponsorship-ready posts from
+            registered African professional boxing teams.
+          </Typography>
+        </Box>
+
+        {isLoading && <CatalogueSkeleton />}
+
+        {isError && (
+          <Typography color='white' textAlign='center'>
+            Failed to load team catalogue posts.
+          </Typography>
+        )}
+
+        {!isLoading && !isError && !posts.length && (
+          <Typography color='white' textAlign='center'>
+            No catalogue posts available yet.
+          </Typography>
+        )}
+
+        {!isLoading && !isError && posts.length > 0 && (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+              },
+              gap: 3,
+              alignItems: 'stretch',
+            }}
+          >
+            {posts.slice(0, 9).map((post) => {
+              const image = post.file_url || teamPostImage1;
+
+              return (
+                <Card
+                  key={post.id}
+                  sx={{
+                    height: '100%',
+                    bgcolor: '#111',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    boxShadow: '0 18px 45px rgba(0,0,0,0.45)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: '0.25s ease',
+                    '&:hover': {
+                      transform: 'translateY(-6px)',
+                      borderColor: 'rgba(239,175,0,0.55)',
+                      boxShadow: '0 22px 55px rgba(239,175,0,0.12)',
+                    },
+                  }}
+                >
+                  <CardMedia
+                    component='img'
+                    height='245'
+                    image={image}
+                    alt={post.title || 'Team catalogue post'}
+                    sx={{
+                      objectFit: 'cover',
+                      bgcolor: '#222',
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.src = teamPostImage1;
+                    }}
+                  />
+
+                  <CardContent
+                    sx={{
+                      p: 2.5,
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <Stack
+                      direction='row'
+                      justifyContent='space-between'
+                      alignItems='center'
+                      gap={1}
+                      mb={1.5}
+                    >
+                      <Chip
+                        label={post.team || 'Boxing Team'}
+                        size='small'
+                        sx={{
+                          bgcolor: 'rgba(239,175,0,0.12)',
+                          color: colors.Accent,
+                          fontWeight: 800,
+                          maxWidth: '70%',
+                        }}
+                      />
+
+                      <Typography
+                        sx={{
+                          color: 'rgba(255,255,255,0.45)',
+                          fontSize: '0.75rem',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {post.created_at
+                          ? new Date(post.created_at).toLocaleDateString()
+                          : ''}
+                      </Typography>
+                    </Stack>
+
+                    <Typography
+                      sx={{
+                        color: 'white',
+                        fontWeight: 850,
+                        fontSize: '1.15rem',
+                        lineHeight: 1.25,
+                        mb: 1,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        minHeight: 58,
+                      }}
+                    >
+                      {post.title || 'Team Catalogue Update'}
+                    </Typography>
+
+                    <Typography
+                      sx={{
+                        color: 'rgba(255,255,255,0.62)',
+                        fontSize: '0.92rem',
+                        lineHeight: 1.6,
+                        mb: 2,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        minHeight: 70,
+                      }}
+                    >
+                      {post.caption || 'No caption provided for this post.'}
+                    </Typography>
+
+                    <Stack
+                      direction='row'
+                      spacing={1}
+                      flexWrap='wrap'
+                      useFlexGap
+                      mb={2.2}
+                    >
+                      <MiniStat
+                        icon={<ChatBubbleOutlineIcon />}
+                        label={`${post.comments_count ?? 0} comments`}
+                      />
+                      <MiniStat
+                        icon={<VolunteerActivismOutlinedIcon />}
+                        label={`${post.sponsorships ?? 0} sponsorships`}
+                      />
+                      <MiniStat
+                        icon={<Groups2OutlinedIcon />}
+                        label={`${post.sponsors ?? 0} sponsors`}
+                      />
+                    </Stack>
+
+                    <Box sx={{ mt: 'auto' }}>
+                      <Button
+                        fullWidth
+                        variant='contained'
+                        onClick={() =>
+                          navigate(
+                            `${ROUTES.SIGN_IN}?redirect=/user/feeds/${post.id}`
+                          )
+                        }
+                        sx={{
+                          bgcolor: colors.Accent,
+                          color: '#000',
+                          fontWeight: 900,
+                          borderRadius: 999,
+                          py: 1.1,
+                          '&:hover': {
+                            bgcolor: '#FFC533',
+                          },
+                        }}
+                      >
+                        View Catalogue Post
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </Box>
+        )}
+      </Container>
     </Box>
   );
 };
+
+const MiniStat = ({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) => (
+  <Stack
+    direction='row'
+    alignItems='center'
+    spacing={0.6}
+    sx={{
+      color: 'rgba(255,255,255,0.68)',
+      bgcolor: 'rgba(255,255,255,0.055)',
+      border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 999,
+      px: 1.1,
+      py: 0.65,
+      fontSize: '0.75rem',
+      '& svg': {
+        fontSize: 15,
+        color: colors.Accent,
+      },
+    }}
+  >
+    {icon}
+    <Box component='span'>{label}</Box>
+  </Stack>
+);
+
+const CatalogueSkeleton = () => (
+  <Box
+    sx={{
+      display: 'grid',
+      gridTemplateColumns: {
+        xs: '1fr',
+        sm: 'repeat(2, 1fr)',
+        md: 'repeat(3, 1fr)',
+      },
+      gap: 3,
+    }}
+  >
+    {Array.from({ length: 6 }).map((_, index) => (
+      <Card
+        key={index}
+        sx={{ bgcolor: '#111', borderRadius: 4, overflow: 'hidden' }}
+      >
+        <Skeleton variant='rectangular' height={245} />
+        <CardContent>
+          <Skeleton width='45%' />
+          <Skeleton width='90%' height={34} />
+          <Skeleton width='100%' />
+          <Skeleton width='80%' />
+        </CardContent>
+      </Card>
+    ))}
+  </Box>
+);
 
 export default TeamPost;
-
-const OverlappingCarousel = ({ images }: { images: string[] }) => {
-  const [centerIndex, setCenterIndex] = useState(0);
-  const theme = useTheme();
-  const isMdUp = useMediaQuery(theme.breakpoints.up('md')); // >= 900px
-  const isSmUp = useMediaQuery(theme.breakpoints.up('sm')); // >= 600px
-
-  const visibleCount = isMdUp ? 5 : isSmUp ? 3 : 2;
-  const half = Math.floor(visibleCount / 2);
-  const total = images.length;
-
-  const getRelativeIndex = (i: number) => {
-    const delta = (i - centerIndex + total) % total;
-    return delta <= half ? delta : delta - total;
-  };
-
-  const handleNext = useCallback(() => {
-    setCenterIndex((prev) => (prev + 1) % total);
-  }, [total]);
-
-  // const handlePrev = useCallback(() => {
-  //   setCenterIndex((prev) => (prev - 1 + total) % total);
-  // }, [total]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      handleNext();
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [handleNext]);
-
-  return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative',
-        // border:'2px solid red',
-        overflow: 'hidden',
-        height: { xs: 170, sm: 200, md: 230 }, // 🟡 UPDATED: match Figma sizing
-      }}
-    >
-      <Box
-        sx={{
-          width: '90vw',
-          maxWidth: '1300px',
-          position: 'relative',
-          height: '100%', // ✅ NEW: height to match image container
-        }}
-      >
-        {images.map((img, i) => {
-          const offset = getRelativeIndex(i);
-          if (Math.abs(offset) > half) return null;
-
-          const spacing = isMdUp ? 180 : isSmUp ? 170 : 160;
-          const translateX = offset * spacing;
-          const scale = offset === 0 ? 1 : 0.85;
-          const zIndex = 10 - Math.abs(offset);
-
-          // ✨ Depth-based visibility
-          let opacity = 1;
-          let brightness = 1;
-
-          if (Math.abs(offset) === 1) {
-            opacity = 0.7;
-            brightness = 0.85;
-          } else if (Math.abs(offset) === 2) {
-            opacity = 0.4;
-            brightness = 0.6;
-          }
-
-          return (
-            <Box
-              key={i}
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: '50%',
-                transform: `translateX(${translateX}px) translateX(-50%) scale(${scale})`,
-                transition: 'all 0.4s ease',
-                zIndex,
-                opacity,
-                filter: `brightness(${brightness})`,
-                backgroundColor: colors.Freeze,
-                border:
-                  offset === 0
-                    ? `4px solid ${colors.Freeze}`
-                    : '2px solid rgba(255,255,255,0.2)',
-                boxShadow:
-                  offset === 0
-                    ? '0 0 25px rgba(255,255,255,0.2)'
-                    : '0 6px 24px rgba(0, 0, 0, 0.5)',
-                borderRadius: 2,
-                width: { xs: 160, sm: 210, md: 240 },
-                height: { xs: 130, sm: 170, md: 200 },
-                overflow: 'hidden',
-              }}
-            >
-              <Box
-                component='img'
-                src={img}
-                alt='team post'
-                sx={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
-              />
-            </Box>
-          );
-        })}
-      </Box>
-    </Box>
-  );
-};
