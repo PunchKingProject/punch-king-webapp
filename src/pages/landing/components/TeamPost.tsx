@@ -15,8 +15,8 @@ import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
 import VolunteerActivismOutlinedIcon from '@mui/icons-material/VolunteerActivismOutlined';
 import { useNavigate } from 'react-router-dom';
 import { teamPostImage1 } from '../../../assets';
-import { colors } from '../../../theme/colors.ts';
 import ROUTES from '../../../routes/routePath.ts';
+import { colors } from '../../../theme/colors.ts';
 import { useAllPosts } from '../../user/Dashboard/hooks/useAllPosts';
 import type {
   AllPostsPayload,
@@ -326,14 +326,10 @@ const CatalogueSkeleton = () => (
     }}
   >
     {Array.from({ length: 6 }).map((_, index) => (
-<<<<<<< HEAD
       <Card
         key={index}
         sx={{ bgcolor: '#111', borderRadius: 4, overflow: 'hidden' }}
       >
-=======
-      <Card key={index} sx={{ bgcolor: '#111', borderRadius: 4, overflow: 'hidden' }}>
->>>>>>> feature/weight-class-catalogue
         <Skeleton variant='rectangular' height={245} />
         <CardContent>
           <Skeleton width='45%' />
