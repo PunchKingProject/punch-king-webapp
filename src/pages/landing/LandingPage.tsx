@@ -13,20 +13,23 @@ import {
 import ChampionshipModal from '../../components/modal/ChampionshipModal.tsx';
 import Navbar from '../../components/nav/Navbar.tsx';
 import ROUTES from '../../routes/routePath.ts';
-import { scrollToSection, type SectionKey } from '../../utils/helpers.ts';
+import {
+  scrollToSection,
+  type SectionKey,
+} from '../../utils/helpers.ts';
+import EventActivities from './components/EventActivities.tsx';
 import Footer from './components/Footer.tsx';
 import Hero from './components/Hero.tsx';
 import TeamPost from './components/TeamPost.tsx';
-import EventActivities from './components/EventActivities.tsx';
 
 const BANNER_IMG_FALLBACK = heroBoxerLarge;
 
 const LandingPage = () => {
   const [bannerOpen, setBannerOpen] = useState(false);
   const timerRef = useRef<number | null>(null);
+
   const navigate = useNavigate();
   const location = useLocation();
-
 
   useEffect(() => {
     const images = [
@@ -36,58 +39,77 @@ const LandingPage = () => {
       rankingSmallbox1,
       heroSponsors,
     ];
+
     images.forEach((src) => {
-      const img = new Image();
-      img.src = src;
+      const image = new Image();
+      image.src = src;
     });
   }, []);
 
-  // Auto-open banner after 2 seconds on first render
   useEffect(() => {
     timerRef.current = window.setTimeout(() => {
       setBannerOpen(true);
     }, 2000);
+
     return () => {
-      if (timerRef.current) window.clearTimeout(timerRef.current);
+      if (timerRef.current !== null) {
+        window.clearTimeout(timerRef.current);
+      }
     };
   }, []);
 
-  // if we come in with /#about etc, scroll after mount
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace('#', '') as SectionKey;
-      // wait a tick to ensure sections are painted
-      setTimeout(() => scrollToSection(id), 0);
+    if (!location.hash) {
+      return;
     }
+
+    const section = location.hash.replace('#', '') as SectionKey;
+
+    const timeout = window.setTimeout(() => {
+      scrollToSection(section);
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, [location.hash]);
 
   const handleNav = (section: SectionKey) => {
-    // ensure we're on the landing page
     if (location.pathname !== '/') {
-      navigate(`/#${section}`, { replace: false });
+      navigate(`/#${section}`);
       return;
     }
+
     scrollToSection(section);
   };
 
   return (
     <>
       <Navbar onNav={handleNav} />
+
+      {/* Hero includes:
+          Professional Divisions
+          Team Rankings
+          About
+          Sponsorship
+          Subscription
+      */}
       <Hero />
+
+      {/* Public team catalogue */}
       <TeamPost />
+
+      {/* News, event activities and bulletin */}
       <EventActivities />
+
       <Footer />
 
-      {/* Championship modal */}
       <ChampionshipModal
         open={bannerOpen}
         onClose={() => setBannerOpen(false)}
         imageSrc={BANNER_IMG_FALLBACK}
-        logoSrc={punchKingLogo} // ⬅️ show gold logo in left column
+        logoSrc={punchKingLogo}
         onSignup={() => navigate(`${ROUTES.SIGN_UP}?flow=team`)}
       />
 
-      {/* Reopen button (bottom-right) */}
       <Tooltip title='Championship details'>
         <Fab
           color='primary'
@@ -95,14 +117,22 @@ const LandingPage = () => {
           onClick={() => setBannerOpen(true)}
           sx={{
             position: 'fixed',
-            right: { xs: 16, sm: 24 },
-            bottom: { xs: 16, sm: 24 },
+            right: {
+              xs: 16,
+              sm: 24,
+            },
+            bottom: {
+              xs: 16,
+              sm: 24,
+            },
             bgcolor: '#EFAF00',
             color: '#000',
-            '&:hover': { bgcolor: '#FFC533' },
-            zIndex: 1300, // above content
+            zIndex: 1300,
+            '&:hover': {
+              bgcolor: '#FFC533',
+            },
           }}
-          aria-label='Open championship banner'
+          aria-label='Open championship details'
         >
           <InfoOutlinedIcon />
         </Fab>
@@ -110,4 +140,5 @@ const LandingPage = () => {
     </>
   );
 };
+
 export default LandingPage;
