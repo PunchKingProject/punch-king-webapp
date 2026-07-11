@@ -72,6 +72,9 @@ const ForgotPasswordPage = Loadable(
 const LandingPage = Loadable(
   lazy(() => import('../pages/landing/LandingPage.tsx'))
 );
+const WeightClassPage = Loadable(
+  lazy(() => import('../pages/public/WeightClass/WeightClassPage.tsx'))
+);
 const SignInPage = Loadable(lazy(() => import('../pages/sign-in/SignInPage.tsx')));
 const TeamsDetailsPage = Loadable(
   lazy(() => import('../pages/admin/Teams/TeamsDetailsPage.tsx'))
@@ -160,6 +163,10 @@ const router = createBrowserRouter(
     <>
       <Route path='/' element={<LandingPage />} />
       <Route path='/sign-in' element={<SignInPage />} />
+      <Route
+  path='/weight-class/:division'
+  element={<WeightClassPage />}
+/>
       
       <Route path='/continue-signup' element={<ContinueSignup />} />
 
