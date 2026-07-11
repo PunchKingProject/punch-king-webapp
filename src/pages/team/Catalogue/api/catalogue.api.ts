@@ -5,8 +5,38 @@ import type {
   EditPostPayload,
   Envelope,
   PostStats,
-  TeamPost
+  PublicPostsPayload,
+  TeamPost,
+  WeightClass,
 } from './catalogue.types.ts';
+
+export async function getPostsByWeightClass(
+  weightClass: WeightClass,
+  options?: {
+    cursor?: number;
+    limit?: number;
+    search?: string;
+  }
+): Promise<PublicPostsPayload> {
+  const params = new URLSearchParams();
+
+  params.set('weight_class', weightClass);
+  params.set('limit', String(options?.limit ?? 12));
+
+  if (options?.cursor) {
+    params.set('cursor', String(options.cursor));
+  }
+
+  if (options?.search?.trim()) {
+    params.set('search', options.search.trim());
+  }
+
+  const { data } = await customFetch.get<
+    Envelope<PublicPostsPayload>
+  >(`/post/all-posts?${params.toString()}`);
+
+  return data.data;
+}
 
 export async function getPostStats(): Promise<PostStats> {
   const { data } = await customFetch.get<Envelope<PostStats>>(
@@ -43,3 +73,14 @@ export async function getTeamPostById(postId: number ): Promise<TeamPost> {
   );
   return data.data;
 }
+
+export type PublicPostsMeta = {
+  next_cursor: number;
+  limit: number;
+  weight_class?: string;
+};
+
+export type PublicPostsPayload = {
+  posts: TeamPost[];
+  meta: PublicPostsMeta;
+};
