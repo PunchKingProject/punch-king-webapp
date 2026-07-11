@@ -1,35 +1,34 @@
 # --- Stage 1: Build ---
 FROM node:20-alpine AS builder
+
 WORKDIR /app
 
-# Accept the mode from docker-compose (defaults to production if not set)
 ARG VITE_MODE=production
+ARG VITE_API_BASE_URL
 
-# Install dependencies
-# Using npm ci for consistent builds in Docker
+ENV VITE_MODE=${VITE_MODE}
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Copy source code
 COPY . .
 
-# Build the app using the specified mode
-# This ensures Vite loads .env.development when VITE_MODE is set to 'development'
 RUN npm run build -- --mode ${VITE_MODE}
+
 
 # --- Stage 2: Runner ---
 FROM nginx:stable-alpine AS runner
+
 WORKDIR /usr/share/nginx/html
 
-# Clean the default nginx public folder
 RUN rm -rf ./*
 
-# Copy the static build from Vite's 'dist' folder
 COPY --from=builder /app/dist .
 
-# Add a custom nginx config to handle SPA routing
 RUN echo 'server { \
     listen 80; \
+    server_name _; \
     location / { \
         root /usr/share/nginx/html; \
         index index.html; \
@@ -38,4 +37,5 @@ RUN echo 'server { \
 }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,4 +1,4 @@
-name: punchking-prod-frontend     # ← add this
+name: punchking-prod-frontend
 
 services:
   frontend:
@@ -6,23 +6,26 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - VITE_MODE=production
+        VITE_MODE: production
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+
     image: punch-king-prod-frontend:latest
     container_name: punch-king-prod-frontend
     restart: always
-    env_file:
-      - .env
+
     ports:
       - "3001:80"
+
     environment:
-      VITE_API_BASE_URL: https://api.punchkingboxing.com
       NODE_ENV: production
+
     deploy:
       resources:
         limits:
           memory: 512M
         reservations:
           memory: 128M
+
 networks:
   default:
     name: punch_king_network
