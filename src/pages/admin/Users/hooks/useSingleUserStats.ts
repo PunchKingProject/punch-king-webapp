@@ -1,14 +1,17 @@
-import { useQuery } from "@tanstack/react-query"
-import {type  SingleUserStats, type UseSingleUserStatsArgs } from "../api/users.types.ts"
-import { apiGetSingleUsersStats } from "../api/users.api.ts";
+import { useQuery } from "@tanstack/react-query";
+import { apiGetSingleUsersStats } from "../api/users.api";
+import type { SingleUserStats, UseSingleUserStatsArgs } from "../api/users.types";
 
-
-export const useSingleUserStats = ({sponsor_id, start_date, end_date}: UseSingleUserStatsArgs) => {
-
-    return useQuery<SingleUserStats>({
-      queryKey: ['singleUserStats', { sponsor_id, start_date, end_date }],
-      queryFn: () =>
-        apiGetSingleUsersStats({ sponsor_id, start_date, end_date }),
-      enabled: !!sponsor_id, // don’t run until we have an id
-    });
+export function useSingleUserStats(args: UseSingleUserStatsArgs) {
+  return useQuery<SingleUserStats>({
+    queryKey: [
+      "user-details-stats",
+      args.sponsor_id,
+      args.start_date,
+      args.end_date,
+    ],
+    queryFn: () => apiGetSingleUsersStats(args),
+    enabled: args.sponsor_id > 0,
+    staleTime: 60_000,
+  });
 }

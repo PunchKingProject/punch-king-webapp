@@ -1,26 +1,53 @@
-// hooks/useUpdatePost.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { editTeamPost } from '../api/catalogue.api.ts';
+
+import { editTeamPost } from '../api/catalogue.api';
+import type {
+  EditPostPayload,
+  TeamPost,
+} from '../api/catalogue.types';
 
 export function useUpdatePost() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<TeamPost, Error, EditPostPayload>({
     mutationFn: editTeamPost,
-    onSuccess: (updatedPost) => {
-      // Update the specific post in the cache directly so the
-      // catalogue list reflects the change without a full refetch
-      queryClient.setQueryData(['team-post', updatedPost.id], updatedPost);
 
-      // Invalidate the list so the feed shows the updated title/caption
-      queryClient.invalidateQueries({ queryKey: ['team-posts'] });
-      queryClient.invalidateQueries({ queryKey: ['all-posts'] });
+    onSuccess: async (updatedPost) => {
+      // Update the single post cache
+      queryClient.setQueryData(
+        ['team-post', updatedPost.id],
+        updatedPost
+      );
+
+      // Refresh every list that may contain this post
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['team-posts'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['post-stats'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['public-posts'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['weight-class-posts'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['dashboard-posts'],
+        }),
+      ]);
 
       toast.success('Post updated successfully.');
     },
-    onError: () => {
-      toast.error('Failed to update post. Please try again.');
+
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update post.');
     },
   });
 }

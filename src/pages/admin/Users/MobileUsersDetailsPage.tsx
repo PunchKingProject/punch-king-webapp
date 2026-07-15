@@ -16,8 +16,8 @@ import NoticeModal from '../../../components/modal/NoticeModal.tsx';
 import PKImageDialog from '../../../components/modal/PkImageDialog.tsx';
 import { punchKingLogo } from '../../../assets';
 import { useSingleUserStats } from './hooks/useSingleUserStats.ts';
-import { useUserProfile } from './hooks/useUserProfile.ts';
-import { useUpdateUserProfile } from './hooks/useUpdateUserProfile.ts';
+import { useAdminUser } from "./hooks/useUserProfile";
+import { useAdminUpdateUser } from "./hooks/useUpdateUserProfile";
 import { useUploadUserImage } from './hooks/useUploadUserImage.ts';
 import { useUserPurchaseHistory } from './hooks/useUserPurchaseHistory.ts';
 import { purchaseFieldData, sponsorFieldData, type PurchaseRow, type SponsorRow } from './ui/fields.ts';
@@ -163,12 +163,12 @@ export default function MobileUsersDetailsPage() {
     data: profile,
     isLoading: profileLoading,
     isError: profileErr,
-  } = useUserProfile(sponsor_id);
+  } = useAdminUser(sponsor_id);
   useEffect(() => {
     if (profileErr) toast.error('Failed to fetch user profile.');
   }, [profileErr]);
 
-  const updateUser = useUpdateUserProfile(sponsor_id);
+  const updateUser = useAdminUpdateUser(sponsor_id);
   const uploadImage = useUploadUserImage();
   const uploadDialog = useState(false);
   const [uploadOpen, setUploadOpen] = uploadDialog;
@@ -289,7 +289,7 @@ export default function MobileUsersDetailsPage() {
   }, [shResp]);
 
   const shTotal = shResp?.metadata?.total_count ?? 0;
-  const shHasMore = (shResp?.data.length ?? 0) < shTotal;
+  const shHasMore = (shResp?.data?.length ?? 0) < shTotal;
 
   const toUpdatePayload = (v: FormValues): UpdateUserPayload => ({
     phone_number: v.phone_number || undefined,

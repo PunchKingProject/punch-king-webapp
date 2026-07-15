@@ -97,9 +97,12 @@ export type UserProfile = {
   profile_picture: string | null;
   last_login_date?: string | null;
   sponsorships?: number;
+  created_at?: string;
+  updated_at?: string;
 };
 
 export type UpdateUserPayload = {
+  username?: string;
   phone_number?: string;
   address?: string;
   country?: string;
@@ -163,4 +166,42 @@ export type FetchSponsorVoteHistoryParams = {
   start_date: string; // YYYY-MM-DD
   end_date: string; // YYYY-MM-DD
   search?: string;
+};
+
+/* ==========================================================
+ * Admin Account Management
+ * ========================================================== */
+
+export type AdminActionPayload = {
+  reason: string;
+};
+
+export type FeatureAccessPayload = {
+  reason: string;
+  can_post?: boolean;
+  can_sponsor?: boolean;
+};
+
+export type AdminManagedUser = UserProfile & {
+  role: 'admin' | 'team' | 'sponsor';
+
+  is_active: boolean;
+
+  is_blocked: boolean;
+
+  is_deleted?: boolean;
+
+  can_post?: boolean;
+
+  can_sponsor?: boolean;
+
+  blocked_at?: string | null;
+
+  blocked_by?: number | null;
+
+  block_reason?: string | null;
+
+  deactivated_at?: string | null;
+
+  deactivated_by?: number | null;
 };

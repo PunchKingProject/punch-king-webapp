@@ -3,27 +3,15 @@ import { patchAdminUser } from "../api/users.api";
 import type { UpdateUserPayload } from "../api/users.types";
 
 export function useAdminUpdateUser(userId: number) {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: UpdateUserPayload) =>
       patchAdminUser(userId, payload),
 
     onSuccess: () => {
-      qc.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ["admin-user", userId],
-      });
-
-      qc.invalidateQueries({
-        queryKey: ["user-details-stats", userId],
-      });
-
-      qc.invalidateQueries({
-        queryKey: ["user-purchase-history", userId],
-      });
-
-      qc.invalidateQueries({
-        queryKey: ["user-vote-history", userId],
       });
     },
   });

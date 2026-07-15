@@ -17,13 +17,15 @@ export function useWeightClassPosts(
 
     queryFn: ({ pageParam }) =>
       getPostsByWeightClass(weightClass, {
-        cursor: Number(pageParam) || undefined,
+        cursor:
+          Number(pageParam) || undefined,
         limit: 12,
         search,
       }),
 
     getNextPageParam: (lastPage) =>
-      lastPage.meta.next_cursor || undefined,
+      lastPage.meta.next_cursor ||
+      undefined,
 
     staleTime: 5 * 60 * 1000,
   });

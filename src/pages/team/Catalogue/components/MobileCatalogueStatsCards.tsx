@@ -3,9 +3,9 @@ import { useEffect, useRef } from 'react';
 
 type Props = {
   loading?: boolean;
-  posts: number;
-  comments: number;
-  uniqueSponsors: number;
+  posts?: number;
+  comments?: number;
+  uniqueSponsors?: number;
 };
 
 const cardSx = {
@@ -20,64 +20,104 @@ const cardSx = {
   p: '20px 10px',
   display: 'flex',
   flexDirection: 'column' as const,
-  gap: '14px',
+  justifyContent: 'space-between',
+  scrollSnapAlign: 'start',
 };
 
 export default function MobileCatalogueStatsCards({
-  loading,
-  posts,
-  comments,
-  uniqueSponsors,
+  loading = false,
+  posts = 0,
+  comments = 0,
+  uniqueSponsors = 0,
 }: Props) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const secondRef = useRef<HTMLDivElement | null>(null);
+  const secondCardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // center the 2nd card slightly for the “peek” look
-    secondRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'start' });
+    secondCardRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest',
+    });
   }, []);
 
-  const items = [
-    { title: 'Total posts', value: posts },
-    { title: 'Total comments', value: comments },
-    { title: 'Unique sponsors', value: uniqueSponsors },
+  const cards = [
+    {
+      title: 'TOTAL POSTS',
+      value: posts,
+      color: '#FFC107',
+    },
+    {
+      title: 'TOTAL COMMENTS',
+      value: comments,
+      color: '#4CAF50',
+    },
+    {
+      title: 'UNIQUE SPONSORS',
+      value: uniqueSponsors,
+      color: '#2196F3',
+    },
   ];
 
   return (
     <Box
-      ref={containerRef}
       sx={{
         display: 'flex',
+        gap: 2,
         overflowX: 'auto',
-        gap: '16px',
-        px: 0.5,
-        py: 0.5,
+        px: 1,
+        pb: 1,
         scrollSnapType: 'x mandatory',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+        scrollbarWidth: 'none',
       }}
     >
       {loading
-        ? Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} variant='rectangular' sx={cardSx} />
+        ? Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton
+              key={index}
+              variant="rounded"
+              sx={cardSx}
+            />
           ))
-        : items.map((it, idx) => (
+        : cards.map((card, index) => (
             <Box
-              key={it.title}
-              ref={idx === 1 ? secondRef : null}
-              sx={{ ...cardSx, scrollSnapAlign: 'start' }}
+              key={card.title}
+              ref={index === 1 ? secondCardRef : null}
+              sx={cardSx}
             >
               <Typography
-                sx={{ color: '#A2A2A2', fontWeight: 700, fontSize: 13 }}
+                sx={{
+                  color: '#9E9E9E',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  letterSpacing: 1,
+                }}
               >
-                {it.title.toUpperCase()}
+                {card.title}
               </Typography>
-              <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: 28 }}>
-                {it.value}
+
+              <Typography
+                sx={{
+                  color: '#FFFFFF',
+                  fontSize: 34,
+                  fontWeight: 800,
+                }}
+              >
+                {card.value.toLocaleString()}
               </Typography>
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography sx={{ color: '#9ED27B', fontSize: 12 }}>
-                  you have 0% climbed
-                </Typography>
-              </Box>
+
+              <Typography
+                sx={{
+                  color: card.color,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  textAlign: 'right',
+                }}
+              >
+                Live Statistics
+              </Typography>
             </Box>
           ))}
     </Box>

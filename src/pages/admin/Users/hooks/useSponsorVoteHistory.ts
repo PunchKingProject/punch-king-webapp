@@ -3,8 +3,6 @@ import type { FetchSponsorVoteHistoryParams, SponsorVoteHistoryResponse } from "
 import { fetchSponsorVoteHistory } from "../api/users.api.ts";
 
 
-
-
 export function useSponsorVoteHistory(params: FetchSponsorVoteHistoryParams) {
   const { sponsor_id, page, page_size, start_date, end_date, search } = params;
 

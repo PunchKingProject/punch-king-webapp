@@ -1,4 +1,4 @@
-import { customFetch } from '../../../../Axios.ts';
+import { customFetch } from '../../../../Axios';
 import type {
   CreatePostPayload,
   DeletePostPayload,
@@ -8,7 +8,13 @@ import type {
   PublicPostsPayload,
   TeamPost,
   WeightClass,
-} from './catalogue.types.ts';
+} from './catalogue.types';
+
+/**
+ * ===========================
+ * PUBLIC POSTS
+ * ===========================
+ */
 
 export async function getPostsByWeightClass(
   weightClass: WeightClass,
@@ -20,15 +26,18 @@ export async function getPostsByWeightClass(
 ): Promise<PublicPostsPayload> {
   const params = new URLSearchParams();
 
-  params.set('weight_class', weightClass);
-  params.set('limit', String(options?.limit ?? 12));
+  if (weightClass) {
+    params.append('weight_class', weightClass);
+  }
+
+  params.append('limit', String(options?.limit ?? 12));
 
   if (options?.cursor) {
-    params.set('cursor', String(options.cursor));
+    params.append('cursor', String(options.cursor));
   }
 
   if (options?.search?.trim()) {
-    params.set('search', options.search.trim());
+    params.append('search', options.search.trim());
   }
 
   const { data } = await customFetch.get<
@@ -38,49 +47,86 @@ export async function getPostsByWeightClass(
   return data.data;
 }
 
-export async function getPostStats(): Promise<PostStats> {
-  const { data } = await customFetch.get<Envelope<PostStats>>(
-    '/post/post-stats'
-  );
-  return data.data;
-}
+/**
+ * ===========================
+ * TEAM POSTS
+ * ===========================
+ */
 
 export async function getTeamPosts(): Promise<TeamPost[]> {
-  const { data } = await customFetch.get<Envelope<TeamPost[]>>(
-    '/post/team-posts'
-  );
+  const { data } = await customFetch.get<
+    Envelope<TeamPost[]>
+  >('/post/team-posts');
+
   return data.data;
 }
 
-export async function createTeamPost(payload: CreatePostPayload) {
-  // POST {{HOST}}/post
-  const { data } = await customFetch.post('/post/', payload);
-  return data; // adjust typing if your API returns { meta, data }
-}
+export async function getTeamPostById(
+  postId: number
+): Promise<TeamPost> {
+  const { data } = await customFetch.get<
+    Envelope<TeamPost>
+  >(`/post/${postId}`);
 
-export async function editTeamPost(payload: EditPostPayload): Promise<TeamPost> {
-  const { data } = await customFetch.patch('/post/', payload);
   return data.data;
 }
 
-export async function deleteTeamPost(payload: DeletePostPayload): Promise<void> {
-  await customFetch.delete(`/post/${payload.id}`);
-}
+/**
+ * ===========================
+ * CREATE POST
+ * ===========================
+ */
 
-export async function getTeamPostById(postId: number ): Promise<TeamPost> {
-  const { data } = await customFetch.get<Envelope<TeamPost>>(
-    `/post/${postId}`
-  );
+export async function createTeamPost(
+  payload: CreatePostPayload
+): Promise<TeamPost> {
+  const { data } = await customFetch.post<
+    Envelope<TeamPost>
+  >('/post', payload);
+
   return data.data;
 }
 
-export type PublicPostsMeta = {
-  next_cursor: number;
-  limit: number;
-  weight_class?: string;
-};
+/**
+ * ===========================
+ * UPDATE POST
+ * ===========================
+ */
 
-export type PublicPostsPayload = {
-  posts: TeamPost[];
-  meta: PublicPostsMeta;
-};
+export async function editTeamPost(
+  payload: EditPostPayload
+): Promise<TeamPost> {
+  const { data } = await customFetch.patch<
+    Envelope<TeamPost>
+  >('/post', payload);
+
+  return data.data;
+}
+
+/**
+ * ===========================
+ * DELETE POST
+ * ===========================
+ */
+
+export async function deleteTeamPost(
+  payload: DeletePostPayload
+): Promise<void> {
+  await customFetch.delete('/post', {
+    data: payload,
+  });
+}
+
+/**
+ * ===========================
+ * POST STATS
+ * ===========================
+ */
+
+export async function getPostStats(): Promise<PostStats> {
+  const { data } = await customFetch.get<
+    Envelope<PostStats>
+  >('/post/post-stats');
+
+  return data.data;
+}

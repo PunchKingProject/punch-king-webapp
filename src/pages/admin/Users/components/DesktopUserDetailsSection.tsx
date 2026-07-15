@@ -16,8 +16,8 @@ import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
 import { colors } from '../../../../theme/colors.ts';
 
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { useUserProfile } from '../hooks/useUserProfile.ts';
-import { useUpdateUserProfile } from '../hooks/useUpdateUserProfile.ts';
+import { useAdminUser } from '../hooks/useAdminUser';
+import { useAdminUpdateUser } from '../hooks/useAdminUpdateUser';
 import { useUploadUserImage } from '../hooks/useUploadUserImage.ts';
 dayjs.extend(isSameOrBefore);
 
@@ -226,8 +226,9 @@ const GENDER_OPTIONS = [
 
 
 export default function DesktopUserDetailsSection({ sponsor_id }: Props) { 
-  const { data, isLoading, isError } = useUserProfile(sponsor_id);
-  const updateUser = useUpdateUserProfile(sponsor_id);
+ const { data, isLoading, isError } = useAdminUser(sponsor_id);
+
+const updateUser = useAdminUpdateUser(sponsor_id);
   const uploadMutation = useUploadUserImage();
 
   const uploadDialog = useDisclosure(false);

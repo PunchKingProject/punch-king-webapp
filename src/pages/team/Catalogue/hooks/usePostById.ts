@@ -1,12 +1,20 @@
-// hooks/usePostById.ts
 import { useQuery } from '@tanstack/react-query';
-import { getTeamPostById } from '../api/catalogue.api.ts';
 
-export function usePostById(id: number | undefined) {
-  return useQuery({
+import { getTeamPostById } from '../api/catalogue.api';
+import type { TeamPost } from '../api/catalogue.types';
+
+export function usePostById(id?: number) {
+  return useQuery<TeamPost, Error>({
     queryKey: ['team-post', id],
-    queryFn: () => getTeamPostById(id!),
-    enabled: id !== undefined && id > 0, // only fires when id is valid
-    staleTime: 5 * 60 * 1000, // 5 minutes — consistent with your Redis TTL
+
+    queryFn: () => getTeamPostById(id as number),
+
+    enabled: !!id,
+
+    staleTime: 1000 * 60 * 5,
+
+    refetchOnWindowFocus: false,
+
+    retry: 2,
   });
 }

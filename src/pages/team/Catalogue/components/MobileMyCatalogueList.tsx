@@ -78,6 +78,21 @@ export default function MobileMyCatalogueList({
     );
   }
 
+  if (!posts.length) {
+  return (
+    <Box
+      sx={{
+        py: 8,
+        textAlign: "center",
+      }}
+    >
+      <Typography color="text.secondary">
+        No posts uploaded yet.
+      </Typography>
+    </Box>
+  );
+}
+
   return (
     <Box>
       {posts.map((p) => (
@@ -108,6 +123,21 @@ export default function MobileMyCatalogueList({
           <Box sx={imageFrameSx}>
             <MediaPreview url={p.file_url} />
           </Box>
+          
+                  {/* title */}
+        <Box sx={{ mt: 1.25 }}>
+          <Typography sx={labelSx}>Title:</Typography>
+
+          <Typography
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+              mt: 0.5,
+            }}
+          >
+            {p.title}
+          </Typography>
+        </Box>
 
           {/* caption */}
           <Box sx={{ mt: 1.25 }}>
@@ -115,11 +145,77 @@ export default function MobileMyCatalogueList({
             <Typography sx={{ ...dimSx, mt: 0.5 }}>{p.caption}</Typography>
           </Box>
 
+          <Box sx={{ mt: 1 }}>
+          <Typography sx={labelSx}>Boxer</Typography>
+
+          <Typography sx={dimSx}>
+            {p.boxer_name}
+          </Typography>
+
+          <Typography sx={dimSx}>
+            {p.weight_class}
+          </Typography>
+
+          <Typography sx={dimSx}>
+            {p.boxer_weight_kg} kg
+          </Typography>
+        </Box>
+
+        <Box sx={{ mt: 1 }}>
+  <Typography sx={labelSx}>Opponent</Typography>
+
+  <Typography sx={dimSx}>
+    {p.opponent_name}
+  </Typography>
+
+  <Typography sx={dimSx}>
+    {p.opponent_weight_kg} kg
+  </Typography>
+</Box>
+
+<Box sx={{ mt: 1 }}>
+  <Typography sx={labelSx}>
+    Sparring Location
+  </Typography>
+
+  <Typography sx={dimSx}>
+    {p.sparring_location}
+  </Typography>
+</Box>
+
+<Box
+  sx={{
+    display: "flex",
+    justifyContent: "space-between",
+    mt: 1,
+  }}
+>
+  <Box>
+    <Typography sx={labelSx}>
+      Shorts
+    </Typography>
+
+    <Typography sx={dimSx}>
+      {p.shorts_color}
+    </Typography>
+  </Box>
+
+  <Box>
+    <Typography sx={labelSx}>
+      Gloves
+    </Typography>
+
+    <Typography sx={dimSx}>
+      {p.glove_color}
+    </Typography>
+  </Box>
+</Box>
+
           {/* posted date */}
           <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
             <Typography sx={labelSx}>Posted:</Typography>
             <Typography sx={{ color: '#7BEA67', fontSize: 13 }}>
-              {p.created_at}
+              {new Date(p.created_at).toLocaleDateString()}
             </Typography>
           </Box>
 
@@ -190,7 +286,7 @@ export default function MobileMyCatalogueList({
           >
             <Typography sx={labelSx}>Sponsors:</Typography>
             <PeopleOutlineRoundedIcon fontSize='small' />
-            <Typography sx={{ fontSize: 13 }}>{p.sponsors}</Typography>
+            <Typography sx={{ fontSize: 13 }}>{p.sponsors_count}</Typography>
             <MLink
               component='button'
               underline='hover'

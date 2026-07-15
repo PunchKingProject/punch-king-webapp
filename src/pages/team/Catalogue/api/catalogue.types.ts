@@ -21,95 +21,139 @@ export type WeightClass =
   | 'welterweight'
   | 'middleweight';
 
-export type PostStats = {
-  total_posts: number;
-  total_comments: number;
-  total_unique_sponsors: number;
-};
+export type PostStatus =
+  | 'pending'
+  | 'approved'
+  | 'hidden'
+  | 'rejected';
 
-export type Envelope<T> = {
+export interface Envelope<T> {
   meta: {
     message: string;
     code: number;
     status: string;
   };
   data: T;
-};
+}
 
-export type PostComment = {
+export interface Team {
+  id: number;
+  firstname?: string;
+  lastname?: string;
+  organization_name?: string;
+  profile_image?: string;
+}
+
+export interface PostComment {
   id: number;
   post_id: number;
   content: string;
-  commenter: string;
-  replies: unknown | null;
+  commenter?: string;
   created_at: string;
-};
+  replies?: PostComment[];
+}
 
-export type TeamPost = {
+export interface TeamPost {
   id: number;
+
   team_id: number;
 
-  // Current backend response
-  team_name: string;
-
-  // Compatibility with older frontend responses
-  team?: string;
-
   title: string;
   caption: string;
-  file_url: string | null;
 
-  boxer_name: string;
-  weight_class: WeightClass | '';
-  boxer_weight_kg: number;
-  shorts_color: string;
-  glove_color: string;
-  opponent_name: string;
-  opponent_weight_kg: number;
-  opponent_shorts_color: string;
-  sparring_location: string;
-
-  comments: PostComment[];
-  comments_count: number;
-  sponsorships: number;
-  sponsors: number;
-  created_at: string;
-};
-
-export type CreatePostPayload = {
-  title: string;
-  caption: string;
-  file_url: string;
+  file: string;
 
   boxer_name: string;
   weight_class: WeightClass;
+
   boxer_weight_kg: number;
+
   shorts_color: string;
   glove_color: string;
+
   opponent_name: string;
   opponent_weight_kg: number;
   opponent_shorts_color: string;
-  sparring_location: string;
-};
 
-export type EditPostPayload = {
+  sparring_location: string;
+
+  status: PostStatus;
+
+  comments: PostComment[];
+
+  comments_count: number;
+  sponsorships_count: number;
+  sponsors_count: number;
+
+  team?: Team;
+
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreatePostPayload {
+  title: string;
+  caption: string;
+
+  file: string;
+
+  boxer_name: string;
+  weight_class: WeightClass;
+
+  boxer_weight_kg: number;
+
+  shorts_color: string;
+  glove_color: string;
+
+  opponent_name: string;
+  opponent_weight_kg: number;
+  opponent_shorts_color: string;
+
+  sparring_location: string;
+}
+
+export interface EditPostPayload {
   post_id: number;
 
   title?: string;
   caption?: string;
-  file_url?: string;
+
+  file?: string;
 
   boxer_name?: string;
   weight_class?: WeightClass;
+
   boxer_weight_kg?: number;
+
   shorts_color?: string;
   glove_color?: string;
+
   opponent_name?: string;
   opponent_weight_kg?: number;
   opponent_shorts_color?: string;
-  sparring_location?: string;
-};
 
-export type DeletePostPayload = {
-  id: number;
-};
+  sparring_location?: string;
+
+  status?: PostStatus;
+}
+
+export interface DeletePostPayload {
+  post_id: number;
+}
+
+export interface PostStats {
+  total_posts: number;
+  total_comments: number;
+  total_unique_sponsors: number;
+}
+
+export interface PublicPostsMeta {
+  next_cursor: number;
+  limit: number;
+  weight_class?: WeightClass;
+}
+
+export interface PublicPostsPayload {
+  posts: TeamPost[];
+  meta: PublicPostsMeta;
+}

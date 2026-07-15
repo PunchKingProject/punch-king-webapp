@@ -17,6 +17,7 @@ import { useMemo, useState } from 'react';
 import { useCreateComment, usePost } from './hooks/usePost.ts';
 import CommentThread from './components/DesktopCommentThread.tsx';
 import type { CommentRow } from './api/dashboard.types.ts';
+import PostMedia from '../../../components/media/PostMedia.tsx';
 
 const cardSx = {
   background: '#1A1A1A',
@@ -128,18 +129,16 @@ export default function DesktopFeedViewPage() {
           </Box>
 
           {/* Media */}
-          <Card sx={{ ...cardSx, p: 2, mb: 2 }}>
-            {data.file_url ? (
-              <CardMedia
-                component='img'
-                image={data.file_url}
-                alt={data.title}
-                sx={{ maxHeight: 420, objectFit: 'contain', borderRadius: 2 }}
-              />
-            ) : (
-              <Box sx={{ height: 320, bgcolor: '#2a2a2a', borderRadius: 2 }} />
-            )}
-          </Card>
+          <PostMedia
+  src={data.file_url}
+  alt={data.title}
+  title={data.title}
+  height='auto'
+  maxHeight={620}
+  objectFit='contain'
+  borderRadius={3}
+  controls
+/>
 
           {/* Caption */}
           <Box sx={{ color: '#C9C9C9', mb: 2 }}>

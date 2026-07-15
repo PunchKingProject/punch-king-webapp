@@ -1,15 +1,34 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { CreatePostPayload } from "../api/catalogue.types.ts";
-import { createTeamPost } from "../api/catalogue.api.ts";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createTeamPost } from '../api/catalogue.api';
+import type { CreatePostPayload, TeamPost } from '../api/catalogue.types';
 
 export function useUploadPost() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (p: CreatePostPayload) => createTeamPost(p),
+  const queryClient = useQueryClient();
+
+  return useMutation<TeamPost, Error, CreatePostPayload>({
+    mutationFn: createTeamPost,
+
     onSuccess: async () => {
       await Promise.all([
-        qc.invalidateQueries({ queryKey: ['team-posts'] }),
-        qc.invalidateQueries({ queryKey: ['post-stats'] }),
+        queryClient.invalidateQueries({
+          queryKey: ['team-posts'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['post-stats'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['public-posts'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['weight-class-posts'],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ['dashboard-posts'],
+        }),
       ]);
     },
   });

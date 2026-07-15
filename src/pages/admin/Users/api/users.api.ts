@@ -13,6 +13,9 @@ import type {
   UserPurchaseHistoryResponse,
   UserTableApiRow,
   UserTableParams,
+  AdminManagedUser,
+  AdminActionPayload,
+  FeatureAccessPayload,
 } from './users.types.ts';
 
 export async function getUserDashboardStats(
@@ -62,25 +65,50 @@ export const apiGetSingleUsersStats = async (args: {
   return data.data;
 };
 
-// GET /user/:id
-export async function fetchUserProfile(
-  sponsor_id: number
-): Promise<UserProfile> {
-  const res = await customFetch.get<ApiResponse<UserProfile>>(
-    `/user/${sponsor_id}`
+// GET /user/admin/:id
+export async function fetchAdminUser(
+  userId: number
+): Promise<AdminManagedUser> {
+  const res = await customFetch.get<ApiResponse<AdminManagedUser>>(
+    `/user/admin/${userId}`
   );
+
   return res.data.data;
 }
 
-// PATCH /user/edit/:id
+// -----------------------------------------------------------------------------
+// Temporary Compatibility Wrappers
+// These keep the existing frontend working while we migrate pages one-by-one.
+// Remove them after every component has been updated.
+// -----------------------------------------------------------------------------
+
+export async function fetchUserProfile(
+  sponsor_id: number
+): Promise<UserProfile> {
+  return (await fetchAdminUser(sponsor_id)) as UserProfile;
+}
+
 export async function patchUserProfile(
   sponsor_id: number,
   payload: UpdateUserPayload
 ): Promise<UserProfile> {
-  const { data } = await customFetch.patch<ApiResponse<UserProfile>>(
-    `/user/edit/${sponsor_id}`,
+  return (await patchAdminUser(
+    sponsor_id,
     payload
-  );
+  )) as UserProfile;
+}
+
+// PATCH /user/admin/:id/edit
+export async function patchAdminUser(
+  userId: number,
+  payload: UpdateUserPayload
+): Promise<AdminManagedUser> {
+  const { data } =
+    await customFetch.patch<ApiResponse<AdminManagedUser>>(
+      `/user/admin/${userId}/edit`,
+      payload
+    );
+
   return data.data;
 }
 
@@ -102,4 +130,94 @@ export async function fetchSponsorVoteHistory(
     { params }
   );
   return res.data.data;
+}
+
+export async function blockUser(
+  userId: number,
+  payload: AdminActionPayload
+): Promise<AdminManagedUser> {
+  const { data } =
+    await customFetch.patch<ApiResponse<AdminManagedUser>>(
+      `/user/admin/${userId}/block`,
+      payload
+    );
+
+  return data.data;
+}
+
+export async function unblockUser(
+  userId: number,
+  payload: AdminActionPayload
+): Promise<AdminManagedUser> {
+  const { data } =
+    await customFetch.patch<ApiResponse<AdminManagedUser>>(
+      `/user/admin/${userId}/unblock`,
+      payload
+    );
+
+  return data.data;
+}
+
+export async function deactivateUser(
+  userId: number,
+  payload: AdminActionPayload
+): Promise<AdminManagedUser> {
+  const { data } =
+    await customFetch.patch<ApiResponse<AdminManagedUser>>(
+      `/user/admin/${userId}/deactivate`,
+      payload
+    );
+
+  return data.data;
+}
+
+export async function reactivateUser(
+  userId: number,
+  payload: AdminActionPayload
+): Promise<AdminManagedUser> {
+  const { data } =
+    await customFetch.patch<ApiResponse<AdminManagedUser>>(
+      `/user/admin/${userId}/reactivate`,
+      payload
+    );
+
+  return data.data;
+}
+
+export async function deleteUser(
+  userId: number,
+  payload: AdminActionPayload
+): Promise<void> {
+  await customFetch.delete(
+    `/user/admin/${userId}`,
+    {
+      data: payload,
+    }
+  );
+}
+
+export async function restoreUser(
+  userId: number,
+  payload: AdminActionPayload
+): Promise<AdminManagedUser> {
+  const { data } =
+    await customFetch.patch<ApiResponse<AdminManagedUser>>(
+      `/user/admin/${userId}/restore`,
+      payload
+    );
+
+  return data.data;
+}
+
+export async function setFeatureAccess(
+  userId: number,
+  payload: FeatureAccessPayload
+): Promise<AdminManagedUser> {
+  const { data } =
+    await customFetch.patch<ApiResponse<AdminManagedUser>>(
+      `/user/admin/${userId}/feature-access`,
+      payload
+    );
+
+  return data.data;
 }

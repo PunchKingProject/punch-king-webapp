@@ -16,6 +16,7 @@ import * as React from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import type { CommentRow } from './api/dashboard.types.ts';
 import { useCreateComment, usePost } from './hooks/usePost.ts';
+import PostMedia from '../../../components/media/PostMedia.tsx';
 
 // ⬅️ adjust this path if your hooks live elsewhere
 
@@ -292,17 +293,17 @@ export default function MobileFeedViewPage() {
 
           {/* Media */}
           <Card sx={{ ...cardSx, p: 1.25, mb: 1.5 }}>
-            {data.file_url ? (
-              <CardMedia
-                component='img'
-                image={data.file_url}
-                alt={data.title}
-                sx={{ maxHeight: 260, objectFit: 'contain', borderRadius: 2 }}
-              />
-            ) : (
-              <Box sx={{ height: 220, bgcolor: '#2a2a2a', borderRadius: 2 }} />
-            )}
-          </Card>
+  {data.file_url ? (
+    <CardMedia
+      component='img'
+      image={data.file_url}
+      alt={data.title}
+      sx={{ maxHeight: 260, objectFit: 'contain', borderRadius: 2 }}
+    />
+  ) : (
+    <Box sx={{ height: 220, bgcolor: '#2a2a2a', borderRadius: 2 }} />
+  )}
+</Card>
 
           {/* Caption + date */}
           <Box sx={{ color: '#C9C9C9', mb: 2 }}>
