@@ -182,13 +182,13 @@ const Footer = () => {
           {isHome && (
             <>
               <Typography sx={{ color: colors.TextGrey }}>
-                Technology partners: consortium
+                Technology partners: Ndertech Universal Services
               </Typography>
               <Box
                 component='img'
                 src={consortiumLogo}
-                alt='Technology partner consortium'
-                sx={{ width: '1.75rem', display: 'block' }}
+                alt='Technology partner Ndertech Universal Services'
+                sx={{ width: '1.95rem', display: 'block' }}
               />
             </>
           )}

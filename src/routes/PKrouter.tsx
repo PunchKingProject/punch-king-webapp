@@ -394,6 +394,12 @@ const router = createBrowserRouter(
           element={<SubscriptionPage />}
         />
 
+        import LicensingPage from "@/pages/admin/Licensing/ui";
+        <Route
+    path="/admin/license-plans"
+    element={<LicensingPage />}
+/>
+
         <Route
           path='subscription/details/:team_id'
           element={<SubscriptionDetailsPage />}
