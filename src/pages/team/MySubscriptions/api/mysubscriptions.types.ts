@@ -74,6 +74,8 @@ export type SubscriptionPlansPayload = {
   type: string;
   price: number;
   currency: string;
+  flw_plan_id?: string;  // ⬅️ Added to perfectly match Go backend
+  description?: string;  // ⬅️ Added to perfectly match Go backend
 }
 
 export type SubscriptionPlansResponse = {

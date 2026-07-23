@@ -13,6 +13,7 @@ const ROUTES = {
   LICENSING: '/admin/licensing',
   SUBSCRIPTION: '/admin/subscription',
   SPONSORSHIP: '/admin/sponsorship',
+  PLANS: '/admin/plans',
 
   // Team
   TEAM: '/team',
@@ -41,4 +42,4 @@ const ROUTES = {
   SPONSORSHIP_DETAILS: '/admin/sponsorship/details/:purchase_id',
 };
 
-export default ROUTES
+export default ROUTES;

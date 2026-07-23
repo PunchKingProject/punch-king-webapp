@@ -44,14 +44,16 @@ export async function getTeamSubPayments(params: {
 }
 
 export async function createSubscription(body: CreateSubBody): Promise<CreateSubscriptionResponse> {
-  const {data} = await customFetch.post<CreateSubscriptionResponse>('/sub/', body);
-
-  return data
+  // Reverted back to include the trailing slash
+  const {data} = await customFetch.post<CreateSubscriptionResponse>('/sub/', body); 
+  return data;
 }
 
 
 export async function getSubscriptionPlans(): Promise<SubscriptionPlansPayload[]> {
-  const { data } = await customFetch.get<SubscriptionPlansResponse>('/sub/plans');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = await customFetch.get<any>('/sub/plans');
 
-  return data.data;
+  // Safely extract the array, catching all common Go backend response wrappers
+  return Array.isArray(data) ? data : (data?.data || data?.plans || []);
 }

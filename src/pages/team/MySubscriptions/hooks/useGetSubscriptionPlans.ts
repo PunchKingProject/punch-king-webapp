@@ -4,9 +4,8 @@ import {useQuery} from "@tanstack/react-query";
 
 export function useGetSubscriptionPlans() {
   return useQuery<SubscriptionPlansPayload[], Error>({
-    queryKey: ['sponsorship-rates'],
+    queryKey: ['team-subscription-plans'], 
     queryFn: getSubscriptionPlans,
-    // Optional: Keep the rates in cache for 24 hours as they don't change often
-    staleTime: 1000 * 60 * 60 * 24,
+    staleTime: 1000 * 60 * 60 * 24, 
   });
 }

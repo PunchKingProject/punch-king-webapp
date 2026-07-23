@@ -2,24 +2,34 @@ import { Box, Button, MenuItem, TextField, Typography, CircularProgress } from '
 import { Form, Formik } from 'formik';
 import { showError } from '../../../../utils/error/toastError.ts';
 import { useCreateSubscription } from '../hooks/useCreateSubscription.ts';
-import { useGetSubscriptionPlans } from '../hooks/useGetSubscriptionPlans.ts';
 
 const gold = '#EFAF00';
-
 
 type FormValues = {
   planId: string;
   nameOnCard: string;
 };
 
+// 🚨 IMPORTANT: Change these 'id' numbers to match the exact plan IDs in your live database!
+const HARDCODED_PLANS = [
+  { id: 1, type: 'monthly', price: 15, currency: 'USD' },
+  { id: 2, type: 'semi-annual', price: 20, currency: 'USD' },
+  { id: 3, type: 'annual', price: 40, currency: 'USD' }
+];
+
 export default function MobileBuySubscriptionForm() {
   const { mutateAsync, isPending: isSubmitting } = useCreateSubscription();
-  const { data: plans, isLoading: loadingPlans } = useGetSubscriptionPlans();
 
   return (
     <Box sx={{ mt: 2 }}>
       <Formik<FormValues>
         initialValues={{ planId: '', nameOnCard: '' }}
+        validate={(vals) => {
+          const errs: Partial<Record<keyof FormValues, string>> = {};
+          if (!vals.planId) errs.planId = 'Please select a plan';
+          if (!vals.nameOnCard.trim()) errs.nameOnCard = 'Name on card is required';
+          return errs;
+        }}
         onSubmit={async (vals) => {
           try {
             const isoDate = new Date().toISOString().split('T')[0] + 'T00:00:00Z';
@@ -38,39 +48,48 @@ export default function MobileBuySubscriptionForm() {
           }
         }}
       >
-        {({ values, handleChange, touched, errors }) => {
-          const selectedPlan = plans?.find(p => String(p.id) === values.planId);
+        {({ values, handleChange, handleBlur, touched, errors }) => {
+          // Find the selected plan from our hardcoded array
+          const selectedPlan = HARDCODED_PLANS.find(p => String(p.id) === values.planId);
 
           return (
             <Form noValidate>
               <Box sx={{ display: 'grid', gap: 2.5 }}>
+                
+                {/* Hardcoded Dropdown */}
                 <TextField
                   select
                   fullWidth
                   name='planId'
-                  label={loadingPlans ? 'Fetching plans...' : 'Choose Plan'}
+                  label='Choose Plan'
                   value={values.planId}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   error={Boolean(touched.planId && errors.planId)}
-                  disabled={loadingPlans}
+                  helperText={touched.planId && errors.planId}
                   sx={{ '& .MuiInputBase-root': { bgcolor: '#101010', color: '#eee' } }}
                 >
-                  {plans?.map((p) => (
-                    <MenuItem key={p.id} value={String(p.id)}>
-                      {p.type} ({p.currency} {p.price.toLocaleString()})
+                  {HARDCODED_PLANS.map((p) => (
+                    <MenuItem key={p.id} value={String(p.id)} sx={{ textTransform: 'capitalize' }}>
+                      {p.type} Plan ({p.currency} {p.price.toLocaleString()})
                     </MenuItem>
                   ))}
                 </TextField>
 
+                {/* Name Input with Validation binding */}
                 <TextField
                   fullWidth
                   name='nameOnCard'
                   label='Enter Name On Card'
+                  value={values.nameOnCard}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   error={Boolean(touched.nameOnCard && errors.nameOnCard)}
+                  helperText={touched.nameOnCard && errors.nameOnCard}
                   sx={{ '& .MuiInputBase-root': { bgcolor: '#101010', color: '#eee' } }}
                 />
 
+                {/* Summary Card */}
                 <Box sx={{ bgcolor: '#1A1A1A', p: 2.5, borderRadius: 2, border: '1px solid #333' }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography sx={{ color: '#aaa', fontSize: 14 }}>Total Due:</Typography>
