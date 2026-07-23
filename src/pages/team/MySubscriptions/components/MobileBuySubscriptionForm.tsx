@@ -12,8 +12,7 @@ type FormValues = {
 
 // 🚨 IMPORTANT: Change these 'id' numbers to match the exact plan IDs in your live database!
 const HARDCODED_PLANS = [
-  { id: 1, type: 'monthly', price: 15, currency: 'USD' },
-  { id: 2, type: 'semi-annual', price: 20, currency: 'USD' },
+  
   { id: 3, type: 'annual', price: 40, currency: 'USD' }
 ];
 
