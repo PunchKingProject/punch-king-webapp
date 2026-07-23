@@ -13,7 +13,7 @@ type FormValues = {
 // 🚨 IMPORTANT: Change these 'id' numbers to match the exact plan IDs in your live database!
 const HARDCODED_PLANS = [
   
-  { id: 3, type: 'annual', price: 40, currency: 'USD' }
+  { id: 2, type: 'annual', price: 40, currency: 'USD' }
 ];
 
 export default function MobileBuySubscriptionForm() {
