@@ -9,6 +9,9 @@ import { useEffect, useRef, useState } from 'react';
 import { colors } from '../../../theme/colors.ts';
 import { ScrollableSection } from './ScrollableSection.tsx';
 
+// NEW: Import the Modal we just created
+import AdminChangePasswordModal from '../Settings/AdminChangePassword.tsx'; 
+
 const data = [
   { title: 'All Users', total: 200, percentage: '30', status: true },
   { title: 'All Team', total: 200, percentage: '30', status: false },
@@ -33,6 +36,11 @@ type UserSponsorship = {
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  
+  // NEW: State for Profile Dropdown and Password Modal
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const secondCardRef = useRef<HTMLDivElement | null>(null);
 
@@ -48,6 +56,7 @@ const Navbar = () => {
       });
     }
   }, []);
+  
   return (
     <>
       <Box
@@ -77,18 +86,68 @@ const Navbar = () => {
             height: '45px',
           }}
         />
-        <Box
-          component={'img'}
-          src={openProfileIcon}
-          alt='Punch King'
-          sx={{
-            height: '40px',
-          }}
-        />
+        
+        {/* MODIFIED: Wrapped the profile icon to trigger a dropdown */}
+        <Box sx={{ position: 'relative' }}>
+          <Box
+            component={'img'}
+            src={openProfileIcon}
+            alt='Punch King'
+            onClick={() => setProfileMenuOpen((prev) => !prev)}
+            sx={{
+              height: '40px',
+              cursor: 'pointer', // Added pointer for UX
+            }}
+          />
+          
+          {/* NEW: Profile Dropdown Menu */}
+          {profileMenuOpen && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50px',
+                right: 0,
+                backgroundColor: '#1A1A1A',
+                borderRadius: '8px',
+                padding: '10px',
+                boxShadow: '0px 4px 12px rgba(0,0,0,0.5)',
+                zIndex: 10,
+                width: '200px',
+                border: '1px solid #333',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1
+              }}
+            >
+              <Button
+                onClick={() => {
+                  setProfileMenuOpen(false);
+                  setPasswordModalOpen(true); // Open the modal!
+                }}
+                sx={{
+                  color: '#EFAF00',
+                  fontWeight: 700,
+                  textTransform: 'none',
+                  '&:hover': { backgroundColor: '#333' }
+                }}
+              >
+                Change Password
+              </Button>
+              <Button
+                sx={{
+                  color: '#fff',
+                  fontWeight: 700,
+                  textTransform: 'none',
+                  '&:hover': { backgroundColor: '#333' }
+                }}
+              >
+                Logout
+              </Button>
+            </Box>
+          )}
+        </Box>
       </Box>
 
-
-          
       <Box
         ref={containerRef}
         sx={{
@@ -327,6 +386,12 @@ const Navbar = () => {
           </Box>
         </>
       )}
+
+      {/* NEW: The Password Change Modal */}
+      <AdminChangePasswordModal 
+        open={passwordModalOpen} 
+        onClose={() => setPasswordModalOpen(false)} 
+      />
     </>
   );
 };

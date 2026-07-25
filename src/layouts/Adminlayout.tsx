@@ -12,6 +12,9 @@ import ROUTES from '../routes/routePath.ts';
 import Footer from '../pages/landing/components/Footer.tsx';
 import Navbar from '../components/nav/Navbar.tsx';
 
+// NEW: Import the Password Modal
+import AdminChangePasswordModal from '../pages/admin/Settings/AdminChangePassword.tsx'; 
+
 const Adminlayout = () => {
   const isTabletUp = useMediaQuery('(min-width:910px)');
   return (
@@ -30,6 +33,9 @@ export default Adminlayout;
 const AdminLayoutMobile = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  
+  // NEW: State for the password modal
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -120,6 +126,24 @@ const AdminLayoutMobile = () => {
               boxShadow: '0px 4px 12px rgba(0,0,0,0.4)',
             }}
           >
+            {/* NEW: Change Password Button */}
+            <Button
+              variant='outlined'
+              onClick={() => {
+                setProfileOpen(false);
+                setPasswordModalOpen(true);
+              }}
+              sx={{
+                color: '#EFAF00',
+                borderColor: '#EFAF00',
+                borderRadius: '10px',
+                textTransform: 'none',
+                '&:hover': { backgroundColor: '#222', borderColor: '#fff' },
+              }}
+            >
+              Change Password
+            </Button>
+
             <Button
               variant='outlined'
               onClick={handleLogout}
@@ -199,6 +223,12 @@ const AdminLayoutMobile = () => {
 
       <Outlet />
       <Footer />
+
+      {/* NEW: Render the Password Modal */}
+      <AdminChangePasswordModal 
+        open={passwordModalOpen} 
+        onClose={() => setPasswordModalOpen(false)} 
+      />
     </>
   );
 };

@@ -10,6 +10,9 @@ import { logout } from '../../store/registration.slice.ts';
 import { colors } from '../../theme/colors.ts';
 import CustomButton from '../buttons/CustomButton.tsx';
 
+// NEW: Import the Password Modal
+import AdminChangePasswordModal from '../../pages/admin/Settings/AdminChangePassword.tsx';
+
 
 type SectionKey = 'about' | 'subscriptions' | 'ranking' | 'posts' | 'contacts';
 type NavProps = { onNav?: (key: SectionKey) => void };
@@ -45,62 +48,6 @@ function useLogout() {
     navigate(ROUTES.HOME, { replace: true });
   };
 }
-// const MobileNavbar = () => {
-//   const navigate = useNavigate();
-//    const isHome = useIsHome();
-//    const logout = useLogout();
-
-//   return (
-//     <>
-//       <Box
-//         sx={{
-//           display: 'flex',
-//           alignItems: 'center',
-//           justifyContent: 'space-between',
-//           padding: '0 1.88em',
-//         }}
-//       >
-//         {isHome ? (
-//           <CustomButton
-//             color='primary'
-//             variant='text'
-//             onClick={() => navigate(`${ROUTES.SIGN_UP}?flow=sponsor`)}
-//           >
-//             Register
-//           </CustomButton>
-//         ) : (
-//           <CustomButton variant='contained' color='primary' onClick={logout}>
-//             Logout
-//           </CustomButton>
-//         )}
-//         <Box
-//           component='img'
-//           src={punchKingLogo}
-//           alt='A Boxer with fist clenched'
-//           sx={{
-//             height: '105px',
-//             objectFit: 'cover',
-//           }}
-//         />
-//         {isHome ? (
-//           <CustomButton
-//             textColor='white'
-//             variant='text'
-//             onClick={() => navigate(ROUTES.SIGN_IN)}
-//           >
-//             Login
-//           </CustomButton>
-//         ) : (
-//           <IconButton sx={{ color: colors.Accent }} aria-label='account'>
-//             <AccountCircleIcon />
-//             <ArrowDropDownIcon />
-//           </IconButton>
-//         )}
-//       </Box>
-//     </>
-//   );
-// };
-
 
 const DesktopNavbar: React.FC<NavProps>  = ({ onNav}) => {
   const navigate = useNavigate();
@@ -116,6 +63,13 @@ const DesktopNavbar: React.FC<NavProps>  = ({ onNav}) => {
   const handleOpenRegister = (e: React.MouseEvent<HTMLElement>) =>
     setRegAnchor(e.currentTarget);
   const handleCloseRegister = () => setRegAnchor(null);
+
+  // NEW: profile menu & modal state
+  const [profileAnchor, setProfileAnchor] = useState<HTMLElement | null>(null);
+  const profileOpen = Boolean(profileAnchor);
+  const handleOpenProfile = (e: React.MouseEvent<HTMLElement>) => setProfileAnchor(e.currentTarget);
+  const handleCloseProfile = () => setProfileAnchor(null);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   const goToRegister = (flow: 'team' | 'sponsor') => {
     const url =
@@ -177,10 +131,60 @@ const DesktopNavbar: React.FC<NavProps>  = ({ onNav}) => {
             >
               Logout
             </CustomButton>
-            <IconButton sx={{ color: colors.Accent }} aria-label='account'>
+
+            {/* MODIFIED: Added onClick to trigger profile dropdown */}
+            <IconButton 
+              sx={{ color: colors.Accent }} 
+              aria-label='account'
+              onClick={handleOpenProfile}
+            >
               <AccountCircleIcon />
               <ArrowDropDownIcon />
             </IconButton>
+
+            {/* NEW: Profile Dropdown Menu */}
+            <Menu
+              anchorEl={profileAnchor}
+              open={profileOpen}
+              onClose={handleCloseProfile}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              PaperProps={{
+                sx: {
+                  bgcolor: OVERLAY,
+                  border: '1px solid #3B3B3B',
+                  borderRadius: 2,
+                  mt: 1.5,
+                  width: 180,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+                }
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  handleCloseProfile();
+                  setPasswordModalOpen(true);
+                }}
+                sx={{ color: GOLD, fontWeight: 600, py: 1.5, justifyContent: 'center' }}
+              >
+                Change Password
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleCloseProfile();
+                  logout();
+                }}
+                sx={{ color: '#fff', fontWeight: 600, py: 1.5, justifyContent: 'center' }}
+              >
+                Logout
+              </MenuItem>
+            </Menu>
+
+            {/* NEW: Render Modal */}
+            <AdminChangePasswordModal 
+              open={passwordModalOpen} 
+              onClose={() => setPasswordModalOpen(false)} 
+            />
           </>
         )}
       </Box>
@@ -376,6 +380,14 @@ const MobileNavbar: React.FC<NavProps> = () => {
     setRegAnchor(e.currentTarget);
   const handleCloseRegister = () => setRegAnchor(null);
 
+  // NEW: profile menu & modal state
+  const [profileAnchor, setProfileAnchor] = useState<HTMLElement | null>(null);
+  const profileOpen = Boolean(profileAnchor);
+  const handleOpenProfile = (e: React.MouseEvent<HTMLElement>) => setProfileAnchor(e.currentTarget);
+  const handleCloseProfile = () => setProfileAnchor(null);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+
+
   // One place to decide the URLs
   const goToRegister = (flow: 'team' | 'sponsor') => {
     const url =
@@ -437,10 +449,61 @@ const MobileNavbar: React.FC<NavProps> = () => {
             Login
           </CustomButton>
         ) : (
-          <IconButton sx={{ color: colors.Accent }} aria-label='account'>
-            <AccountCircleIcon />
-            <ArrowDropDownIcon />
-          </IconButton>
+          <>
+            {/* MODIFIED: Added onClick to trigger profile dropdown */}
+            <IconButton 
+              sx={{ color: colors.Accent }} 
+              aria-label='account'
+              onClick={handleOpenProfile}
+            >
+              <AccountCircleIcon />
+              <ArrowDropDownIcon />
+            </IconButton>
+
+            {/* NEW: Profile Dropdown Menu */}
+            <Menu
+              anchorEl={profileAnchor}
+              open={profileOpen}
+              onClose={handleCloseProfile}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              PaperProps={{
+                sx: {
+                  bgcolor: OVERLAY,
+                  border: '1px solid #3B3B3B',
+                  borderRadius: 2,
+                  mt: 1.5,
+                  width: 180,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+                }
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  handleCloseProfile();
+                  setPasswordModalOpen(true);
+                }}
+                sx={{ color: GOLD, fontWeight: 600, py: 1.5, justifyContent: 'center' }}
+              >
+                Change Password
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleCloseProfile();
+                  logout();
+                }}
+                sx={{ color: '#fff', fontWeight: 600, py: 1.5, justifyContent: 'center' }}
+              >
+                Logout
+              </MenuItem>
+            </Menu>
+
+            {/* NEW: Render Modal */}
+            <AdminChangePasswordModal 
+              open={passwordModalOpen} 
+              onClose={() => setPasswordModalOpen(false)} 
+            />
+          </>
         )}
       </Box>
     </>
