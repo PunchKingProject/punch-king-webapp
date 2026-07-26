@@ -14,6 +14,7 @@ const ROUTES = {
   SUBSCRIPTION: '/admin/subscription',
   SPONSORSHIP: '/admin/sponsorship',
   PLANS: '/admin/plans',
+  NEWS_EVENTS: '/admin/news-events', // NEW: Added route for News & Events
 
   // Team
   TEAM: '/team',

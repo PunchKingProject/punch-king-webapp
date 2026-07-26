@@ -1,9 +1,9 @@
 import { Box, Button, TextField, Typography, CircularProgress, Modal } from '@mui/material';
 import { Form, Formik } from 'formik';
 
-// FIXED: Added one more '../' to reach the 'src' root folder
+// Make sure these match the paths you used previously!
 import { showError } from '../../../utils/error/toastError.ts'; 
-import { customFetch } from '../../../Axios.ts';
+import { customFetch } from '../../../Axios.ts'; 
 
 const gold = '#EFAF00';
 
@@ -19,6 +19,9 @@ type Props = {
 };
 
 export default function AdminChangePasswordModal({ open, onClose }: Props) {
+  // 1. Detect if the user is currently in the Admin dashboard
+  const isAdminView = window.location.pathname.includes('/admin');
+
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="change-password-title">
       <Box 
@@ -37,8 +40,9 @@ export default function AdminChangePasswordModal({ open, onClose }: Props) {
           outline: 'none'
         }}
       >
+        {/* 2. Universal Title */}
         <Typography id="change-password-title" variant='h6' sx={{ color: gold, fontWeight: 900, mb: 3, textTransform: 'uppercase' }}>
-          Change Administrator Password
+          UPDATE YOUR PASSWORD
         </Typography>
 
         <Formik<FormValues>
@@ -55,15 +59,19 @@ export default function AdminChangePasswordModal({ open, onClose }: Props) {
           }}
           onSubmit={async (vals, { resetForm }) => {
             try {
-              await customFetch.put('/user/admin/change-password', {
+              // 3. Dynamically switch endpoints and HTTP methods based on user view
+              const endpoint = isAdminView ? '/user/admin/change-password' : '/user/change-password';
+              const method = isAdminView ? 'put' : 'patch';
+
+              await customFetch[method](endpoint, {
                 current_password: vals.currentPassword,
                 new_password: vals.newPassword,
                 confirm_password: vals.confirmPassword
               });
-              // ✅ WITH THIS:
-               alert('Password updated successfully!');
+
+              alert('Password updated successfully!');
               resetForm();
-              onClose(); // Automatically close the modal on success
+              onClose(); 
             } catch (err) {
               showError(err);
             }
