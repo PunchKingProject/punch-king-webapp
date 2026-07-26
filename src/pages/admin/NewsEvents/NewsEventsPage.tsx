@@ -32,7 +32,7 @@ interface Post {
   title: string;
   content: string;
   category?: string; 
-  media_url?: string; // NEW: Added support for the feature image from your DB
+  media_url?: string;
 }
 
 export default function NewsEventsPage() {
@@ -46,7 +46,17 @@ export default function NewsEventsPage() {
     try {
       setLoading(true);
       const res = await customFetch.get('/admin/news/');
-      setPosts(res.data?.data || res.data || []);
+      
+      const responseData = res.data?.data || res.data;
+      
+      if (Array.isArray(responseData)) {
+        setPosts(responseData);
+      } else if (responseData && Array.isArray(responseData.posts)) {
+        setPosts(responseData.posts);
+      } else {
+        console.warn('Backend did not return an array:', res.data);
+        setPosts([]); 
+      }
     } catch (err) {
       console.error(err);
       setPosts([]); 
@@ -84,11 +94,9 @@ export default function NewsEventsPage() {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#000' }}>
-      
       <SideBar />
 
       <Box sx={{ flex: 1, p: { xs: 2, md: 5 }, width: '100%', overflowX: 'hidden' }}>
-        
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Typography sx={{ color: '#fff', fontSize: 32, fontWeight: 900 }}>
             News & Events
@@ -127,7 +135,7 @@ export default function NewsEventsPage() {
                     <CircularProgress sx={{ color: gold }} />
                   </TableCell>
                 </TableRow>
-              ) : posts.length === 0 ? (
+              ) : !Array.isArray(posts) || posts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center" sx={{ color: '#888', py: 5, borderColor: '#333' }}>
                     No posts found. Click "Create New Post" to publish an update.
@@ -159,17 +167,15 @@ export default function NewsEventsPage() {
             </TableBody>
           </Table>
         </TableContainer>
-
       </Box>
 
-      {/* POST MODAL */}
       <Modal open={modalOpen} onClose={handleCloseModal} aria-labelledby="post-modal-title">
         <Box 
           sx={{ 
             position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
             width: '100%', maxWidth: 700, bgcolor: '#1A1A1A', p: 4, borderRadius: 2, 
             border: '1px solid #333', boxShadow: 24, outline: 'none',
-            maxHeight: '90vh', overflowY: 'auto' // Added scrolling in case form gets too long
+            maxHeight: '90vh', overflowY: 'auto'
           }}
         >
           <Typography id="post-modal-title" variant="h6" sx={{ color: gold, fontWeight: 800, mb: 3, textTransform: 'uppercase' }}>
@@ -178,7 +184,6 @@ export default function NewsEventsPage() {
 
           {modalMode === 'view' && selectedPost ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              {/* NEW: Render the image if it exists */}
               {selectedPost.media_url && (
                 <Box 
                   component="img" 
@@ -201,7 +206,7 @@ export default function NewsEventsPage() {
                 category: selectedPost?.category || 'Tournament', 
                 title: selectedPost?.title || '', 
                 content: selectedPost?.content || '',
-                media_url: selectedPost?.media_url || '' // NEW: Init media_url
+                media_url: selectedPost?.media_url || '' 
               }}
               validate={(vals) => {
                 const errs: any = {};
@@ -216,15 +221,24 @@ export default function NewsEventsPage() {
                     await customFetch.post('/admin/news/', vals);
                     alert('Post published successfully!');
                   } else if (modalMode === 'edit' && selectedPost) {
-                    await customFetch.patch(`/admin/news/`, { 
-                      ...vals, 
-                      id: selectedPost.id 
-                    });
+                    const parsedId = typeof selectedPost.id === 'string' ? parseInt(selectedPost.id, 10) : selectedPost.id;
+
+                    const payload = {
+                      ...vals,
+                      id: parsedId,
+                      ID: parsedId,
+                      post_id: parsedId,
+                      postId: parsedId,
+                    };
+                    
+                    console.log('Sending update payload:', payload);
+                    await customFetch.patch('/admin/news/', payload);
                     alert('Post updated successfully!');
                   }
                   fetchPosts();
                   handleCloseModal();
-                } catch (err) {
+                } catch (err: any) {
+                  console.error('Update failed response:', err.response?.data || err);
                   showError(err);
                 } finally {
                   setSubmitting(false);
@@ -234,7 +248,6 @@ export default function NewsEventsPage() {
               {({ values, handleChange, handleBlur, touched, errors, isSubmitting, handleSubmit }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    
                     <TextField
                       select
                       fullWidth
@@ -267,7 +280,6 @@ export default function NewsEventsPage() {
                       sx={{ '& .MuiInputBase-root': { bgcolor: '#101010', color: '#eee' } }}
                     />
 
-                    {/* NEW: Feature Image URL Field */}
                     <TextField
                       fullWidth
                       name="media_url"
