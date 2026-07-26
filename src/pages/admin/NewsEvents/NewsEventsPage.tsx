@@ -45,7 +45,7 @@ export default function NewsEventsPage() {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const res = await customFetch.get('/admin/posts/');
+      const res = await customFetch.get('/admin/news/');
       setPosts(res.data?.data || res.data || []);
     } catch (err) {
       console.error(err);
@@ -74,7 +74,7 @@ export default function NewsEventsPage() {
     if (!window.confirm('Are you sure you want to delete this post?')) return;
     
     try {
-      await customFetch.delete(`/admin/posts/${id}`);
+      await customFetch.delete(`/admin/news/${id}`);
       alert('Post deleted successfully!');
       fetchPosts();
     } catch (err) {
@@ -213,10 +213,10 @@ export default function NewsEventsPage() {
               onSubmit={async (vals, { setSubmitting }) => {
                 try {
                   if (modalMode === 'create') {
-                    await customFetch.post('/admin/posts/', vals);
+                    await customFetch.post('/admin/news/', vals);
                     alert('Post published successfully!');
                   } else if (modalMode === 'edit' && selectedPost) {
-                    await customFetch.patch(`/admin/posts/`, { 
+                    await customFetch.patch(`/admin/news/`, { 
                       ...vals, 
                       id: selectedPost.id 
                     });
