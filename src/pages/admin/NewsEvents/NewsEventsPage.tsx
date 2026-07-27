@@ -33,6 +33,8 @@ interface Post {
   content: string;
   category?: string; 
   media_url?: string;
+  caption?: string; // Added to catch backend naming
+  file?: string;    // Added to catch backend naming
 }
 
 export default function NewsEventsPage() {
@@ -48,11 +50,18 @@ export default function NewsEventsPage() {
       const res = await customFetch.get('/admin/news/');
       
       const responseData = res.data?.data || res.data;
+
+      // Translator: Maps the backend 'caption' & 'file' to frontend 'content' & 'media_url'
+      const mapBackendToFrontend = (data: any[]) => data.map((p: any) => ({
+        ...p,
+        content: p.content || p.caption || p.Caption || '',
+        media_url: p.media_url || p.file || p.File || ''
+      }));
       
       if (Array.isArray(responseData)) {
-        setPosts(responseData);
+        setPosts(mapBackendToFrontend(responseData));
       } else if (responseData && Array.isArray(responseData.posts)) {
-        setPosts(responseData.posts);
+        setPosts(mapBackendToFrontend(responseData.posts));
       } else {
         console.warn('Backend did not return an array:', res.data);
         setPosts([]); 
@@ -208,7 +217,6 @@ export default function NewsEventsPage() {
                 content: selectedPost?.content || '',
                 media_url: selectedPost?.media_url || '' 
               }}
-
               validate={(vals) => {
                 const errs: any = {};
                 if (!vals.category) errs.category = 'Category is required';
@@ -216,25 +224,30 @@ export default function NewsEventsPage() {
                 if (!vals.content) errs.content = 'Content is required';
                 return errs;
               }}
-              
               onSubmit={async (vals, { setSubmitting }) => {
                 try {
+                  // Send both sets of field names so the Go Backend DTO perfectly catches them
+                  const securePayload = {
+                    ...vals,
+                    caption: vals.content,
+                    file: vals.media_url
+                  };
+
                   if (modalMode === 'create') {
-                    await customFetch.post('/admin/news/', vals);
+                    await customFetch.post('/admin/news/', securePayload);
                     alert('Post published successfully!');
                   } else if (modalMode === 'edit' && selectedPost) {
                     const parsedId = typeof selectedPost.id === 'string' ? parseInt(selectedPost.id, 10) : selectedPost.id;
 
-                    const payload = {
-                      ...vals,
+                    const updatePayload = {
+                      ...securePayload,
                       id: parsedId,
                       ID: parsedId,
                       post_id: parsedId,
                       postId: parsedId,
                     };
                     
-                    console.log('Sending update payload:', payload);
-                    await customFetch.patch('/admin/news/', payload);
+                    await customFetch.patch('/admin/news/', updatePayload);
                     alert('Post updated successfully!');
                   }
                   fetchPosts();
