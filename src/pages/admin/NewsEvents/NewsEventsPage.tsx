@@ -208,6 +208,7 @@ export default function NewsEventsPage() {
                 content: selectedPost?.content || '',
                 media_url: selectedPost?.media_url || '' 
               }}
+
               validate={(vals) => {
                 const errs: any = {};
                 if (!vals.category) errs.category = 'Category is required';
@@ -215,6 +216,7 @@ export default function NewsEventsPage() {
                 if (!vals.content) errs.content = 'Content is required';
                 return errs;
               }}
+              
               onSubmit={async (vals, { setSubmitting }) => {
                 try {
                   if (modalMode === 'create') {
