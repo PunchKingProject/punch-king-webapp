@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { colors } from '../../../theme/colors';
 import { customFetch } from '../../../Axios.ts';
+import { heroBoxerLarge } from '../../../assets'; // Added fallback image import
 
 const EventActivities = () => {
   const [news, setNews] = useState<any[]>([]);
@@ -26,14 +27,14 @@ const EventActivities = () => {
         const allPosts = res.data?.data?.posts || res.data?.posts || [];
 
         // Filter out team sparring videos (they always have a boxer_name)
-        // Map the backend 'caption' & 'file' to frontend 'content' & 'media_url'
         const adminOnlyPosts = allPosts
           .filter((p: any) => !p.boxer_name && !p.weight_class)
           .map((p: any) => ({
             id: p.id || p.ID,
             title: p.title || p.Title,
             content: p.caption || p.Caption || '',
-            media_url: p.file || p.File || '',
+            // FIX: Added p.file_url and p.media_url to catch all possible backend field names
+            media_url: p.file_url || p.media_url || p.file || p.File || '', 
             category: p.category || (p.status === 'approved' ? 'Official News' : 'Update')
           }));
 
@@ -73,7 +74,6 @@ const EventActivities = () => {
           </Typography>
         ) : (
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3,1fr)' }, gap: 3 }}>
-            {/* Slice to 3 so it perfectly fits your original 3-column grid design */}
             {news.slice(0, 3).map((event) => (
               <Card
                 key={event.id}
@@ -93,35 +93,53 @@ const EventActivities = () => {
                   }
                 }}
               >
-                {event.media_url && (
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    image={event.media_url}
-                    alt={event.title}
-                    sx={{ objectFit: 'cover' }}
-                  />
-                )}
-                <CardContent sx={{ p: 3, flexGrow: 1 }}>
-                  <Chip
-                    label={event.category}
-                    size="small"
-                    sx={{ bgcolor: 'rgba(239,175,0,.13)', color: colors.Accent, fontWeight: 800, mb: 2 }}
-                  />
-                  <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.25rem', mb: 1, lineHeight: 1.3 }}>
-                    {event.title}
-                  </Typography>
+                {/* FIX: Removed conditional logic to ALWAYS render CardMedia. It will use media_url if valid, or fallback to heroBoxerLarge */}
+                <CardMedia
+                  component="img"
+                  height="180"
+                  image={event.media_url || heroBoxerLarge}
+                  alt={event.title}
+                  sx={{ objectFit: 'cover', bgcolor: '#222', borderBottom: '1px solid rgba(255,255,255,.05)' }}
+                  onError={(e: any) => {
+                    e.currentTarget.src = heroBoxerLarge; // Safety net if the URL link is broken
+                  }}
+                />
+                
+                <CardContent sx={{ p: 3, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Box>
+                    <Chip
+                      label={event.category}
+                      size="small"
+                      sx={{ bgcolor: 'rgba(239,175,0,.13)', color: colors.Accent, fontWeight: 800, mb: 2 }}
+                    />
+                    <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.25rem', mb: 1, lineHeight: 1.3 }}>
+                      {event.title}
+                    </Typography>
+                    <Typography 
+                      sx={{ 
+                        color: 'rgba(255,255,255,.65)', 
+                        lineHeight: 1.7,
+                        display: '-webkit-box', 
+                        WebkitLineClamp: 3, 
+                        WebkitBoxOrient: 'vertical', 
+                        overflow: 'hidden' 
+                      }}
+                    >
+                      {event.content}
+                    </Typography>
+                  </Box>
+                  
+                  {/* Visual Hint for Users */}
                   <Typography 
                     sx={{ 
-                      color: 'rgba(255,255,255,.65)', 
-                      lineHeight: 1.7,
-                      display: '-webkit-box', 
-                      WebkitLineClamp: 3, 
-                      WebkitBoxOrient: 'vertical', 
-                      overflow: 'hidden' 
+                      color: colors.Accent, 
+                      fontSize: '0.85rem', 
+                      fontWeight: 800, 
+                      mt: 'auto',
+                      pt: 2
                     }}
                   >
-                    {event.content}
+                    READ MORE &rarr;
                   </Typography>
                 </CardContent>
               </Card>
@@ -140,14 +158,17 @@ const EventActivities = () => {
             maxHeight: '90vh', overflowY: 'auto'
           }}
         >
-          {selectedPost?.media_url && (
-            <Box 
-              component="img" 
-              src={selectedPost.media_url} 
-              alt={selectedPost.title} 
-              sx={{ width: '100%', maxHeight: 350, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} 
-            />
-          )}
+          {/* FIX: Modal image also utilizes the fallback */}
+          <Box 
+            component="img" 
+            src={selectedPost?.media_url || heroBoxerLarge} 
+            alt={selectedPost?.title} 
+            sx={{ width: '100%', maxHeight: 350, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} 
+            onError={(e: any) => {
+              e.currentTarget.src = heroBoxerLarge;
+            }}
+          />
+          
           <Box sx={{ p: { xs: 3, md: 5 } }}>
             <Chip 
               label={selectedPost?.category} 

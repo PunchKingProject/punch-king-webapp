@@ -34,7 +34,10 @@ const TeamPost = () => {
     | InfiniteData<AllPostsPayload>
     | undefined;
 
-  const posts: Post[] = infiniteData?.pages.flatMap((page) => page.posts) ?? [];
+  const allFetchedPosts: Post[] = infiniteData?.pages.flatMap((page) => page.posts) ?? [];
+
+  // Strictly filter out Admin News by requiring boxing-specific fields
+  const posts = allFetchedPosts.filter((post: any) => post.boxer_name || post.weight_class);
 
   return (
     <Box

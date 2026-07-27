@@ -201,6 +201,7 @@ const AdminLayoutMobile = () => {
               { name: 'Licensing', path: ROUTES.LICENSING },
               { name: 'Subscription', path: ROUTES.SUBSCRIPTION },
               { name: 'Sponsorships', path: ROUTES.SPONSORSHIP },
+              { name: 'News & Events', path: '/admin/news-events' }, 
             ].map((item) => (
               <Button
                 key={item.name}
