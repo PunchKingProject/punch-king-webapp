@@ -33,8 +33,9 @@ interface Post {
   content: string;
   category?: string; 
   media_url?: string;
-  caption?: string; // Added to catch backend naming
-  file?: string;    // Added to catch backend naming
+  caption?: string; 
+  file?: string;    
+  file_url?: string; // Added to interface
 }
 
 export default function NewsEventsPage() {
@@ -51,11 +52,11 @@ export default function NewsEventsPage() {
       
       const responseData = res.data?.data || res.data;
 
-      // Translator: Maps the backend 'caption' & 'file' to frontend 'content' & 'media_url'
+      // FIX 1: Added p.file_url so the Admin table and Edit modal can actually see the saved image!
       const mapBackendToFrontend = (data: any[]) => data.map((p: any) => ({
         ...p,
         content: p.content || p.caption || p.Caption || '',
-        media_url: p.media_url || p.file || p.File || ''
+        media_url: p.file_url || p.media_url || p.file || p.File || '' 
       }));
       
       if (Array.isArray(responseData)) {
@@ -226,11 +227,12 @@ export default function NewsEventsPage() {
               }}
               onSubmit={async (vals, { setSubmitting }) => {
                 try {
-                  // Send both sets of field names so the Go Backend DTO perfectly catches them
+                  // FIX 2: Send all naming variations so the Go backend Update DTO never misses it
                   const securePayload = {
                     ...vals,
                     caption: vals.content,
-                    file: vals.media_url
+                    file: vals.media_url,
+                    file_url: vals.media_url 
                   };
 
                   if (modalMode === 'create') {
