@@ -518,6 +518,7 @@ const WeightClassPage = () => {
                     <FighterPostCard
                       key={post.id}
                       post={post}
+                      categoryName={selectedDivision.shortTitle} // Passing category down to the card
                       onView={() =>
                         navigate(
                           `/sign-in?redirect=/user/feeds/${post.id}`
@@ -571,9 +572,11 @@ const WeightClassPage = () => {
 
 const FighterPostCard = ({
   post,
+  categoryName,
   onView,
 }: {
   post: TeamPost;
+  categoryName?: string;
   onView: () => void;
 }) => {
   const teamName =
@@ -604,18 +607,50 @@ const FighterPostCard = ({
         },
       }}
     >
-      <PostMedia
-        src={post.file_url}
-        alt={
-          post.boxer_name || post.title
-        }
-        title={post.title}
-        height={245}
-        maxHeight={245}
-        objectFit='cover'
-        borderRadius={0}
-        controls
-      />
+      <Box
+        onClick={onView}
+        sx={{
+          cursor: 'pointer',
+          position: 'relative',
+          '&:hover .play-icon': {
+            color: colors.Accent,
+            transform: 'translate(-50%, -50%) scale(1.15)',
+          },
+        }}
+      >
+        <Box sx={{ pointerEvents: 'none' }}> 
+          <PostMedia
+            src={post.file_url}
+            alt={
+              post.boxer_name || post.title
+            }
+            title={post.title}
+            height={245}
+            maxHeight={245}
+            objectFit='cover'
+            borderRadius={0}
+          />
+        </Box>
+        
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            bgcolor: 'rgba(0,0,0,0.35)', 
+            display: 'grid',
+            placeItems: 'center',
+          }}
+        >
+          <PlayCircleOutlineIcon
+            className="play-icon"
+            sx={{
+              color: 'rgba(255,255,255,0.85)',
+              fontSize: 68,
+              transition: 'all 0.2s ease-in-out',
+            }}
+          />
+        </Box>
+      </Box>
 
       <CardContent
         sx={{
@@ -736,6 +771,20 @@ const FighterPostCard = ({
             mb: 2.5,
           }}
         >
+          {/* NEW: Category Highlight Chip placed securely in the bottom stack */}
+          {categoryName && (
+            <Chip
+              size='small'
+              label={categoryName.toUpperCase()}
+              sx={{
+                bgcolor: 'rgba(239,175,0,0.15)',
+                color: colors.Accent,
+                fontWeight: 900,
+                letterSpacing: '0.05em',
+              }}
+            />
+          )}
+
           {post.shorts_color && (
             <Chip
               size='small'
