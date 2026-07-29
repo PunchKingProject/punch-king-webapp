@@ -1,15 +1,23 @@
-
 import { customFetch } from "../../../../Axios.ts";
-import type { Envelope, SingleTeamStats, SingleTeamStatsParams, TeamDashboardStats, TeamDashboardStatsParams, TeamPost, TeamProfile, UpdateTeamPayload, VoteHistoryEnvelope, VoteHistoryParams } from "./teams.types.ts";
-
-
+import type { 
+  Envelope, 
+  SingleTeamStats, 
+  SingleTeamStatsParams, 
+  TeamDashboardStats, 
+  TeamDashboardStatsParams, 
+  TeamPost, 
+  TeamProfile, 
+  UpdateTeamPayload, 
+  VoteHistoryEnvelope, 
+  VoteHistoryParams 
+} from "./teams.types.ts";
 
 export async function getTeamDashboardStats(params: TeamDashboardStatsParams): Promise<TeamDashboardStats> {
-    const { data } = await customFetch.get<Envelope<TeamDashboardStats>>(
-        '/user/team-dashboard-stats', 
-        {params}
-    )
-    return data.data
+  const { data } = await customFetch.get<Envelope<TeamDashboardStats>>(
+    '/user/team-dashboard-stats', 
+    {params}
+  )
+  return data.data
 }
 
 export async function getSingleTeamStats(
@@ -17,35 +25,34 @@ export async function getSingleTeamStats(
 ): Promise<SingleTeamStats> {
   const { data } = await customFetch.get<Envelope<SingleTeamStats>>(
     '/user/team-sponsorship-stats',
-    { params } // { team_id, start_date, end_date }
+    { params } 
   );
   return data.data;
 }
 
+// FIX 1: Exact match to your Go router -> GET /user/admin/:id
 export async function getTeamProfile(id: number): Promise<TeamProfile> {
-  const { data } = await customFetch.get<Envelope<TeamProfile>>(`/user/${id}`);
+  const { data } = await customFetch.get<Envelope<TeamProfile>>(`/user/admin/${id}`);
   return data.data;
 }
 
-// (Optional) when you’re ready to save edits
+// FIX 2: Exact match to your Go router -> PATCH /user/admin/:id/edit
 export async function updateTeamProfile(
   teamId: number,
   body: UpdateTeamPayload
 ) {
   const { data } = await customFetch.patch(
-    `/user/edit/${teamId}`,
+    `/user/admin/${teamId}/edit`,
     body
   );
   return data;
 }
 
 export async function getTeamPosts(teamId: number) {
-  // GET /post/team-posts?team_id=16
   const { data } = await customFetch.get('/post/team-posts', {
     params: { team_id: teamId },
   });
 
-  // API may return comments as an object/array — normalize to a count
   const raw = (data?.data ?? []) as Array<Record<string, unknown>>;
 
   const posts: TeamPost[] = raw.map((p) => {
@@ -54,8 +61,7 @@ export async function getTeamPosts(teamId: number) {
       ? commentsRaw.length
       : typeof commentsRaw === 'number'
       ? commentsRaw
-      : // object or undefined -> 1 if it looks like a single comment object, else 0
-      commentsRaw && typeof commentsRaw === 'object'
+      : commentsRaw && typeof commentsRaw === 'object'
       ? 1
       : 0;
 
@@ -69,15 +75,12 @@ export async function getTeamPosts(teamId: number) {
       sponsorships: Number((p as { sponsorships?: number }).sponsorships ?? 0),
       sponsors: Number((p as { sponsors?: number }).sponsors ?? 0),
       created_at: String(p.created_at ?? ''),
-      // keep the raw comments if you still need them elsewhere (but don't render directly)
       comments_raw: commentsRaw,
     };
   });
 
   return posts;
 }
-
-
 
 export async function fetchTeamVoteHistory(params: VoteHistoryParams) {
   const { data } = await customFetch.get<VoteHistoryEnvelope>(
