@@ -5,6 +5,8 @@ import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlin
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { 
   Box, 
@@ -12,7 +14,11 @@ import {
   Card, 
   CardContent, 
   Chip, 
+  Dialog, 
+  DialogContent, 
+  DialogTitle, 
   IconButton, 
+  IconButton as MuiIconButton, 
   Skeleton, 
   Stack, 
   Typography, 
@@ -23,13 +29,12 @@ import { colors } from "../../../../../../theme/colors.ts";
 import type { TeamPost } from "../../../api/teams.types.ts";
 import { useTeamPosts } from "../../../hooks/useTeamPosts.tsx";
 import MobilePostModal from "./MobilePostModal.tsx";
+import AdminUploadMediaForm from "../../AdminUploadMediaForm.tsx"; // Updated to use the clean admin form
 
-// IMPORTANT: Ensure this path correctly points to your PostMedia component
 import PostMedia from "../../../../../../components/media/PostMedia.tsx";
 
 type Props = { teamId: number; title?: string };
 
-// Helper to format dates beautifully
 function formatDate(value?: string): string {
   if (!value) return '';
   const date = new Date(value);
@@ -42,10 +47,11 @@ function formatDate(value?: string): string {
 }
 
 function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
-  const { data, isLoading } = useTeamPosts(teamId);
+  const { data, isLoading, refetch } = useTeamPosts(teamId);
   const items = data ?? [];
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<TeamPost | null>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const isSm = useMediaQuery('(max-width:600px)');
 
   const cardWidth = isSm ? 280 : 320;
@@ -59,11 +65,6 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
     return [canLeft, canRight];
   }, []); 
 
-  const updateArrows = () => {
-    // This function can trigger a state update if you decide to make 
-    // arrows dynamically appear/disappear on scroll for mobile
-  };
-
   const scrollBy = (dir: 'left' | 'right') => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -71,14 +72,40 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
       left: dir === 'left' ? -(cardWidth + gap) : cardWidth + gap,
       behavior: 'smooth',
     });
-    setTimeout(updateArrows, 260);
   };
 
   return (
     <Box sx={{ px: { xs: 2, sm: 4 }, py: 3 }}>
-      <Typography variant='h6' sx={{ color: '#fff', fontWeight: 900, mb: 2 }}>
-        {title}
-      </Typography>
+      {/* Mobile Title & Upload Button Header */}
+      <Stack 
+        direction={{ xs: 'column', sm: 'row' }} 
+        alignItems={{ xs: 'stretch', sm: 'center' }} 
+        justifyContent="space-between" 
+        gap={2} 
+        mb={2}
+      >
+        <Typography variant='h6' sx={{ color: '#fff', fontWeight: 900 }}>
+          {title}
+        </Typography>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setIsUploadModalOpen(true)}
+          sx={{
+            bgcolor: colors.Accent,
+            color: '#000',
+            fontWeight: 800,
+            textTransform: 'none',
+            borderRadius: 999,
+            py: 0.8,
+            px: 3,
+            '&:hover': { bgcolor: '#FFC533' },
+          }}
+        >
+          Upload Video
+        </Button>
+      </Stack>
 
       <Box sx={{ position: 'relative' }}>
         {showLeft && (
@@ -119,7 +146,6 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
 
         <Box
           ref={scrollerRef}
-          onScroll={updateArrows}
           sx={{
             display: 'flex',
             gap: 3,
@@ -127,7 +153,7 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
             scrollSnapType: 'x mandatory',
             scrollbarWidth: 'none',
             '&::-webkit-scrollbar': { display: 'none' },
-            pb: 2, // padding for card shadows
+            pb: 2,
           }}
         >
           {isLoading
@@ -154,7 +180,7 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
         </Box>
       </Box>
 
-      {/* Mobile modal */}
+      {/* Details Modal */}
       <MobilePostModal
         open={!!selected}
         onClose={() => setSelected(null)}
@@ -217,15 +243,36 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
           )
         }
       />
+
+      {/* Admin Mobile Upload Video Modal */}
+      <Dialog 
+        open={isUploadModalOpen} 
+        onClose={() => setIsUploadModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: { bgcolor: '#000', border: `1px solid ${colors.Accent}`, borderRadius: 3 }
+        }}
+      >
+        <DialogTitle sx={{ color: '#fff', fontWeight: 900, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Upload Media for Team
+          <MuiIconButton onClick={() => setIsUploadModalOpen(false)} sx={{ color: 'rgba(255,255,255,0.7)' }}>
+            <CloseIcon />
+          </MuiIconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0, overflowX: 'hidden' }}>
+          <AdminUploadMediaForm 
+            teamId={teamId} 
+            onSuccessCallback={() => {
+              setIsUploadModalOpen(false);
+              void refetch(); 
+            }} 
+          />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
-
-/* 
-|--------------------------------------------------------------------------
-| Premium Mobile Admin Post Card
-|--------------------------------------------------------------------------
-*/
 
 const AdminPremiumMobilePostCard = ({
   item,

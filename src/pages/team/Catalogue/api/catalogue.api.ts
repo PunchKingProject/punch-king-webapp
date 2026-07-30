@@ -82,7 +82,7 @@ export async function createTeamPost(
 ): Promise<TeamPost> {
   const { data } = await customFetch.post<
     Envelope<TeamPost>
-  >('/post', payload);
+  >('/post/', payload);
 
   return data.data;
 }
@@ -98,7 +98,7 @@ export async function editTeamPost(
 ): Promise<TeamPost> {
   const { data } = await customFetch.patch<
     Envelope<TeamPost>
-  >('/post', payload);
+  >('/post/', payload);
 
   return data.data;
 }
@@ -112,7 +112,7 @@ export async function editTeamPost(
 export async function deleteTeamPost(
   payload: DeletePostPayload
 ): Promise<void> {
-  await customFetch.delete('/post', {
+  await customFetch.delete('/post/', {
     data: payload,
   });
 }

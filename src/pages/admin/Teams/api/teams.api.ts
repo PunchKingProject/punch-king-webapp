@@ -30,13 +30,11 @@ export async function getSingleTeamStats(
   return data.data;
 }
 
-// FIX 1: Exact match to your Go router -> GET /user/admin/:id
 export async function getTeamProfile(id: number): Promise<TeamProfile> {
   const { data } = await customFetch.get<Envelope<TeamProfile>>(`/user/admin/${id}`);
   return data.data;
 }
 
-// FIX 2: Exact match to your Go router -> PATCH /user/admin/:id/edit
 export async function updateTeamProfile(
   teamId: number,
   body: UpdateTeamPayload
@@ -96,5 +94,15 @@ export async function fetchTeamVoteHistory(params: VoteHistoryParams) {
       },
     }
   );
+  return data;
+}
+
+/**
+ * NEW: Allows an admin to create/upload a post on behalf of any team.
+ * Matches your Go backend's `CreateAdminPost` handler.
+ */
+export async function createAdminTeamPost(payload: any) {
+  // Point to the exact route defined in your Go postRoute.go file
+  const { data } = await customFetch.post('/admin/news/', payload); 
   return data;
 }

@@ -5,6 +5,8 @@ import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlin
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 
 import {
   Box,
@@ -12,7 +14,11 @@ import {
   Card,
   CardContent,
   Chip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
+  IconButton as MuiIconButton,
   Skeleton,
   Stack,
   Typography,
@@ -23,14 +29,13 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { TeamPost } from '../../../api/teams.types.ts';
 import { useTeamPosts } from '../../../hooks/useTeamPosts.tsx';
 import TeamPostModal from './DesktopTeamPostModal.tsx';
+import AdminUploadMediaForm from '../../AdminUploadMediaForm.tsx'; // Updated to use the clean admin form
 
-// Note: Ensure this import path correctly points to your PostMedia component based on your folder structure!
 import PostMedia from '../../../../../../components/media/PostMedia.tsx'; 
 import { colors } from '../../../../../../theme/colors.ts';
 
 type Props = { teamId: number; title?: string };
 
-// Helper to format dates beautifully
 function formatDate(value?: string): string {
   if (!value) return '';
   const date = new Date(value);
@@ -46,9 +51,10 @@ export default function TeamPostCarousel({
   teamId,
   title = 'TEAM CATALOGUE',
 }: Props) {
-  const { data, isLoading } = useTeamPosts(teamId);
+  const { data, isLoading, refetch } = useTeamPosts(teamId);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<TeamPost | null>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [showPrev, setShowPrev] = useState(false);
   const [showNext, setShowNext] = useState(false);
   const isSm = useMediaQuery('(max-width:600px)');
@@ -121,9 +127,29 @@ export default function TeamPostCarousel({
         },
       }}
     >
-      <Typography variant='h5' sx={{ fontWeight: 900, color: '#fff', mb: 3 }}>
-        {title}
-      </Typography>
+      {/* Title and Admin Upload Video Button */}
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
+        <Typography variant='h5' sx={{ fontWeight: 900, color: '#fff' }}>
+          {title}
+        </Typography>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setIsUploadModalOpen(true)}
+          sx={{
+            bgcolor: colors.Accent,
+            color: '#000',
+            fontWeight: 800,
+            textTransform: 'none',
+            px: 3,
+            borderRadius: 999,
+            '&:hover': { bgcolor: '#FFC533' },
+          }}
+        >
+          Upload Video
+        </Button>
+      </Stack>
 
       <Box sx={{ position: 'relative' }}>
         {showPrev && (
@@ -173,7 +199,7 @@ export default function TeamPostCarousel({
             scrollSnapType: 'x mandatory',
             scrollbarWidth: 'none',
             '&::-webkit-scrollbar': { display: 'none' },
-            pb: 2, // padding bottom for shadow
+            pb: 2,
           }}
         >
           {isLoading
@@ -197,22 +223,42 @@ export default function TeamPostCarousel({
         </Box>
       </Box>
 
+      {/* Details Modal */}
       <TeamPostModal
         open={!!selected}
         onClose={() => setSelected(null)}
         item={selected}
       />
+
+      {/* Admin Upload Video Modal */}
+      <Dialog 
+        open={isUploadModalOpen} 
+        onClose={() => setIsUploadModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: { bgcolor: '#000', border: `1px solid ${colors.Accent}`, borderRadius: 3 }
+        }}
+      >
+        <DialogTitle sx={{ color: '#fff', fontWeight: 900, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Upload Media for Team
+          <MuiIconButton onClick={() => setIsUploadModalOpen(false)} sx={{ color: 'rgba(255,255,255,0.7)' }}>
+            <CloseIcon />
+          </MuiIconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0, overflowX: 'hidden' }}>
+          <AdminUploadMediaForm 
+            teamId={teamId} 
+            onSuccessCallback={() => {
+              setIsUploadModalOpen(false);
+              void refetch(); 
+            }} 
+          />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
-
-/* 
-|--------------------------------------------------------------------------
-| Premium Admin Post Card
-|--------------------------------------------------------------------------
-| Brings the public catalogue UI to the admin dashboard.
-| Video is fully playable (controls={true}).
-*/
 
 const AdminPremiumPostCard = ({
   item,
@@ -221,8 +267,6 @@ const AdminPremiumPostCard = ({
   item: TeamPost;
   onOpen: () => void;
 }) => {
-  // We use "any" cast here to safely access metadata fields that might come from the backend 
-  // but aren't strictly typed in TeamPost yet (like boxer_name, weight, etc)
   const extendedItem = item as any;
 
   return (
@@ -246,7 +290,6 @@ const AdminPremiumPostCard = ({
       }}
     >
       <Box sx={{ width: '100%' }}>
-        {/* controls={true} so the admin can play the video natively! */}
         <PostMedia
           src={item.file_url}
           alt={extendedItem.boxer_name || item.title}
