@@ -99,10 +99,10 @@ export async function fetchTeamVoteHistory(params: VoteHistoryParams) {
 
 /**
  * NEW: Allows an admin to create/upload a post on behalf of any team.
- * Matches your Go backend's `CreateAdminPost` handler.
+ * Matches your Go backend's `AdminCreateTeamPost` handler.
  */
 export async function createAdminTeamPost(payload: any) {
   // Point to the exact route defined in your Go postRoute.go file
-  const { data } = await customFetch.post('/admin/news/', payload); 
+  const { data } = await customFetch.post('/admin/team-post/', payload); 
   return data;
 }
