@@ -7,6 +7,7 @@ import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import { 
   Box, 
@@ -24,14 +25,19 @@ import {
   Typography, 
   useMediaQuery 
 } from "@mui/material";
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { toast } from 'react-toastify';
+
 import { colors } from "../../../../../../theme/colors.ts";
 import type { TeamPost } from "../../../api/teams.types.ts";
 import { useTeamPosts } from "../../../hooks/useTeamPosts.tsx";
 import MobilePostModal from "./MobilePostModal.tsx";
-import AdminUploadMediaForm from "../../AdminUploadMediaForm.tsx"; // Updated to use the clean admin form
-
+import AdminUploadMediaForm from "../../AdminUploadMediaForm.tsx"; 
+import { deleteAdminTeamPost } from '../../../api/teams.api.ts'; 
 import PostMedia from "../../../../../../components/media/PostMedia.tsx";
+
+// Ensure this path matches your project structure
+import { getErrorMessage } from '../../../../../../utils/error/error.ts'; 
 
 type Props = { teamId: number; title?: string };
 
@@ -57,13 +63,39 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
   const cardWidth = isSm ? 280 : 320;
   const gap = 24;
 
-  const [showLeft, showRight] = useMemo(() => {
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+
+  const updateArrows = () => {
     const el = scrollerRef.current;
-    if (!el) return [false, false];
+    if (!el) return;
     const canLeft = el.scrollLeft > 0;
     const canRight = el.scrollWidth - el.clientWidth - el.scrollLeft > 4;
-    return [canLeft, canRight];
-  }, []); 
+    setShowLeft(canLeft);
+    setShowRight(canRight);
+  };
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    updateArrows();
+
+    const onScroll = () => updateArrows();
+    el.addEventListener('scroll', onScroll, { passive: true });
+
+    const ro = new ResizeObserver(() => updateArrows());
+    ro.observe(el);
+
+    const onWinResize = () => updateArrows();
+    window.addEventListener('resize', onWinResize);
+
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      ro.disconnect();
+      window.removeEventListener('resize', onWinResize);
+    };
+  }, [items]); 
 
   const scrollBy = (dir: 'left' | 'right') => {
     const el = scrollerRef.current;
@@ -72,6 +104,18 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
       left: dir === 'left' ? -(cardWidth + gap) : cardWidth + gap,
       behavior: 'smooth',
     });
+  };
+
+  const handleDelete = async (postId: number) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    
+    try {
+      await deleteAdminTeamPost(postId);
+      toast.success('Post deleted successfully');
+      void refetch(); 
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
   };
 
   return (
@@ -174,6 +218,7 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
                   <AdminPremiumMobilePostCard
                     item={it}
                     onOpen={() => setSelected(it)}
+                    onDelete={() => handleDelete(it.id)}
                   />
                 </Box>
               ))}
@@ -277,9 +322,11 @@ function MobileTeamPostCarousel({ teamId, title = 'TEAM CATALOGUE' }: Props) {
 const AdminPremiumMobilePostCard = ({
   item,
   onOpen,
+  onDelete,
 }: {
   item: TeamPost;
   onOpen: () => void;
+  onDelete: () => void;
 }) => {
   const extendedItem = item as any;
 
@@ -397,27 +444,43 @@ const AdminPremiumMobilePostCard = ({
           />
         </Stack>
 
-        <Button
-          fullWidth
-          onClick={onOpen}
-          variant="outlined"
-          sx={{
-            mt: 'auto',
-            borderColor: 'rgba(255,255,255,0.2)',
-            color: '#fff',
-            fontWeight: 800,
-            borderRadius: 999,
-            py: 0.8,
-            fontSize: '0.85rem',
-            '&:hover': {
-              borderColor: colors.Accent,
-              bgcolor: 'rgba(239,175,0,0.05)',
-              color: colors.Accent,
-            },
-          }}
-        >
-          View Details
-        </Button>
+        <Stack direction="row" spacing={1} sx={{ mt: 'auto' }}>
+          <Button
+            fullWidth
+            onClick={onOpen}
+            variant="outlined"
+            sx={{
+              borderColor: 'rgba(255,255,255,0.2)',
+              color: '#fff',
+              fontWeight: 800,
+              borderRadius: 999,
+              py: 0.8,
+              fontSize: '0.85rem',
+              '&:hover': {
+                borderColor: colors.Accent,
+                bgcolor: 'rgba(239,175,0,0.05)',
+                color: colors.Accent,
+              },
+            }}
+          >
+            View Details
+          </Button>
+
+          <IconButton
+            onClick={onDelete}
+            sx={{
+              border: '1px solid rgba(255, 68, 68, 0.3)',
+              color: '#ff4444',
+              borderRadius: '50%',
+              '&:hover': {
+                bgcolor: 'rgba(255, 68, 68, 0.15)',
+                borderColor: '#ff4444',
+              },
+            }}
+          >
+            <DeleteOutlineIcon />
+          </IconButton>
+        </Stack>
       </CardContent>
     </Card>
   );

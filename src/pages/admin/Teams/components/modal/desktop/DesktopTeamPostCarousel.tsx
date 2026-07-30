@@ -7,6 +7,7 @@ import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import {
   Box,
@@ -25,14 +26,19 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { toast } from 'react-toastify';
 
+import { deleteAdminTeamPost } from '../../../api/teams.api.ts'; 
 import type { TeamPost } from '../../../api/teams.types.ts';
 import { useTeamPosts } from '../../../hooks/useTeamPosts.tsx';
 import TeamPostModal from './DesktopTeamPostModal.tsx';
-import AdminUploadMediaForm from '../../AdminUploadMediaForm.tsx'; // Updated to use the clean admin form
+import AdminUploadMediaForm from '../../AdminUploadMediaForm.tsx'; 
 
 import PostMedia from '../../../../../../components/media/PostMedia.tsx'; 
 import { colors } from '../../../../../../theme/colors.ts';
+
+// Note: Ensure this path matches your project structure for getErrorMessage
+import { getErrorMessage } from '../../../../../../utils/error/error.ts'; 
 
 type Props = { teamId: number; title?: string };
 
@@ -111,6 +117,18 @@ export default function TeamPostCarousel({
       left: dir === 'left' ? -cardWidth - 24 : cardWidth + 24,
       behavior: 'smooth',
     });
+  };
+
+  const handleDelete = async (postId: number) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    
+    try {
+      await deleteAdminTeamPost(postId);
+      toast.success('Post deleted successfully');
+      void refetch(); 
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
   };
 
   return (
@@ -217,7 +235,11 @@ export default function TeamPostCarousel({
               ))
             : (data ?? []).map((it) => (
                 <Box key={it.id} sx={{ scrollSnapAlign: 'start' }}>
-                  <AdminPremiumPostCard item={it} onOpen={() => setSelected(it)} />
+                  <AdminPremiumPostCard 
+                    item={it} 
+                    onOpen={() => setSelected(it)} 
+                    onDelete={() => handleDelete(it.id)} 
+                  />
                 </Box>
               ))}
         </Box>
@@ -263,9 +285,11 @@ export default function TeamPostCarousel({
 const AdminPremiumPostCard = ({
   item,
   onOpen,
+  onDelete,
 }: {
   item: TeamPost;
   onOpen: () => void;
+  onDelete: () => void;
 }) => {
   const extendedItem = item as any;
 
@@ -386,26 +410,43 @@ const AdminPremiumPostCard = ({
           />
         </Stack>
 
-        <Button
-          fullWidth
-          onClick={onOpen}
-          variant="outlined"
-          sx={{
-            mt: 'auto',
-            borderColor: 'rgba(255,255,255,0.2)',
-            color: '#fff',
-            fontWeight: 800,
-            borderRadius: 999,
-            py: 1,
-            '&:hover': {
-              borderColor: colors.Accent,
-              bgcolor: 'rgba(239,175,0,0.05)',
-              color: colors.Accent,
-            },
-          }}
-        >
-          View Details & Comments
-        </Button>
+        <Stack direction="row" spacing={1} sx={{ mt: 'auto' }}>
+          <Button
+            fullWidth
+            onClick={onOpen}
+            variant="outlined"
+            sx={{
+              borderColor: 'rgba(255,255,255,0.2)',
+              color: '#fff',
+              fontWeight: 800,
+              borderRadius: 999,
+              py: { xs: 0.8, sm: 1 },
+              fontSize: { xs: '0.85rem', sm: '1rem' },
+              '&:hover': {
+                borderColor: colors.Accent,
+                bgcolor: 'rgba(239,175,0,0.05)',
+                color: colors.Accent,
+              },
+            }}
+          >
+            View Details
+          </Button>
+
+          <IconButton
+            onClick={onDelete}
+            sx={{
+              border: '1px solid rgba(255, 68, 68, 0.3)',
+              color: '#ff4444',
+              borderRadius: '50%',
+              '&:hover': {
+                bgcolor: 'rgba(255, 68, 68, 0.15)',
+                borderColor: '#ff4444',
+              },
+            }}
+          >
+            <DeleteOutlineIcon />
+          </IconButton>
+        </Stack>
       </CardContent>
     </Card>
   );

@@ -106,3 +106,11 @@ export async function createAdminTeamPost(payload: any) {
   const { data } = await customFetch.post('/admin/team-post/', payload); 
   return data;
 }
+
+/**
+ * Deletes a team post from the Admin dashboard
+ */
+export async function deleteAdminTeamPost(postId: number) {
+  const { data } = await customFetch.delete(`/admin/team-post/${postId}`);
+  return data;
+}
