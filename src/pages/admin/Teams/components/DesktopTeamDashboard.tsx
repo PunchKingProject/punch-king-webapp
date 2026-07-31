@@ -16,11 +16,15 @@ import ROUTES from '../../../../routes/routePath.ts';
 import type { TeamTableRow } from './TeamsSection.tsx';
 import TeamsSection from './TeamsSection.tsx';
 
+// ✅ Added imports for the delete functionality
+import { deleteAdminTeam } from '../api/teams.api.ts'; 
+import { getErrorMessage } from '../../../../utils/error/error.ts';
+
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
 function DesktopTeamDashboard() {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // ---- date range for TEAMS dashboard cards ----
   const [range, setRange] = useState<[Dayjs, Dayjs]>([
     dayjs().subtract(30, 'day'),
@@ -100,6 +104,7 @@ function DesktopTeamDashboard() {
     data: teamResp,
     isLoading: teamsLoading,
     isError: teamsError,
+    refetch: refetchTeams, // ✅ Extracted refetch to update table after deletion
   } = useRankedTeams({
     page: page + 1,
     page_size: pageSize,
@@ -133,10 +138,19 @@ function DesktopTeamDashboard() {
   }, [teamResp]);
 
   const handleView = (row: TeamTableRow) => {
-    navigate(ROUTES.TEAMS_DETAILS.replace(':teamId', String(row.team_id
-      
-    )));
-  }
+    navigate(ROUTES.TEAMS_DETAILS.replace(':teamId', String(row.team_id)));
+  };
+
+  // ✅ New delete handler
+  const handleDeleteTeam = async (teamId: number) => {
+    try {
+      await deleteAdminTeam(teamId);
+      toast.success('Team deleted successfully.');
+      void refetchTeams(); // Instantly refresh the table
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
 
   return (
     <>
@@ -174,7 +188,7 @@ function DesktopTeamDashboard() {
           rows={teamRows}
           mode='server'
           loading={teamsLoading}
-          totalCount={teamResp?.data.metadata.total_count ?? 0} // ✅ correct total
+          totalCount={teamResp?.data.metadata.total_count ?? 0}
           pageIndex={page}
           rowsPerPage={pageSize}
           onPageChange={setPage}
@@ -185,6 +199,7 @@ function DesktopTeamDashboard() {
             debouncedApplySearch(val);
           }}
           onView={handleView}
+          onDelete={handleDeleteTeam} // ✅ Pass the delete handler to the section
           sortBy={sortBy}
           onSortChange={handleSortChange}
         />

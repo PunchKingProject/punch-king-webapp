@@ -114,3 +114,9 @@ export async function deleteAdminTeamPost(postId: number) {
   const { data } = await customFetch.delete(`/admin/team-post/${postId}`);
   return data;
 }
+
+// Add this to your API file
+export async function deleteAdminTeam(teamId: number) {
+  const { data } = await customFetch.delete(`/admin/teams/${teamId}`);
+  return data;
+}

@@ -1,9 +1,11 @@
-import { Box, Button, Skeleton, Typography } from '@mui/material';
+import { Box, Button, Skeleton, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+
 import { punchKingLogo } from '../../../../assets';
 import FormikDatePicker from '../../../../components/form/FormikDatePicker.tsx';
 import FormikSelect from '../../../../components/form/FormikSelect.tsx';
@@ -13,6 +15,9 @@ import NoticeModal from '../../../../components/modal/NoticeModal.tsx';
 import PKImageDialog from '../../../../components/modal/PkImageDialog.tsx';
 import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
 import { useUploadTeamImage } from '../../../../hooks/useUploadTeamImage.ts';
+import ROUTES from '../../../../routes/routePath.ts';
+import { getErrorMessage } from '../../../../utils/error/error.ts';
+import { deleteAdminTeam } from '../api/teams.api.ts'; // ✅ Imported Delete API
 import { useTeamProfile } from '../hooks/useTeamProfile.ts';
 import { useUpdateTeamProfile } from '../hooks/useUpdateTeamProfile.tsx';
 
@@ -142,6 +147,7 @@ const STATE_OPTIONS: Record<string, { value: string; label: string }[]> = {
 };
 
 function MobileTeamDetailsSection({ teamId }: Props) {
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useTeamProfile(teamId);
   const updateTeam = useUpdateTeamProfile(teamId);
   const uploadMutation = useUploadTeamImage();
@@ -149,19 +155,19 @@ function MobileTeamDetailsSection({ teamId }: Props) {
   const uploadDialog = useDisclosure(false);
   const certDialog = useDisclosure(false);
 
-
-  // confirm/success modals (2-step flow)
+  // confirm/success modals (2-step flow) for updating
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
-  const [pendingValues, setPendingValues] = useState<
-    typeof initialValues | null
-  >(null);
+  const [pendingValues, setPendingValues] = useState<typeof initialValues | null>(null);
+
+  // ✅ state for deleting
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (isError) toast.error('Failed to fetch team profile.');
   }, [isError]);
 
-  // after creating hooks:
   useEffect(() => {
     if (updateTeam.isError) toast.error('Failed to update team profile.');
   }, [updateTeam.isError]);
@@ -170,13 +176,27 @@ function MobileTeamDetailsSection({ teamId }: Props) {
     if (uploadMutation.isError) toast.error('Failed to upload image.');
   }, [uploadMutation.isError]);
 
-  // ✅ react-query drives the modal transitions — no dangling state
   useEffect(() => {
     if (updateTeam.isSuccess) {
       setConfirmOpen(false);
       setSuccessOpen(true);
     }
   }, [updateTeam.isSuccess]);
+
+  // ✅ Delete function
+  const handleDeleteTeam = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAdminTeam(teamId);
+      toast.success('Team deleted successfully.');
+      setDeleteConfirmOpen(false);
+      navigate(ROUTES.TEAMS); // Kick user back to the teams list
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // === Skeleton state while loading ===
   if (isLoading) {
@@ -254,7 +274,7 @@ function MobileTeamDetailsSection({ teamId }: Props) {
               ? STATE_OPTIONS[values.country]
               : [];
 
-          // ⬇️ helper: open Confirm after validating
+          // helper: open Confirm after validating
           const handleOpenConfirm = async () => {
             const errors = await validateForm();
             if (Object.keys(errors).length) {
@@ -408,105 +428,43 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                 />
               </Box>
 
-              <Button
-                type='button'
-                variant='text'
-                sx={{
-                  color: '#EFAF00',
-                  fontWeight: 700,
-                  textTransform: 'none',
-                  px: 0,
-                  mt: 1.5,
-                }}
-                disabled={updateTeam.isPending}
-                onClick={handleOpenConfirm}
+              {/* ✅ Action Buttons: Delete on the left, Update on the right */}
+              <Stack 
+                direction="row" 
+                justifyContent="space-between" 
+                alignItems="center" 
+                sx={{ mt: 1.5, pb: 2 }}
               >
-                Update
-              </Button>
+                <Button
+                  type='button'
+                  variant='text'
+                  onClick={() => setDeleteConfirmOpen(true)}
+                  sx={{
+                    color: '#ff4444',
+                    fontWeight: 700,
+                    textTransform: 'none',
+                    px: 0,
+                  }}
+                >
+                  Delete Team
+                </Button>
 
-              {/* Upload dialog */}
-              {/* <PKDialog
-                open={uploadDialog.open}
-                onClose={uploadDialog.onClose}
-                title=''
-                actions={
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      width: '100%',
-                    }}
-                  >
-                    <Button
-                      onClick={() => fileInputRef.current?.click()}
-                      variant='contained'
-                      disabled={uploadMutation.isPending}
-                      sx={{
-                        py: 1.1,
-                        width: '75%',
-                        backgroundColor: '#F6C10A',
-                        color: '#000',
-                        fontWeight: 700,
-                      }}
-                    >
-                      {uploadMutation.isPending
-                        ? 'Uploading…'
-                        : 'Upload picture'}
-                    </Button>
-                  </Box>
-                }
-                disableCloseWhenBusy={uploadMutation.isPending}
-              >
-                <Box sx={{ display: 'grid', placeItems: 'center', gap: 1 }}>
-                  <Box
-                    sx={{
-                      width: '100%',
-                      maxWidth: 420,
-                      height: 160,
-                      borderRadius: 2,
-                      overflow: 'hidden',
-                      border: '1px solid #BDBDBD',
-                      background: '#111',
-                      display: 'grid',
-                      placeItems: 'center',
-                    }}
-                  >
-                    {values.profile_picture ? (
-                      <img
-                        src={values.profile_picture}
-                        alt='team'
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
-                      />
-                    ) : (
-                      <Typography sx={{ color: '#666' }}>No image</Typography>
-                    )}
-                  </Box>
+                <Button
+                  type='button'
+                  variant='text'
+                  disabled={updateTeam.isPending}
+                  onClick={handleOpenConfirm}
+                  sx={{
+                    color: '#EFAF00',
+                    fontWeight: 700,
+                    textTransform: 'none',
+                    px: 0,
+                  }}
+                >
+                  Update
+                </Button>
+              </Stack>
 
-                  <input
-                    ref={fileInputRef}
-                    type='file'
-                    accept='image/*'
-                    style={{ display: 'none' }}
-                    onChange={async (e) => {
-                      const file = e.currentTarget.files?.[0];
-                      if (!file) return;
-                      try {
-                        const url = await uploadMutation.mutateAsync(file);
-                        setFieldValue('profile_picture', url);
-                        setFieldValue('profile_picture_file', null);
-                        uploadDialog.onClose();
-                      } finally {
-                        if (fileInputRef.current)
-                          fileInputRef.current.value = '';
-                      }
-                    }}
-                  />
-                </Box>
-              </PKDialog> */}
               <MobileImagePickerDialog
                 open={uploadDialog.open}
                 onClose={uploadDialog.onClose}
@@ -524,7 +482,6 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                 }}
               />
 
-              {/* Certificate preview (placeholder) */}
               <PKImageDialog
                 open={certDialog.open}
                 onClose={certDialog.onClose}
@@ -568,6 +525,22 @@ function MobileTeamDetailsSection({ teamId }: Props) {
                   values.team_name || 'Team'
                 }] profile`}
                 continueLabel='Finish'
+              />
+
+              {/* ✅ Delete Confirmation Modal using your existing NoticeModal style */}
+              <NoticeModal
+                open={deleteConfirmOpen}
+                onClose={() =>
+                  isDeleting ? null : setDeleteConfirmOpen(false)
+                }
+                onContinue={handleDeleteTeam}
+                title='WARNING!!!'
+                message={`Are you sure you want to permanently delete\n[${
+                  values.team_name || 'Team'
+                }]?\n\nThis action cannot be undone.`}
+                continueLabel='Delete Team'
+                loading={isDeleting}
+                showCloseText
               />
             </Form>
           );

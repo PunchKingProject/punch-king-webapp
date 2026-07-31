@@ -1,9 +1,25 @@
-// TeamsSection.tsx
-import { Box, IconButton, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { 
+  Box, 
+  IconButton, 
+  MenuItem, 
+  Select, 
+  FormControl, 
+  InputLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  Stack
+} from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import type { TableColumn } from '../../../../components/tables/PaginatedTable.tsx';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import PaginatedTable from '../../../../components/tables/PaginatedTable.tsx';
+import { useState } from 'react';
 
 export type TeamTableRow = {
   team_id: number;
@@ -31,6 +47,7 @@ export type TeamsSectionProps = {
   searchValue?: string;
   onSearchChange?: (q: string) => void;
   onView?: (row: TeamTableRow) => void;
+  onDelete?: (teamId: number) => void; // ✅ New prop for deletion
 
   // sort
   sortBy?: 'newest' | 'ranking';
@@ -38,21 +55,26 @@ export type TeamsSectionProps = {
 };
 
 const TeamsSection = ({
-                        title = 'TEAMS TABLE',
-                        rows,
-                        mode = 'server',
-                        loading,
-                        totalCount,
-                        pageIndex,
-                        rowsPerPage,
-                        onPageChange,
-                        onRowsPerPageChange,
-                        searchValue,
-                        onSearchChange,
-                        onView,
-                        sortBy = 'newest',
-                        onSortChange,
-                      }: TeamsSectionProps) => {
+  title = 'TEAMS TABLE',
+  rows,
+  mode = 'server',
+  loading,
+  totalCount,
+  pageIndex,
+  rowsPerPage,
+  onPageChange,
+  onRowsPerPageChange,
+  searchValue,
+  onSearchChange,
+  onView,
+  onDelete, // ✅ Extracted prop
+  sortBy = 'newest',
+  onSortChange,
+}: TeamsSectionProps) => {
+
+  // Modal State
+  const [teamToDelete, setTeamToDelete] = useState<TeamTableRow | null>(null);
+
   const baseColumns: TableColumn<TeamTableRow>[] = [
     { field: 'team_name', header: 'Team name' },
     { field: 'license_number', header: 'License number' },
@@ -65,18 +87,28 @@ const TeamsSection = ({
     { field: 'ranking', header: 'Ranking', align: 'right' },
   ];
 
-  const columns: TableColumn<TeamTableRow>[] = onView
+  // ✅ Transformed "View" column into an "Actions" column
+  const columns: TableColumn<TeamTableRow>[] = (onView || onDelete)
     ? [
       ...baseColumns,
       {
-        field: 'view',
-        header: 'View',
+        field: 'actions',
+        header: 'Actions',
         align: 'center',
-        width: 80,
+        width: 100,
         render: (_val, row) => (
-          <IconButton aria-label='view' onClick={() => onView(row)}>
-            <VisibilityIcon sx={{ color: '#f0c040' }} />
-          </IconButton>
+          <Stack direction="row" spacing={0.5} justifyContent="center">
+            {onView && (
+              <IconButton aria-label='view' onClick={() => onView(row)}>
+                <VisibilityIcon sx={{ color: '#f0c040', fontSize: '1.2rem' }} />
+              </IconButton>
+            )}
+            {onDelete && (
+              <IconButton aria-label='delete' onClick={() => setTeamToDelete(row)}>
+                <DeleteOutlineIcon sx={{ color: '#ff4444', fontSize: '1.2rem' }} />
+              </IconButton>
+            )}
+          </Stack>
         ),
       },
     ]
@@ -138,121 +170,78 @@ const TeamsSection = ({
         searchPlaceholder='Search'
         maxBodyHeight={420}
         getRowKey={(r) => String(r.team_id)}
-        toolbar={sortToolbar}     // ← passes the dropdown into the table header
+        toolbar={sortToolbar}
       />
+
+      {/* ✅ Beautiful Custom Confirmation Modal */}
+      <Dialog 
+        open={!!teamToDelete} 
+        onClose={() => setTeamToDelete(null)}
+        PaperProps={{
+          sx: { 
+            bgcolor: '#0a0a0a', 
+            border: '1px solid rgba(255, 68, 68, 0.4)', 
+            borderRadius: 3,
+            minWidth: { xs: '90%', sm: 450 } 
+          }
+        }}
+      >
+        <DialogTitle sx={{ color: '#fff', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
+          <WarningAmberIcon sx={{ color: '#ff4444', fontSize: 28 }} />
+          Confirm Deletion
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', mb: 3 }}>
+            Are you sure you want to permanently delete this team? This action cannot be undone and will remove all associated data.
+          </Typography>
+          
+          {teamToDelete && (
+            <Box sx={{ bgcolor: '#141414', border: '1px solid #222', borderRadius: 2, p: 2 }}>
+              <Stack spacing={1.5}>
+                <Box>
+                  <Typography sx={{ color: '#f0c040', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>Team Name</Typography>
+                  <Typography sx={{ color: '#fff', fontWeight: 600 }}>{teamToDelete.team_name}</Typography>
+                </Box>
+                <Box>
+                  <Typography sx={{ color: '#f0c040', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>Email</Typography>
+                  <Typography sx={{ color: '#fff', fontWeight: 600 }}>{teamToDelete.email}</Typography>
+                </Box>
+                <Box>
+                  <Typography sx={{ color: '#f0c040', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>License</Typography>
+                  <Typography sx={{ color: '#fff', fontWeight: 600 }}>{teamToDelete.license_number}</Typography>
+                </Box>
+              </Stack>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2.5, pt: 0 }}>
+          <Button 
+            onClick={() => setTeamToDelete(null)} 
+            sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (teamToDelete && onDelete) {
+                onDelete(teamToDelete.team_id);
+                setTeamToDelete(null);
+              }
+            }}
+            sx={{ 
+              bgcolor: '#ff4444', 
+              color: '#fff', 
+              fontWeight: 800,
+              '&:hover': { bgcolor: '#cc0000' }
+            }}
+          >
+            Delete Team
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
 export default TeamsSection;
-
-
-// import { Box, IconButton } from '@mui/material';
-// import type { TableColumn } from '../../../../components/tables/PaginatedTable.tsx';
-// import VisibilityIcon from '@mui/icons-material/Visibility';
-// import PaginatedTable from '../../../../components/tables/PaginatedTable.tsx';
-//
-// export type TeamTableRow = {
-//     team_id: number;
-//   team_name: string;
-//   license_number: string | 'NIL';
-//   sponsors_accrued: number;
-//   ranking: string | number;
-// };
-//
-// export type TeamsSectionProps = {
-//   title?: string;
-//   rows: TeamTableRow[];
-//   // server/client plumbing
-//   mode?: 'client' | 'server';
-//   loading?: boolean;
-//   totalCount?: number;
-//   pageIndex?: number;
-//   rowsPerPage?: number;
-//   onPageChange?: (page: number) => void;
-//   onRowsPerPageChange?: (size: number) => void;
-//   searchValue?: string;
-//   onSearchChange?: (q: string) => void;
-//
-//   // action
-//   onView?: (row: TeamTableRow) => void;
-// };
-//
-// const TeamsSection = ({
-//   title = 'TEAMS TABLE',
-//   rows,
-//   mode = 'server',
-//   loading,
-//   totalCount,
-//   pageIndex,
-//   rowsPerPage,
-//   onPageChange,
-//   onRowsPerPageChange,
-//   searchValue,
-//   onSearchChange,
-//   onView,
-// }: TeamsSectionProps) => {
-//   // base columns for this table shape
-//   const baseColumns: TableColumn<TeamTableRow>[] = [
-//     { field: 'team_name', header: 'Team name' },
-//     { field: 'license_number', header: 'License number' },
-//     { field: 'sponsors_accrued', header: 'Sponsors accrued', align: 'right' },
-//     { field: 'email', header: 'Email' },
-//     { field: 'phone_number', header: 'Phone number' },
-//     { field: 'address', header: 'Address' },
-//     { field: 'has_subscription', header: 'Has Subscription' },
-//     { field: 'subscription_type', header: 'Subscription type' },
-//     { field: 'ranking', header: 'Ranking', align: 'right' },
-//   ];
-//
-//   // append “View” action when an onView handler is provided
-//   const columns: TableColumn<TeamTableRow>[] = onView
-//     ? [
-//         ...baseColumns,
-//         {
-//           field: 'view',
-//           header: 'View',
-//           align: 'center',
-//           width: 80,
-//           render: (_val, row) => (
-//             <IconButton
-//               aria-label='view'
-//               onClick={() => {
-//                 onView(row);
-//
-//                 console.log(row.team_id);
-//               }}
-//             >
-//               <VisibilityIcon sx={{ color: '#f0c040' }} />
-//             </IconButton>
-//           ),
-//         },
-//       ]
-//     : baseColumns;
-//   return (
-//     <>
-//       <Box sx={{ mt: 4 }}>
-//         <PaginatedTable<TeamTableRow>
-//           title={title}
-//           rows={rows}
-//           columns={columns}
-//           mode={mode}
-//           loading={loading}
-//           totalCount={totalCount}
-//           pageIndex={pageIndex}
-//           rowsPerPage={rowsPerPage}
-//           onPageChange={onPageChange}
-//           onRowsPerPageChange={onRowsPerPageChange}
-//           searchValue={searchValue}
-//           onSearchChange={onSearchChange}
-//           searchFields={['team_name', 'license_number']}
-//           searchPlaceholder='Search'
-//           maxBodyHeight={420}
-//           getRowKey={(r) => String(r.team_id)}
-//         />
-//       </Box>
-//     </>
-//   );
-// };
-//
-// export default TeamsSection;
