@@ -17,7 +17,10 @@ import UsersSection from './UsersSection.tsx';
 import type { UserTableRow } from '../api/users.types.ts';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../../../../routes/routePath.ts';
-// import { useNavigate } from 'react-router-dom'; // if you’ll route to user details
+
+// ✅ Added imports for delete functionality
+import { getErrorMessage } from '../../../../utils/error/error.ts';
+import { deleteAdminUser } from '../api/users.api.ts'; 
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
@@ -89,6 +92,7 @@ export default function DesktopUserDashboard() {
     data: tableResp,
     isLoading: tableLoading,
     isError: tableError,
+    refetch: refetchUsers, // ✅ Extracted refetch to update table after deletion
   } = useUserDashboardTable({
     start_date: fmt(start),
     end_date: fmt(end),
@@ -117,6 +121,17 @@ export default function DesktopUserDashboard() {
 
   const handleView = (row: UserTableRow) => {
     navigate(ROUTES.USERS_DETAILS.replace(':sponsor_id', String(row.sponsor_id)));
+  };
+
+  // ✅ New delete handler
+  const handleDeleteUser = async (userId: number) => {
+    try {
+      await deleteAdminUser(userId);
+      toast.success('User deleted successfully.');
+      void refetchUsers(); // Instantly refresh the table
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
   };
 
   return (
@@ -169,6 +184,7 @@ export default function DesktopUserDashboard() {
             debouncedApplySearch(val);
           }}
           onView={handleView}
+          onDelete={handleDeleteUser} // ✅ Pass the delete handler to the section
         />
       </Box>
     </>

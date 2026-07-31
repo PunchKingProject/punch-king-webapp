@@ -221,3 +221,13 @@ export async function setFeatureAccess(
 
   return data.data;
 }
+
+export async function deleteAdminUser(userId: number) {
+  // We send the 'reason' in the 'data' property of the config object for axios.delete
+  const { data } = await customFetch.delete(`/user/admin/${userId}`, {
+    data: {
+      reason: "Deleted by Administrator via Users Dashboard"
+    }
+  });
+  return data;
+}

@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Box, Button, IconButton, Skeleton, Typography } from '@mui/material';
+import { Box, Button, IconButton, Skeleton, Stack, Typography } from '@mui/material'; // ✅ Added Stack
 import dayjs, { Dayjs } from 'dayjs';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import debounce from 'lodash.debounce';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
 
 import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
@@ -27,6 +27,11 @@ import FormikTextField from '../../../components/form/FormikWhiteTextField.tsx';
 import FormikSelect from '../../../components/form/FormikSelect.tsx';
 import FormikDatePicker from '../../../components/form/FormikDatePicker.tsx';
 import type { UpdateUserPayload } from './api/users.types.ts';
+
+// ✅ Added imports for delete functionality and routing
+import ROUTES from '../../../routes/routePath.ts'; 
+import { getErrorMessage } from '../../../utils/error/error.ts';
+import { deleteAdminUser } from './api/users.api.ts';
 
 // under schema or near top of file
 const GENDER_OPTIONS = [
@@ -64,9 +69,6 @@ type FormValues = {
   profile_picture: string;
 };
 
-
-
-
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 const formatRangeLabel = (from?: Date, to?: Date) => {
   if (!from || !to) return 'Last 30 days';
@@ -96,6 +98,7 @@ const schema = Yup.object({
 });
 
 export default function MobileUsersDetailsPage() {
+  const navigate = useNavigate();
   const p = useParams<{ sponsor_id?: string }>();
   const sponsor_id = p.sponsor_id ? Number(p.sponsor_id) : 0;
 
@@ -178,6 +181,10 @@ export default function MobileUsersDetailsPage() {
   const [successOpen, setSuccessOpen] = useState(false);
   const [pendingValues, setPendingValues] = useState<FormValues | null>(null);
 
+  // ✅ state for deleting
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   useEffect(() => {
     if (updateUser.isError) toast.error('Failed to update user profile.');
   }, [updateUser.isError]);
@@ -190,6 +197,21 @@ export default function MobileUsersDetailsPage() {
       setSuccessOpen(true);
     }
   }, [updateUser.isSuccess]);
+
+  // ✅ Delete function
+  const handleDeleteUser = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAdminUser(sponsor_id);
+      toast.success('User deleted successfully.');
+      setDeleteConfirmOpen(false);
+      navigate(ROUTES.USERS); // Redirect back to users list
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // ======= Purchase History (server)
   const [phPage, setPhPage] = useState(1);
@@ -410,7 +432,7 @@ export default function MobileUsersDetailsPage() {
       {/* ===== PROFILE EDIT (single column like MobileTeamDetails) ===== */}
       <Box sx={{ px: 2, pb: 4 }}>
         <Typography variant='h6' sx={{ fontWeight: 900, color: '#fff', mb: 1 }}>
-          TEAM DETAILS
+          USER DETAILS
         </Typography>
 
         {profileLoading ? (
@@ -517,11 +539,8 @@ export default function MobileUsersDetailsPage() {
                     </Box>
                   </Box>
 
-                  {/* Simple inputs – reuse your existing form components if you prefer */}
+                  {/* Simple inputs */}
                   <Box sx={{ display: 'grid', gap: 1 }}>
-                    {/* Replace these with your FormikTextField / FormikSelect if available */}
-                    {/* Example quick fields: */}
-
                     <FormikTextField
                       name='username'
                       placeholder='User name'
@@ -582,7 +601,6 @@ export default function MobileUsersDetailsPage() {
                       rows={4}
                     />
 
-                    {/* Keep email/phone editable if you allow it on desktop; else show but disable */}
                     <FormikTextField
                       name='phone_number'
                       placeholder='Phone number'
@@ -596,21 +614,42 @@ export default function MobileUsersDetailsPage() {
                     />
                   </Box>
 
-                  <Button
-                    type='button'
-                    variant='text'
-                    sx={{
-                      color: '#EFAF00',
-                      fontWeight: 700,
-                      textTransform: 'none',
-                      px: 0,
-                      mt: 1.5,
-                    }}
-                    disabled={updateUser.isPending}
-                    onClick={openConfirm}
+                  {/* ✅ Action Buttons: Delete on the left, Update on the right */}
+                  <Stack 
+                    direction="row" 
+                    justifyContent="space-between" 
+                    alignItems="center" 
+                    sx={{ mt: 1.5, pb: 2 }}
                   >
-                    Update
-                  </Button>
+                    <Button
+                      type='button'
+                      variant='text'
+                      onClick={() => setDeleteConfirmOpen(true)}
+                      sx={{
+                        color: '#ff4444',
+                        fontWeight: 700,
+                        textTransform: 'none',
+                        px: 0,
+                      }}
+                    >
+                      Delete User
+                    </Button>
+
+                    <Button
+                      type='button'
+                      variant='text'
+                      sx={{
+                        color: '#EFAF00',
+                        fontWeight: 700,
+                        textTransform: 'none',
+                        px: 0,
+                      }}
+                      disabled={updateUser.isPending}
+                      onClick={openConfirm}
+                    >
+                      Update
+                    </Button>
+                  </Stack>
 
                   {/* Upload image dialog */}
                   <MobileImagePickerDialog
@@ -668,6 +707,22 @@ export default function MobileUsersDetailsPage() {
                       pendingValues?.username || 'User'
                     }] profile`}
                     continueLabel='Finish'
+                  />
+                  
+                  {/* ✅ Delete Confirmation Modal using existing NoticeModal style */}
+                  <NoticeModal
+                    open={deleteConfirmOpen}
+                    onClose={() =>
+                      isDeleting ? null : setDeleteConfirmOpen(false)
+                    }
+                    onContinue={handleDeleteUser}
+                    title='WARNING!!!'
+                    message={`Are you sure you want to permanently delete\n[${
+                      values.username || 'User'
+                    }]?\n\nThis action cannot be undone.`}
+                    continueLabel='Delete User'
+                    loading={isDeleting}
+                    showCloseText
                   />
                 </Form>
               );

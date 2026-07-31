@@ -6,6 +6,7 @@ import debounce from 'lodash.debounce';
 import type { DateRange } from 'react-day-picker';
 import { toast } from 'react-toastify';
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'; // ✅ Added delete icon
 import { useNavigate } from 'react-router-dom';
 
 import { colors } from '../../../theme/colors.ts';
@@ -14,9 +15,13 @@ import { useUserDashboardTable } from './hooks/useUserDashboardTable.ts';
 import type { UserTableApiRow } from './api/users.types.ts';
 import MetricsDateFilterDrawer from '../Dashboard/components/MetricsDateFilterDrawer.tsx';
 import { ScrollableSection } from '../components/ScrollableSection.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx'; // ✅ Added modal
 import ROUTES from '../../../routes/routePath.ts';
 import { userSponsorshipFieldData } from './ui/fields.ts';
 
+// ✅ Added imports for delete API and error handling
+import { deleteAdminUser } from './api/users.api.ts';
+import { getErrorMessage } from '../../../utils/error/error.ts';
 
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 const formatRangeLabel = (from?: Date, to?: Date) => {
@@ -97,6 +102,10 @@ export default function MobileUserDashboard() {
   const [rows, setRows] = useState<UserListItem[]>([]);
   const [query, setQuery] = useState('');
 
+  // ✅ state for deleting
+  const [userToDelete, setUserToDelete] = useState<UserListItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const debouncedApplySearch = useMemo(
     () =>
       debounce((q: string) => {
@@ -112,6 +121,7 @@ export default function MobileUserDashboard() {
     data: tableResp,
     isFetching,
     isError: tableError,
+    refetch: refetchTable, // ✅ Extracted refetch
   } = useUserDashboardTable({
     start_date: fmt(start),
     end_date: fmt(end),
@@ -142,6 +152,25 @@ export default function MobileUserDashboard() {
 
   const total = tableResp?.data.metadata.total_count ?? 0;
   const hasMore = rows.length < total;
+
+  // ✅ Delete handler
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteAdminUser(userToDelete.sponsor_id);
+      toast.success('User deleted successfully.');
+      setUserToDelete(null);
+      // Reset list and refetch instantly
+      setPage(1);
+      setRows([]);
+      void refetchTable();
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <>
@@ -262,21 +291,46 @@ export default function MobileUserDashboard() {
         onLoadMore={() => setPage((p) => p + 1)}
         getItemKey={(u) => u.sponsor_id}
         renderRight={(u) => (
-          <IconButton
-            aria-label='View user'
-            onClick={() =>
-              navigate(
-                ROUTES.USERS_DETAILS.replace(
-                  ':sponsor_id',
-                  String(u.sponsor_id)
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25, mt: 0.5 }}>
+            <IconButton
+              aria-label='View user'
+              onClick={() =>
+                navigate(
+                  ROUTES.USERS_DETAILS.replace(
+                    ':sponsor_id',
+                    String(u.sponsor_id)
+                  )
                 )
-              )
-            }
-            sx={{ color: '#fff', mt: 0.5 }}
-          >
-            <VisibilityRounded />
-          </IconButton>
+              }
+              sx={{ color: '#fff' }}
+              size="small"
+            >
+              <VisibilityRounded fontSize="small" />
+            </IconButton>
+            <IconButton
+              aria-label='Delete user'
+              onClick={() => setUserToDelete(u)}
+              sx={{ color: '#ff4444' }}
+              size="small"
+            >
+              <DeleteOutlineIcon fontSize="small" />
+            </IconButton>
+          </Box>
         )}
+      />
+
+      {/* ✅ Delete Confirmation Modal */}
+      <NoticeModal
+        open={!!userToDelete}
+        onClose={() => (isDeleting ? null : setUserToDelete(null))}
+        onContinue={handleDeleteUser}
+        title='WARNING!!!'
+        message={`Are you sure you want to permanently delete\n[${
+          userToDelete?.user_name || 'User'
+        }]?\n\nThis action cannot be undone.`}
+        continueLabel='Delete User'
+        loading={isDeleting}
+        showCloseText
       />
     </>
   );
