@@ -18,11 +18,10 @@ import { useTeamLicenseHistory } from './hooks/useTeamLicenseHistory.ts';
 import { useTeamPosts } from './hooks/useTeamPosts.ts';
 import { useTeamVoteHistory } from './hooks/useTeamVoteHistory.ts';
 
-// shared drawer used across your other mobile dashboards
-// ⬇️ adjust path to where your shared drawer actually lives:
 import MetricsDateFilterDrawer from '../../admin/Dashboard/components/MetricsDateFilterDrawer.tsx';
+// IMPORT YOUR MODAL HERE (Verify path)
+import PostDetailsModal from '../../team/Dashboard/components/PostDetailsModal.tsx';
 
-// Types for mapping (strict — no any)
 import type { TeamPost } from './api/dashboard.types.ts';
 import type { MobileMetric } from './components/MobileTeamMetricCards.tsx';
 import MobileTeamMetricCards from './components/MobileTeamMetricCards.tsx';
@@ -109,13 +108,14 @@ function ordinal(n: number) {
 }
 
 export default function MobileDashboardPage() {
-  // ===== metrics date range (stats + server lists)
   const [range, setRange] = React.useState<DateRange>(() => {
     const to = new Date();
     const from = new Date(to);
     from.setDate(from.getDate() - 30);
     return { from, to };
   });
+
+  const [selectedPost, setSelectedPost] = React.useState<TeamPost | null>(null);
 
   const start_date = React.useMemo(
     () => (range.from ? toYMD(range.from) : toYMD(new Date())),
@@ -126,7 +126,6 @@ export default function MobileDashboardPage() {
     [range.to]
   );
 
-  // ===== stats for metric cards
   const { data: statsData, isLoading: statsLoading } = useTeamDashboardStats({
     start_date,
     end_date,
@@ -158,7 +157,6 @@ export default function MobileDashboardPage() {
     },
   ];
 
-  // ===== catalogue
   const { data: postsData, isLoading: postsLoading } = useTeamPosts();
   const catalogue = ((postsData ?? []) as TeamPost[]).map((p, idx) => ({
     idx: idx + 1,
@@ -168,9 +166,9 @@ export default function MobileDashboardPage() {
     date: dayjs(p.created_at).format('D/M/YYYY'),
     comments: p.comments_count,
     sponsors: p.sponsors ?? 0,
+    originalPost: p,
   }));
 
-  // ===== sponsorships (server search + load more)
   const [spPageSize, setSpPageSize] = React.useState<number>(10);
   const [spSearch, setSpSearch] = React.useState<string>('');
   const applySpSearch = React.useMemo(
@@ -198,7 +196,6 @@ export default function MobileDashboardPage() {
   const spTotal = votePayload?.metadata.total_count ?? 0;
   const spHasMore = sponsorshipRows.length < spTotal;
 
-  // ===== subscriptions (server search + load more)
   const [subPageSize, setSubPageSize] = React.useState<number>(10);
   const [subSearch, setSubSearch] = React.useState<string>('');
   const applySubSearch = React.useMemo(
@@ -233,7 +230,6 @@ export default function MobileDashboardPage() {
   const subTotal = subsPayload?.table.metadata.total_count ?? 0;
   const subHasMore = subsRows.length < subTotal;
 
-  // ===== licenses (client search only)
   const { data: licData, isLoading: licLoading } = useTeamLicenseHistory({
     page: 1,
     page_size: 50,
@@ -253,7 +249,6 @@ export default function MobileDashboardPage() {
       : '—',
   }));
 
-  // ===== team ranking
   const { data: rankData, isLoading: rankLoading } = useRankedTeams({
     page: 1,
     page_size: 10,
@@ -271,7 +266,6 @@ export default function MobileDashboardPage() {
 
   return (
     <Box sx={{ px: 2, py: 2 }}>
-      {/* Header with date drawer */}
       <Box
         sx={{
           display: 'flex',
@@ -294,7 +288,6 @@ export default function MobileDashboardPage() {
             onApply={(r) => {
               if (!r?.from || !r?.to) return;
               setRange({ from: r.from, to: r.to });
-              // reset server lists window
               setSpPageSize(10);
               setSubPageSize(10);
             }}
@@ -302,18 +295,30 @@ export default function MobileDashboardPage() {
         </Box>
       </Box>
 
-      {/* Sliding metric cards */}
       <MobileTeamMetricCards loading={statsLoading} metrics={metricCards} />
 
-      {/* My catalogue */}
       <Box sx={{ mt: 2 }}>
         <Typography sx={{ color: '#fff', fontWeight: 900, mb: 1 }}>
           My catalogue
         </Typography>
-        <MobileMyCatalogue rows={catalogue} loading={postsLoading} />
+        <MobileMyCatalogue 
+          rows={catalogue} 
+          loading={postsLoading} 
+          onViewPost={(row) => setSelectedPost(row.originalPost)}
+        />
       </Box>
 
-      {/* My sponsorships — server search + load more */}
+      {selectedPost && (
+        <PostDetailsModal
+          post={selectedPost}
+          open={!!selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onSuccess={() => {
+            setSelectedPost(null);
+          }}
+        />
+      )}
+
       <Box sx={{ mt: 3 }}>
         <MobileMySponsorships
           rows={sponsorshipRows}
@@ -325,7 +330,6 @@ export default function MobileDashboardPage() {
         />
       </Box>
 
-      {/* My subscriptions — server search + load more */}
       <Box sx={{ mt: 3 }}>
         <MobileMySubscriptions
           rows={subsRows}
@@ -337,12 +341,10 @@ export default function MobileDashboardPage() {
         />
       </Box>
 
-      {/* My licenses — client search */}
       <Box sx={{ mt: 3 }}>
         <MobileMyLicenses rows={licRows} loading={licLoading} />
       </Box>
 
-      {/* Team Ranking */}
       <Box sx={{ mt: 3, mb: 6 }}>
         <Typography sx={{ color: '#fff', fontWeight: 900, mb: 1 }}>
           Team Ranking

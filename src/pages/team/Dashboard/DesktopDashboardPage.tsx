@@ -22,10 +22,16 @@ import DesktopTeamsByRanking from './components/DesktopTeamsByRanking.tsx';
 import { useTeamPosts } from './hooks/useTeamPosts.ts';
 import DesktopMyCatalogue from './components/DesktopMyCatalogue.tsx';
 
+// IMPORT YOUR MODAL HERE (Verify path)
+import PostDetailsModal from '../../team/Dashboard/components/PostDetailsModal.tsx';
+
 const fmt = (d: Dayjs) => d.format('YYYY-MM-DD');
 
 function DesktopDashboardPage() {
   const [range, setRange] = useState([dayjs().subtract(30, 'day'), dayjs()]);
+  
+  // Modal state
+  const [selectedPost, setSelectedPost] = useState<any | null>(null);
 
   // adapter for react-day-picker (Date objects)
   const dayPickerRange: DateRange | undefined = {
@@ -81,25 +87,19 @@ function DesktopDashboardPage() {
         deltaPct: 0,
         trendingUp: 0,
       },
-      // {
-      //   title: 'TEAMS WITHOUT ACTIVE LICENSE',
-      //   total: statsData.teams_without_active_license,
-      // },
     ];
   }, [statsData]);
 
   const handleRangeChange = (r?: DateRange) => {
-    if (!r?.from || !r.to) return; // wait for full selection
+    if (!r?.from || !r.to) return; 
     setRange([dayjs(r.from), dayjs(r.to)]);
-    // no manual refetch needed; useDashboardStats key depends on start/endO
   };
 
-  // --- Errors
   useEffect(() => {
     if (statsError) toast.error('Failed to fetch dashboard stats.');
   }, [statsError]);
 
-  const [page, setPage] = useState(0); // 0-based UI
+  const [page, setPage] = useState(0); 
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
@@ -120,7 +120,7 @@ function DesktopDashboardPage() {
   } = useTeamVoteHistory({
     start_date,
     end_date,
-    page: page + 1, // API is 1-based
+    page: page + 1,
     page_size: pageSize,
     search: search || undefined,
   });
@@ -129,7 +129,6 @@ function DesktopDashboardPage() {
     if (votesError) toast.error('Failed to fetch team sponsorships.');
   }, [votesError]);
 
-  // map api -> table rows
   const rows: MySponsorshipRow[] = useMemo(() => {
     const list = voteData?.data ?? [];
     const fmtUSD = (n?: number) => {
@@ -157,10 +156,7 @@ function DesktopDashboardPage() {
 
   const total = voteData?.metadata?.total_count ?? 0;
 
-  // =========================================================
-  // MY SUBSCRIPTIONS (NEW)
-  // =========================================================
-
+  // MY SUBSCRIPTIONS
   const [subsPage, setSubsPage] = useState(0);
   const [subsPageSize, setSubsPageSize] = useState(10);
   const [subsSearch, setSubsSearch] = useState('');
@@ -226,17 +222,13 @@ function DesktopDashboardPage() {
 
   const subsTotal = subsData?.table.metadata.total_count ?? 0;
 
-  // ===============================
-  // MY LICENSES (NEW)
-  // ===============================
-
+  // MY LICENSES
   const [licPage, setLicPage] = useState(0);
   const [licPageSize, setLicPageSize] = useState(10);
-  // keep search UI consistent; endpoint doesn’t support it yet
   const [licSearchInput, setLicSearchInput] = useState('');
   useEffect(() => {
     setLicPage(0);
-  }, [start_date, end_date]); // if you later add date filtering
+  }, [start_date, end_date]);
 
   const {
     data: licData,
@@ -284,11 +276,9 @@ function DesktopDashboardPage() {
 
   const licTotal = licData?.metadata.total_count ?? 0;
 
-  // ===============================
   // TEAMS BY RANKING
-  // ===============================
   const [rankPage, setRankPage] = useState(0);
-  const [rankPageSize, setRankPageSize] = useState(9); // show 3x3 grid
+  const [rankPageSize, setRankPageSize] = useState(9);
   const [rankSearch, setRankSearch] = useState('');
   const [rankSearchInput, setRankSearchInput] = useState('');
   const rankApplySearch = useMemo(
@@ -302,7 +292,7 @@ function DesktopDashboardPage() {
     isLoading: rankLoading,
     isError: rankError,
   } = useRankedTeams({
-    page: rankPage + 1, // API is 1-based
+    page: rankPage + 1,
     page_size: rankPageSize,
     search: rankSearch || undefined,
   });
@@ -310,7 +300,6 @@ function DesktopDashboardPage() {
     if (rankError) toast.error('Failed to fetch ranked teams.');
   }, [rankError]);
 
-  // map to cards
   const ordinal = (n: number) => {
     const s = ['th', 'st', 'nd', 'rd'],
       v = n % 100;
@@ -325,7 +314,7 @@ function DesktopDashboardPage() {
       license_number: rt.license_number,
       sponsors: rt.sponsorships ?? 0,
       position: ordinal(rt.rank).toUpperCase(),
-      contributors: rt.sponsors ?? 0, // will be 0 unless backend adds it
+      contributors: rt.sponsors ?? 0, 
     }));
   }, [rankData]);
 
@@ -372,11 +361,20 @@ function DesktopDashboardPage() {
           posts={postsData ?? []}
           loading={postsLoading}
           onViewPost={(post) => {
-            console.log(post)
-            // TODO: open a modal, route to a details page, etc.
-            // console.log('view post', post);
+            setSelectedPost(post);
           }}
         />
+
+        {selectedPost && (
+          <PostDetailsModal
+            post={selectedPost}
+            open={!!selectedPost}
+            onClose={() => setSelectedPost(null)}
+            onSuccess={() => {
+              setSelectedPost(null);
+            }}
+          />
+        )}
 
         <DesktopMySponsorshipsTable
           rows={rows}
@@ -393,7 +391,6 @@ function DesktopDashboardPage() {
           }}
         />
 
-        {/* My Subscriptions */}
         <DesktopMySubscriptionsTable
           rows={subsRows}
           loading={subsLoading}
@@ -407,7 +404,6 @@ function DesktopDashboardPage() {
             setSubsSearchInput(val);
             applySubsSearch(val);
           }}
-          // onView={(row) => {/* TODO: open details/slip if you want */}}
         />
 
         <DesktopMyLicensesTable
@@ -422,7 +418,6 @@ function DesktopDashboardPage() {
           onSearchChange={(val) => {
             setLicSearchInput(val);
           }}
-          // onView={(row) => {/* open slip/details if desired */}}
         />
 
         <DesktopTeamsByRanking

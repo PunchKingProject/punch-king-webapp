@@ -3,7 +3,6 @@ import {
     Button,
     Card,
     CardContent,
-    // CardMedia,
     Skeleton,
     Typography,
 } from '@mui/material';
@@ -29,11 +28,13 @@ type Row = {
   date: string;
   comments: number;
   sponsors: number;
+  originalPost?: any;
 };
+
 type Props = {
   rows: Row[];
   loading?: boolean;
-  onViewPost?: (id: number) => void;
+  onViewPost?: (row: Row) => void;
   onViewComments?: (id: number) => void;
   onViewSponsors?: (id: number) => void;
 };
@@ -41,6 +42,7 @@ type Props = {
 export default function MobileMyCatalogue({
   rows,
   loading,
+  onViewPost,
   onViewComments,
   onViewSponsors,
 }: Props) {
@@ -80,20 +82,21 @@ export default function MobileMyCatalogue({
             <Typography sx={{ color: '#fff', fontWeight: 800, mb: 0.75 }}>
               {r.idx}.
             </Typography>
-            // MobileMyCatalogue.tsx — only the media box changes
 
             <Box
+              onClick={() => onViewPost?.(r)}
               sx={{
                 border: '1px solid #EFAF00',
                 borderRadius: 2,
                 p: 0.5,
                 mb: 1,
                 bgcolor: '#111',
-                height: 160,          // fixed height keeps cards compact
+                height: 160,
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                cursor: 'pointer',
               }}
             >
               {r.img ? (
@@ -188,6 +191,24 @@ export default function MobileMyCatalogue({
                   View
                 </Button>
               </Box>
+
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  variant='outlined'
+                  onClick={() => onViewPost?.(r)}
+                  fullWidth
+                  sx={{
+                    color: gold,
+                    borderColor: gold,
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    '&:hover': { borderColor: '#fff' },
+                  }}
+                >
+                  View details
+                </Button>
+              </Box>
+
             </CardContent>
           </Box>
         </Card>

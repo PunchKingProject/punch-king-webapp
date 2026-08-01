@@ -13,6 +13,7 @@ import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
 import {useDeletePost} from "./hooks/useDeletePost.ts";
 import {useState} from "react";
 import ConfirmDialog from "./components/ConfirmDialog.tsx";
+import PostDetailsModal from '../../admin/teams/components/PostDetailsModal.tsx';
 
 const contentPaddingSx = {
   padding: '1.56em 6.98em',
@@ -40,6 +41,9 @@ export default function DesktopCataloguePage() {
 
   // Confirm dialog state
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  
+  // Modal state
+  const [selectedPost, setSelectedPost] = useState<any | null>(null);
 
   if (postsError) toast.error('Failed to fetch posts.');
 
@@ -83,8 +87,19 @@ export default function DesktopCataloguePage() {
           onViewSponsors={() => {
             // TODO: open sponsor list modal for `p`
           }}
+          onViewPost={(p) => setSelectedPost(p)} // Re-wired view link
         />
       </Box>
+
+      {/* Media Details Modal */}
+      {selectedPost && (
+        <PostDetailsModal
+          post={selectedPost}
+          open={!!selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onSuccess={() => setSelectedPost(null)}
+        />
+      )}
 
       {/* Confirm delete dialog */}
       <ConfirmDialog
@@ -107,63 +122,3 @@ export default function DesktopCataloguePage() {
     </>
   );
 }
-
-// export default function DesktopCataloguePage() {
-//   const { data, isLoading } = usePostStats();
-//     const navigate = useNavigate();
-//   // fetch posts
-//   const {
-//     data: posts,
-//     isLoading: postsLoading,
-//     isError: postsError,
-//   } = useTeamPosts();
-//
-//   if (postsError) toast.error('Failed to fetch team posts.');
-//
-//   return (
-//     <>
-//       <FreeTrialBanner />
-//       <DashboardSection
-//         title={
-//           <TeamBreadcrumbs
-//             rootLabel='TEAM DASHBOARD'
-//             rootTo={ROUTES.TEAM}
-//             currentLabel='CATALOGUE'
-//           />
-//         }
-//         sidebarItems={TEAM_SIDENAV_ITEMS}
-//       >
-//         <Box>
-//           <DesktopCatalogueStatsCards
-//             loading={isLoading}
-//             posts={data?.total_posts ?? 0}
-//             comments={data?.total_comments ?? 0}
-//             uniqueSponsors={data?.total_unique_sponsors ?? 0}
-//           />
-//         </Box>
-//       </DashboardSection>
-//
-//       {/* My catalogue list */}
-//       <Box sx={contentPaddingSx}>
-//
-//         <DesktopMyCatalogueList
-//           posts={posts ?? []}
-//           loading={postsLoading}
-//           onUpload={() => {
-//             // TODO: open upload modal or navigate to upload page
-//             navigate(ROUTES.CATALOGUE_UPLOAD);
-//           }}
-//           // onUpdate={(p) => {
-//           //   // TODO: open edit modal for `p`
-//           // }}
-//           // onDelete={(p) => {
-//           //   // TODO: confirm + delete call for `p`
-//           // }}
-//           // onViewSponsors={(p) => {
-//           //   // TODO: open sponsor list modal for `p`
-//           // }}
-//         />
-//       </Box>
-//     </>
-//   );
-// }

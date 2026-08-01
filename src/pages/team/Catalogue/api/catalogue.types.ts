@@ -14,12 +14,17 @@ export const WEIGHT_CLASSES = [
     label: 'Middleweight — up to 72.57kg / 160lbs',
     maxWeightKg: 72.57,
   },
+  {
+    value: 'others',
+    label: 'Other Categories — Uncategorized Weights',
+  },
 ] as const;
 
 export type WeightClass =
   | 'lightweight'
   | 'welterweight'
-  | 'middleweight';
+  | 'middleweight'
+  | 'others'; // ⬅️ NEW CATEGORY ADDED HERE
 
 export type PostStatus =
   | 'pending'

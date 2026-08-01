@@ -48,7 +48,7 @@ import type {
 import { useWeightClassPosts } from './hooks/useWeightClassPosts.ts';
 
 type DivisionDetails = {
-  slug: WeightClass;
+  slug: WeightClass | 'others';
   title: string;
   shortTitle: string;
   kilograms: string;
@@ -56,7 +56,7 @@ type DivisionDetails = {
   description: string;
 };
 
-const divisions: Record<WeightClass, DivisionDetails> = {
+const divisions: Record<string, DivisionDetails> = {
   lightweight: {
     slug: 'lightweight',
     title: 'Professional Lightweight Division',
@@ -86,15 +86,26 @@ const divisions: Record<WeightClass, DivisionDetails> = {
     description:
       'View middleweight fighters and sparring videos submitted by registered teams throughout Africa.',
   },
+
+  others: {
+    slug: 'others',
+    title: 'Other Professional Divisions',
+    shortTitle: 'Others',
+    kilograms: 'Various Weights',
+    pounds: 'Various Weights',
+    description:
+      'Explore fighters and sparring videos submitted by registered teams that belong to other weight divisions.',
+  },
 };
 
 function isValidWeightClass(
   value: string | undefined
-): value is WeightClass {
+): value is WeightClass | 'others' {
   return (
     value === 'lightweight' ||
     value === 'welterweight' ||
-    value === 'middleweight'
+    value === 'middleweight' ||
+    value === 'others'
   );
 }
 
@@ -518,7 +529,7 @@ const WeightClassPage = () => {
                     <FighterPostCard
                       key={post.id}
                       post={post}
-                      categoryName={selectedDivision.shortTitle} // Passing category down to the card
+                      categoryName={selectedDivision.shortTitle}
                       onView={() =>
                         navigate(
                           `/sign-in?redirect=/user/feeds/${post.id}`
@@ -771,7 +782,6 @@ const FighterPostCard = ({
             mb: 2.5,
           }}
         >
-          {/* NEW: Category Highlight Chip placed securely in the bottom stack */}
           {categoryName && (
             <Chip
               size='small'

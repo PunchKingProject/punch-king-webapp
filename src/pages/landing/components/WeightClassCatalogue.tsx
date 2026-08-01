@@ -22,6 +22,12 @@ const divisions = [
     limit: 'Up to 72.57kg / 160lbs',
     description: 'View middleweight teams, fighters and tournament-ready videos.',
   },
+  {
+    title: 'Other Categories',
+    slug: 'others', // FIXED: Added the 's' so it matches the validation and API
+    limit: 'Uncategorized Weights',
+    description: 'Explore fighters and sparring videos outside the standard divisions.',
+  },
 ];
 
 const WeightClassCatalogue = () => {
@@ -42,7 +48,8 @@ const WeightClassCatalogue = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3,1fr)' }, gap: 3 }}>
+        {/* Updated Grid: 1 column on mobile, 2 columns on tablet, 4 columns on large desktop */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2,1fr)', lg: 'repeat(4,1fr)' }, gap: 3 }}>
           {divisions.map((item) => (
             <Card
               key={item.slug}
@@ -56,11 +63,13 @@ const WeightClassCatalogue = () => {
                 boxShadow: '0 20px 50px rgba(0,0,0,.45)',
               }}
             >
-              <CardContent sx={{ p: 3, flex: 1 }}>
-                <Chip
-                  label={item.limit}
-                  sx={{ bgcolor: 'rgba(239,175,0,.13)', color: colors.Accent, fontWeight: 800, mb: 2 }}
-                />
+              <CardContent sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                  <Chip
+                    label={item.limit}
+                    sx={{ bgcolor: 'rgba(239,175,0,.13)', color: colors.Accent, fontWeight: 800, mb: 2 }}
+                  />
+                </Box>
 
                 <Typography sx={{ color: '#fff', fontSize: '1.55rem', fontWeight: 900, mb: 1 }}>
                   {item.title}
@@ -75,6 +84,9 @@ const WeightClassCatalogue = () => {
                   <Typography>• Boxer metadata and team information</Typography>
                   <Typography>• Sponsor-ready fighter catalogue</Typography>
                 </Stack>
+                
+                {/* Spacer to push the button to the bottom of the card uniformly */}
+                <Box sx={{ flexGrow: 1 }} />
 
                 <Button
                   fullWidth

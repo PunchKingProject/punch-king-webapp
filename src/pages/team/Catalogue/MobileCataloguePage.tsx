@@ -13,6 +13,7 @@ import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
 import ConfirmDialog from "./components/ConfirmDialog.tsx";
 import {useState} from "react";
 import {useDeletePost} from "./hooks/useDeletePost.ts";
+import PostDetailsModal from '../../admin/teams/components/PostDetailsModal.tsx';
 
 
 const gold = '#f0c040';
@@ -31,6 +32,9 @@ export default function MobileCataloguePage() {
 
   // Confirm dialog state
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  
+  // Modal state
+  const [selectedPost, setSelectedPost] = useState<any | null>(null);
 
   if (postsError) toast.error('Failed to fetch posts.');
 
@@ -89,6 +93,7 @@ export default function MobileCataloguePage() {
             comments: p.comments ?? [],
             sponsors: p.sponsors ?? 0,
             sponsorships: p.sponsorships ?? 0,
+            originalPost: p, // Passed into mapping for the modal
           }))}
           loading={postsLoading}
           onUpdate={(p) => navigate(`${ROUTES.CATALOGUE_UPLOAD}?edit=${p.id}`, {
@@ -100,13 +105,21 @@ export default function MobileCataloguePage() {
             },
           })}
           onDelete={(postId) => setPendingDeleteId(postId)}
-          // onViewSponsors={(postId) => {
-          //   // TODO: open sponsor list modal
-          // }}
+          onViewPost={(p) => setSelectedPost(p.originalPost)} // Re-wired view link
         />
       </Box>
 
       <Box sx={{ height: 16 }} />
+      
+      {/* Media Details Modal */}
+      {selectedPost && (
+        <PostDetailsModal
+          post={selectedPost}
+          open={!!selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onSuccess={() => setSelectedPost(null)}
+        />
+      )}
 
       {/* Confirm delete dialog */}
       <ConfirmDialog
@@ -129,98 +142,3 @@ export default function MobileCataloguePage() {
     </Box>
   );
 }
-
-// export default function MobileCataloguePage() {
-//   const navigate = useNavigate();
-//
-//   // metrics
-//   const { data: stats, isLoading: statsLoading } = usePostStats();
-//
-//   // posts
-//   const {
-//     data: posts,
-//     isLoading: postsLoading,
-//     isError: postsError,
-//   } = useTeamPosts();
-//
-//   if (postsError) toast.error('Failed to fetch team posts.');
-//
-//   return (
-//     <Box sx={{ px: 2, py: 2 }}>
-//       <FreeTrialBanner />
-//       {/* 👇 clickable breadcrumb, same API as desktop */}
-//       <TeamBreadcrumbs
-//         rootLabel='TEAM DASHBOARD'
-//         rootTo={ROUTES.TEAM}
-//         currentLabel='CATALOGUE'
-//       />
-//       {/* {/* breadcrumb-ish header */}
-//       {/* <Typography sx={{ color: '#A2A2A2', fontWeight: 700, fontSize: 12 }}>
-//         TEAM DASHBOARD / CATALOGUE
-//       </Typography>  */}
-//
-//       {/* sliding stats cards (TOTAL POSTS / TOTAL COMMENTS / UNIQUE SPONSORS) */}
-//       <Box sx={{ mt: 1.5 }}>
-//         <MobileCatalogueStatsCards
-//           loading={statsLoading}
-//           posts={stats?.total_posts ?? 0}
-//           comments={stats?.total_comments ?? 0}
-//           uniqueSponsors={stats?.total_unique_sponsors ?? 0}
-//         />
-//       </Box>
-//
-//       {/* section title + upload CTA */}
-//       <Box sx={{ mt: 2, display: 'grid', gap: 1 }}>
-//         <Typography sx={{ color: '#fff', fontWeight: 900 }}>
-//           My catalogue
-//         </Typography>
-//
-//         <Button
-//           onClick={() => navigate(ROUTES.CATALOGUE_UPLOAD)}
-//           variant='contained'
-//           fullWidth
-//           sx={{
-//             bgcolor: gold,
-//             color: '#000',
-//             textTransform: 'none',
-//             fontWeight: 700,
-//             borderRadius: '8px',
-//             height: 34,
-//             '&:hover': { bgcolor: '#ffd465' },
-//           }}
-//         >
-//           Upload Media
-//         </Button>
-//       </Box>
-//
-//       {/* list of posts */}
-//       <Box sx={{ mt: 2, mb: 6 }}>
-//         <MobileMyCatalogueList
-//           posts={(posts ?? []).map((p) => ({
-//             id: p.id,
-//             file_url: p.file_url,
-//             caption: p.caption ?? '—',
-//             created_at: dayjs(p.created_at).format('M/D/YYYY'),
-//             comments_count: p.comments_count ?? p.comments?.length ?? 0,
-//             comments: p.comments ?? [],
-//             sponsors: p.sponsors ?? 0,
-//           }))}
-//           loading={postsLoading}
-//           onUpdate={(postId) =>
-//             navigate(ROUTES.CATALOGUE_UPLOAD + `?edit=${postId}`)
-//           }
-//           onDelete={(postId) => {
-//             // hook up your real delete modal/call here
-//             toast.info(`Delete post #${postId} (wire backend call)`);
-//           }}
-//           onViewSponsors={(postId) => {
-//             // optional modal/page
-//             toast.info(`View sponsors for post #${postId}`);
-//           }}
-//         />
-//       </Box>
-//
-//       <Box sx={{ height: 16 }} />
-//     </Box>
-//   );
-// }

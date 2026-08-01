@@ -78,19 +78,26 @@ export default function DesktopMyCatalogue({
           {posts.map((p) => (
             <Box key={p.id} sx={cardBoxSx}>
               {/* media */}
-              // DesktopMyCatalogue.tsx — only the media box changes
-
-              {/* media */}
               <Box
+                onClick={() => onViewPost?.(p)}
                 sx={{
                   width: '100%',
-                  height: 220,          // fixed card height keeps the grid uniform
+                  height: 220,
                   bgcolor: '#111',
                   borderBottom: '1px solid #3B3B3B',
                   overflow: 'hidden',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  '&:hover::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                    transition: 'background-color 0.2s',
+                  }
                 }}
               >
                 {p.file_url ? (
@@ -98,7 +105,6 @@ export default function DesktopMyCatalogue({
                     <video
                       src={p.file_url}
                       style={{ maxWidth: '100%', maxHeight: '100%', display: 'block' }}
-                      // no autoplay — user initiates in the detail view
                       muted
                       playsInline
                     />
