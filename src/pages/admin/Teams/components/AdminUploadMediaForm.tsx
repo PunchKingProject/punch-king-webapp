@@ -281,6 +281,7 @@ export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallba
                     <Select labelId='weight-class-label' name='weight_class' label='Weight class' value={values.weight_class} onChange={handleChange} onBlur={handleBlur}>
                       {WEIGHT_CLASSES.map((wc) => <MenuItem key={wc.value} value={wc.value}>{wc.label}</MenuItem>)}
                     </Select>
+                    
                   </FormControl>
                   <TextField fullWidth type='number' name='boxer_weight_kg' label='Actual boxer weight (kg)' value={values.boxer_weight_kg} onChange={handleChange} onBlur={handleBlur} />
                   <TextField fullWidth name='sparring_location' label='Sparring location' value={values.sparring_location} onChange={handleChange} onBlur={handleBlur} />

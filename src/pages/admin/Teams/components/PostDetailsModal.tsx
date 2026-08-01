@@ -160,6 +160,7 @@ export default function PostDetailsModal({ post, open, onClose, onSuccess }: Pro
               sx={inputStyles}
             />
           </Grid>
+          
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
