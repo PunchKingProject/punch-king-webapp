@@ -38,20 +38,21 @@ import NoticeModal from '../../../../components/modal/NoticeModal.tsx';
 import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
 import { getErrorMessage } from '../../../../utils/error/error.ts';
 import { WEIGHT_CLASSES, type WeightClass } from '../../../team/Catalogue/api/catalogue.types.ts';
-import { createAdminTeamPost } from '../api/teams.api.ts';
+import { createAdminTeamPost, updateAdminTeamPost } from '../api/teams.api.ts'; // Ensure updateAdminTeamPost is created in this file
 
 const GOLD = '#f0c040';
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 type Props = {
   teamId: number;
+  editData?: any | null; // NEW: Accepts the post data for editing
   onSuccessCallback: () => void;
 };
 
 type FormValues = {
   title: string;
   caption: string;
-  file: File | null;
+  file: File | string | null; // Allow string to support existing image/video URLs
   boxer_name: string;
   weight_class: WeightClass | '';
   boxer_weight_kg: number | '';
@@ -61,21 +62,6 @@ type FormValues = {
   opponent_weight_kg: number | '';
   opponent_shorts_color: string;
   sparring_location: string;
-};
-
-const initialFormValues: FormValues = {
-  title: '',
-  caption: '',
-  file: null,
-  boxer_name: '',
-  weight_class: '',
-  boxer_weight_kg: '',
-  shorts_color: '',
-  glove_color: '',
-  opponent_name: '',
-  opponent_weight_kg: '',
-  opponent_shorts_color: '',
-  sparring_location: '',
 };
 
 const validationSchema = Yup.object({
@@ -90,10 +76,16 @@ const validationSchema = Yup.object({
   opponent_weight_kg: Yup.number().transform((val, orig) => orig === '' || orig === null ? undefined : val).optional(),
   opponent_shorts_color: Yup.string().trim().max(100, 'Maximum 100 characters.'),
   sparring_location: Yup.string().trim().max(200, 'Maximum 200 characters.').required('Sparring location is required.'),
-  file: Yup.mixed<File>()
+  file: Yup.mixed<File | string>()
     .required('Choose a sparring video or image.')
-    .test('file-type', 'Only supported images or videos are allowed.', (file) => file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/')))
-    .test('file-size', 'Maximum media size is 10MB.', (file) => file instanceof File && file.size <= MAX_FILE_SIZE),
+    .test('file-type', 'Only supported images or videos are allowed.', (file) => {
+      if (typeof file === 'string') return true; // Bypass for existing URLs
+      return file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/'));
+    })
+    .test('file-size', 'Maximum media size is 10MB.', (file) => {
+      if (typeof file === 'string') return true; // Bypass for existing URLs
+      return file instanceof File && file.size <= MAX_FILE_SIZE;
+    }),
 });
 
 function isVideo(source: File | string | null): boolean {
@@ -106,12 +98,17 @@ function numberValue(value: number | ''): number {
   return value === '' ? 0 : Number(value);
 }
 
-export default function AdminUploadMediaForm({ teamId, onSuccessCallback }: Props) {
+export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallback }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(editData?.file_url || null);
   const [uploadPercent, setUploadPercent] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const successModal = useDisclosure(false);
+
+  // Sync preview if editData changes
+  useEffect(() => {
+    setPreview(editData?.file_url || null);
+  }, [editData]);
 
   useEffect(() => {
     return () => {
@@ -120,6 +117,21 @@ export default function AdminUploadMediaForm({ teamId, onSuccessCallback }: Prop
       }
     };
   }, [preview]);
+
+  const initialFormValues: FormValues = {
+    title: editData?.title || '',
+    caption: editData?.caption || '',
+    file: editData?.file_url || null,
+    boxer_name: editData?.boxer_name || '',
+    weight_class: editData?.weight_class || '',
+    boxer_weight_kg: editData?.boxer_weight_kg || '',
+    shorts_color: editData?.shorts_color || '',
+    glove_color: editData?.glove_color || '',
+    opponent_name: editData?.opponent_name || '',
+    opponent_weight_kg: editData?.opponent_weight_kg || '',
+    opponent_shorts_color: editData?.opponent_shorts_color || '',
+    sparring_location: editData?.sparring_location || '',
+  };
 
   const handleFileSelection = async (
     file: File | undefined,
@@ -142,15 +154,22 @@ export default function AdminUploadMediaForm({ teamId, onSuccessCallback }: Prop
     try {
       if (!values.file) throw new Error('A media file is required.');
 
-      setUploadPercent(0);
-      const fileUrl = await uploadTeamImage(values.file, {
-        onUploadProgress: (event) => {
-          if (!event.total) return;
-          setUploadPercent(Math.round((event.loaded / event.total) * 100));
-        },
-      });
+      let fileUrl = '';
 
-      if (!fileUrl) throw new Error('File upload failed.');
+      // Check if file is a newly uploaded File object or an existing URL string
+      if (values.file instanceof File) {
+        setUploadPercent(0);
+        fileUrl = await uploadTeamImage(values.file, {
+          onUploadProgress: (event) => {
+            if (!event.total) return;
+            setUploadPercent(Math.round((event.loaded / event.total) * 100));
+          },
+        }) || '';
+
+        if (!fileUrl) throw new Error('File upload failed.');
+      } else {
+        fileUrl = values.file; // It is an existing string URL, no need to re-upload
+      }
 
       const payload = {
         team_id: teamId,
@@ -169,9 +188,14 @@ export default function AdminUploadMediaForm({ teamId, onSuccessCallback }: Prop
       };
 
       setIsUploading(true);
-      await createAdminTeamPost(payload);
+      
+      if (editData?.id) {
+        await updateAdminTeamPost(editData.id, payload);
+      } else {
+        await createAdminTeamPost(payload);
+      }
+      
       setIsUploading(false);
-
       successModal.onOpen();
     } catch (error) {
       setIsUploading(false);
@@ -187,6 +211,7 @@ export default function AdminUploadMediaForm({ teamId, onSuccessCallback }: Prop
       initialValues={initialFormValues}
       validationSchema={validationSchema}
       onSubmit={submitForm}
+      enableReinitialize // Important: allows Formik to reset when editData changes
     >
       {({ values, errors, touched, isSubmitting, isValid, setFieldValue, handleChange, handleBlur }) => (
         <Form noValidate>
@@ -271,7 +296,7 @@ export default function AdminUploadMediaForm({ teamId, onSuccessCallback }: Prop
 
             <Stack direction='row' justifyContent='flex-end' spacing={1.5}>
               <Button type='submit' variant='contained' disabled={isSubmitting || isUploading || !isValid} startIcon={isUploading ? <CircularProgress size={18} /> : undefined} sx={{ bgcolor: GOLD, color: '#000', fontWeight: 900, px: 5 }}>
-                {isUploading ? 'Uploading...' : 'Upload Post'}
+                {isUploading ? 'Saving...' : editData ? 'Update Post' : 'Upload Post'}
               </Button>
             </Stack>
           </Stack>
@@ -284,7 +309,7 @@ export default function AdminUploadMediaForm({ teamId, onSuccessCallback }: Prop
               onSuccessCallback();
             }}
             title='Success'
-            message='The fighter sparring post has been uploaded successfully by Admin.'
+            message={editData ? 'The fighter sparring post has been updated successfully by Admin.' : 'The fighter sparring post has been uploaded successfully by Admin.'}
             continueLabel='Finish'
             icon={<SuccessIcon />}
           />

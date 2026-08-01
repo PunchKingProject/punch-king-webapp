@@ -8,6 +8,7 @@ import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined'; // NEW: Edit Icon
 
 import {
   Box,
@@ -61,6 +62,7 @@ export default function TeamPostCarousel({
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<TeamPost | null>(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<TeamPost | null>(null); // NEW: State to hold post being edited
   const [showPrev, setShowPrev] = useState(false);
   const [showNext, setShowNext] = useState(false);
   const isSm = useMediaQuery('(max-width:600px)');
@@ -154,7 +156,10 @@ export default function TeamPostCarousel({
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setIsUploadModalOpen(true)}
+          onClick={() => {
+            setEditingPost(null); // Ensure we are in "Create" mode
+            setIsUploadModalOpen(true);
+          }}
           sx={{
             bgcolor: colors.Accent,
             color: '#000',
@@ -238,6 +243,10 @@ export default function TeamPostCarousel({
                   <AdminPremiumPostCard 
                     item={it} 
                     onOpen={() => setSelected(it)} 
+                    onEdit={() => { 
+                      setEditingPost(it); // Trigger "Edit" mode with existing data
+                      setIsUploadModalOpen(true); 
+                    }}
                     onDelete={() => handleDelete(it.id)} 
                   />
                 </Box>
@@ -252,10 +261,13 @@ export default function TeamPostCarousel({
         item={selected}
       />
 
-      {/* Admin Upload Video Modal */}
+      {/* Admin Upload / Edit Video Modal */}
       <Dialog 
         open={isUploadModalOpen} 
-        onClose={() => setIsUploadModalOpen(false)}
+        onClose={() => {
+          setIsUploadModalOpen(false);
+          setEditingPost(null); // Reset when closing
+        }}
         maxWidth="md"
         fullWidth
         PaperProps={{
@@ -263,16 +275,21 @@ export default function TeamPostCarousel({
         }}
       >
         <DialogTitle sx={{ color: '#fff', fontWeight: 900, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          Upload Media for Team
-          <MuiIconButton onClick={() => setIsUploadModalOpen(false)} sx={{ color: 'rgba(255,255,255,0.7)' }}>
+          {editingPost ? 'Edit Media for Team' : 'Upload Media for Team'}
+          <MuiIconButton onClick={() => {
+            setIsUploadModalOpen(false);
+            setEditingPost(null);
+          }} sx={{ color: 'rgba(255,255,255,0.7)' }}>
             <CloseIcon />
           </MuiIconButton>
         </DialogTitle>
         <DialogContent sx={{ p: 0, overflowX: 'hidden' }}>
           <AdminUploadMediaForm 
             teamId={teamId} 
+            editData={editingPost} // Pass the editing post data to pre-fill your form
             onSuccessCallback={() => {
               setIsUploadModalOpen(false);
+              setEditingPost(null);
               void refetch(); 
             }} 
           />
@@ -285,10 +302,12 @@ export default function TeamPostCarousel({
 const AdminPremiumPostCard = ({
   item,
   onOpen,
+  onEdit, // NEW
   onDelete,
 }: {
   item: TeamPost;
   onOpen: () => void;
+  onEdit: () => void; // NEW
   onDelete: () => void;
 }) => {
   const extendedItem = item as any;
@@ -431,6 +450,22 @@ const AdminPremiumPostCard = ({
           >
             View Details
           </Button>
+
+          {/* NEW: Edit Icon Button */}
+          <IconButton
+            onClick={onEdit}
+            sx={{
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: '#fff',
+              borderRadius: '50%',
+              '&:hover': {
+                bgcolor: 'rgba(255, 255, 255, 0.1)',
+                borderColor: '#fff',
+              },
+            }}
+          >
+            <EditOutlinedIcon />
+          </IconButton>
 
           <IconButton
             onClick={onDelete}

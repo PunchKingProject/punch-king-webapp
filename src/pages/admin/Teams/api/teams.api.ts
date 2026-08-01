@@ -53,7 +53,7 @@ export async function getTeamPosts(teamId: number) {
 
   const raw = (data?.data ?? []) as Array<Record<string, unknown>>;
 
-  const posts: TeamPost[] = raw.map((p) => {
+  const posts = raw.map((p) => {
     const commentsRaw = (p as { comments?: unknown }).comments;
     const comments_count = Array.isArray(commentsRaw)
       ? commentsRaw.length
@@ -74,10 +74,22 @@ export async function getTeamPosts(teamId: number) {
       sponsors: Number((p as { sponsors?: number }).sponsors ?? 0),
       created_at: String(p.created_at ?? ''),
       comments_raw: commentsRaw,
+
+      // NEW: Explicitly mapping the fighter information so the Edit Modal can see it
+      boxer_name: String(p.boxer_name ?? ''),
+      weight_class: String(p.weight_class ?? ''),
+      boxer_weight_kg: p.boxer_weight_kg ? Number(p.boxer_weight_kg) : '',
+      shorts_color: String(p.shorts_color ?? ''),
+      glove_color: String(p.glove_color ?? ''),
+      opponent_name: String(p.opponent_name ?? ''),
+      opponent_weight_kg: p.opponent_weight_kg ? Number(p.opponent_weight_kg) : '',
+      opponent_shorts_color: String(p.opponent_shorts_color ?? ''),
+      sparring_location: String(p.sparring_location ?? ''),
     };
   });
 
-  return posts;
+  // Cast as any temporarily to bypass potential strict type errors if teams.types.ts is not yet updated
+  return posts as any as TeamPost[]; 
 }
 
 export async function fetchTeamVoteHistory(params: VoteHistoryParams) {
@@ -115,8 +127,20 @@ export async function deleteAdminTeamPost(postId: number) {
   return data;
 }
 
-// Add this to your API file
 export async function deleteAdminTeam(teamId: number) {
   const { data } = await customFetch.delete(`/admin/teams/${teamId}`);
+  return data;
+}
+
+/**
+ * NEW: Updates an existing team post from the Admin dashboard.
+ */
+export async function updateAdminTeamPost(postId: number, payload: any) {
+  // The backend route is registered as PATCH /post/ (no ID in URL),
+  // so we inject the ID directly into the payload.
+  const { data } = await customFetch.patch('/post/', {
+    id: postId,
+    ...payload
+  });
   return data;
 }

@@ -14,6 +14,7 @@ import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
 import VolunteerActivismOutlinedIcon from '@mui/icons-material/VolunteerActivismOutlined';
 import { useNavigate } from 'react-router-dom';
 import { colors } from '../../../theme/colors.ts';
+import ROUTES from '../../../routes/routePath.ts'; 
 
 const rankedTeams = [
   {
@@ -213,7 +214,12 @@ const TeamRanking = () => {
                 <Button
                   fullWidth
                   endIcon={<ArrowForwardIcon />}
-                  onClick={() => navigate('/admin/teams')}
+                  onClick={() => 
+                    // ✅ Redirects to correct constant and passes the intended destination in the state
+                    navigate(ROUTES.SIGN_IN, { 
+                      state: { from: '/user/ranked-team' } 
+                    })
+                  }
                   sx={{
                     bgcolor: colors.Accent,
                     color: '#000',

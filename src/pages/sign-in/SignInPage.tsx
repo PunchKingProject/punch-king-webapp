@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { Form, Formik } from 'formik';
 import { jwtDecode } from 'jwt-decode';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../assets';
 import FormikTextField from '../../components/form/FormikTextField.tsx';
@@ -23,6 +23,7 @@ type Decoded = {
 
 const SignInPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const initialValues = {
@@ -41,26 +42,29 @@ const SignInPage = () => {
       if (res?.meta?.code !== 200 || !res?.data) return;
 
       const token = res.data; // JWT string
-      // persist
-      // if you want redux too (keeps the rest of your flow consistent)
 
       // decode and route
       let decoded: Decoded | null = null;
       try {
         decoded = jwtDecode<Decoded>(token);
-        dispatch(setRid({ token: token, flow: decoded?.role })); // flow here isn’t used for admin routing
+        dispatch(setRid({ token: token, flow: decoded?.role }));
       } catch {
         // fallback if decode fails
       }
 
+      // Grab the intended destination from the state (if it exists)
+      const destination = location.state?.from;
+
+      // Route the user based on their role to prevent unauthorized access
       if (decoded?.role === 'admin') {
-        navigate('/admin', { replace: true });
+        // Admins bypass redirects and always go to the admin dashboard
+        navigate(ROUTES.ADMIN, { replace: true });
       } else if (decoded?.role === 'team') {
-        // go to your user landing/home/dashboard
-        navigate('/team', { replace: true });
+        // Teams bypass redirects and always go to the team dashboard
+        navigate(ROUTES.TEAM, { replace: true });
       } else {
-        // default to user
-        navigate('/user', { replace: true });
+        // Standard users/sponsors follow the redirect, or default to user dashboard
+        navigate(destination || ROUTES.USER, { replace: true });
       }
     },
     onError: showError,
@@ -70,17 +74,16 @@ const SignInPage = () => {
     console.log('Login values:', values);
     mutation.mutate(values);
   };
+
   return (
     <Box
       sx={{
-        // border: '2px solid red',
         display: 'flex',
         position: 'relative',
         width: '100%',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-
         minHeight: '100vh',
       }}
     >
@@ -123,7 +126,6 @@ const SignInPage = () => {
           onSubmit={handleSubmit}
         >
           {(formik) => {
-            console.log(formik);
             return (
               <Form
                 style={{
@@ -161,13 +163,7 @@ const SignInPage = () => {
                   forgot password?
                 </Typography>
 
-                <Box
-                  sx={
-                    {
-                      // border: '2px solid red',
-                    }
-                  }
-                >
+                <Box>
                   <Button
                     fullWidth
                     type='submit'
@@ -206,7 +202,6 @@ const SignInPage = () => {
 
       <Box
         sx={{
-          // border: '2px solid red',
           width: '100%',
           marginTop: 'auto',
         }}

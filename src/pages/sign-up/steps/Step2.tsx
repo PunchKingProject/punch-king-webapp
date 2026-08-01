@@ -21,6 +21,7 @@ import { createUser } from '../api/registration.ts';
 import { Link as MLink } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import ROUTES from '../../../routes/routePath.ts';
+import { toast } from 'react-toastify'; // ✅ Added toast for error visibility
 
 // This adds # and other common symbols to the allowed/required list
 const passwordRules =
@@ -74,14 +75,23 @@ function Step2() {
   const mutation = useMutation({
     mutationFn: createUser,
     onSuccess: (res) => {
+      // ✅ Check for success
       if (res?.meta?.code === 200) {
         dispatch(setRid({ token: res.data, flow }));
         setModalOpen(true);
+      } else {
+        // ✅ Catch backend rejections that return 200 HTTP status but an error code in meta
+        toast.error(res?.meta?.message || 'Backend rejected the request. Please try again.');
       }
     },
+    onError: (err: any) => {
+      // ✅ Catch 400/500 API network errors
+      toast.error(err?.response?.data?.message || err.message || 'Network error: Failed to create password.');
+    }
   });
 
   const handleSubmit = (values: Values) => {
+    console.log('Form submitting...', values); // ✅ Added log to verify button click
     dispatch(mergeDraft({ step2: { passwordSet: true } }));
     mutation.mutate({ token: token || '', password: values.password });
   };
@@ -221,12 +231,10 @@ function Step2() {
                   type='submit'
                   variant='contained'
                   disabled={
-                    !(
-                      formik.values.password &&
-                      formik.values.confirmPassword &&
-                      formik.values.password === formik.values.confirmPassword &&
-                      formik.values.agree
-                    ) || mutation.isPending
+                    !formik.isValid ||
+                    !formik.values.password ||
+                    !formik.values.agree ||
+                    mutation.isPending
                   }
                 >
                   {mutation.isPending ? (
