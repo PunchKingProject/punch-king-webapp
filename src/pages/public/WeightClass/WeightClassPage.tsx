@@ -47,8 +47,10 @@ import type {
 
 import { useWeightClassPosts } from './hooks/useWeightClassPosts.ts';
 
+type ExtendedWeightClass = WeightClass | 'others';
+
 type DivisionDetails = {
-  slug: WeightClass | 'others';
+  slug: ExtendedWeightClass;
   title: string;
   shortTitle: string;
   kilograms: string;
@@ -100,12 +102,16 @@ const divisions: Record<string, DivisionDetails> = {
 
 function isValidWeightClass(
   value: string | undefined
-): value is WeightClass | 'others' {
+): value is ExtendedWeightClass {
+  if (!value) return false;
+  
+  const normalizedValue = value.toLowerCase();
+  
   return (
-    value === 'lightweight' ||
-    value === 'welterweight' ||
-    value === 'middleweight' ||
-    value === 'others'
+    normalizedValue === 'lightweight' ||
+    normalizedValue === 'welterweight' ||
+    normalizedValue === 'middleweight' ||
+    normalizedValue === 'others'
   );
 }
 
@@ -135,15 +141,15 @@ const WeightClassPage = () => {
   }>();
 
   const [search, setSearch] = useState('');
-  const [submittedSearch, setSubmittedSearch] =
-    useState('');
+  const [submittedSearch, setSubmittedSearch] = useState('');
 
-  if (!isValidWeightClass(division)) {
-    return <Navigate to='/' replace />;
-  }
+  // 1. Normalize the parameter to prevent case-sensitivity issues
+  const normalizedDivision = division?.toLowerCase();
+  
+  // 2. Check validity first, but DO NOT early return yet (fixes hook rules)
+  const isValid = isValidWeightClass(normalizedDivision);
 
-  const selectedDivision = divisions[division];
-
+  // 3. Call ALL hooks unconditionally
   const {
     data,
     isLoading,
@@ -153,7 +159,7 @@ const WeightClassPage = () => {
     fetchNextPage,
     isFetchingNextPage,
   } = useWeightClassPosts(
-    division,
+    isValid ? (normalizedDivision as ExtendedWeightClass) : 'others', // Safe fallback to prevent breaking the query
     submittedSearch
   );
 
@@ -164,6 +170,14 @@ const WeightClassPage = () => {
       ) ?? [],
     [data]
   );
+
+  // 4. NOW we can safely early return if the URL is invalid
+  if (!isValid) {
+    return <Navigate to='/' replace />;
+  }
+
+  // 5. Safe to assign now that we know it is valid
+  const selectedDivision = divisions[normalizedDivision as string];
 
   const handleSearch = (
     event: FormEvent<HTMLFormElement>
