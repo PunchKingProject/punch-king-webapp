@@ -13,7 +13,7 @@ import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
 import ConfirmDialog from "./components/ConfirmDialog.tsx";
 import {useState} from "react";
 import {useDeletePost} from "./hooks/useDeletePost.ts";
-import PostDetailsModal from '../../admin/teams/components/PostDetailsModal.tsx';
+import PostDetailsModal from '../../admin/Teams/components/PostDetailsModal.tsx';
 
 
 const gold = '#f0c040';
