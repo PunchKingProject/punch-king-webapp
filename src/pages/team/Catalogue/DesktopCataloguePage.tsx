@@ -13,7 +13,7 @@ import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
 import {useDeletePost} from "./hooks/useDeletePost.ts";
 import {useState} from "react";
 import ConfirmDialog from "./components/ConfirmDialog.tsx";
-import PostDetailsModal from '../../admin/teams/components/PostDetailsModal.tsx';
+import PostDetailsModal from '../../admin/Teams/components/PostDetailsModal.tsx';
 
 const contentPaddingSx = {
   padding: '1.56em 6.98em',
