@@ -45,8 +45,9 @@ export async function getRankedTeams(
 }
 
 export async function getPostById(postId: number): Promise<PostDetail> {
+  // CORRECTED: Added /single/ to match the Go backend router
   const { data } = await customFetch.get<Envelope<PostDetail>>(
-    `/post/${postId}`
+    `/post/single/${postId}`
   );
   return data.data;
 }

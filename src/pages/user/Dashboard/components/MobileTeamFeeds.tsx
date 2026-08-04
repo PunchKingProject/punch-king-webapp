@@ -4,12 +4,13 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import XIcon from '@mui/icons-material/X';
+import CloseIcon from '@mui/icons-material/Close';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import {
   Box,
   Button,
   Card,
   CardContent,
-  // CardMedia,
   IconButton,
   InputBase,
   Skeleton,
@@ -42,13 +43,21 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [sharePost, setSharePost] = useState<FeedPost | null>(null);
+  const [activeVideo, setActiveVideo] = useState<FeedPost | null>(null);
   const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useAllPosts(4);
 
   const posts = useMemo<FeedPost[]>(() => {
     const pages =
       (data as InfiniteData<AllPostsPayload, number> | undefined)?.pages ?? [];
-    return pages.flatMap((p) => p.posts);
+    const allPosts = pages.flatMap((p) => p.posts);
+
+    // Filter to show only videos
+    return allPosts.filter((p) => {
+      if (!p.file_url) return false; 
+      const url = p.file_url.toLowerCase();
+      return url.includes('.mp4') || url.includes('.mov') || url.includes('.webm') || url.includes('.ogg');
+    });
   }, [data]);
 
   const filtered = useMemo(() => {
@@ -94,32 +103,17 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
         {isLoading &&
           Array.from({ length: 3 }).map((_, i) => (
             <Card key={`sk-${i}`} sx={cardStyle}>
-              <Box sx={{ display: 'flex', p: 1.25, gap: 1.25 }}>
+              <Box sx={{ display: 'flex', p: 1.25, gap: 1.25, flexDirection: { xs: 'column', 400: 'row' } }}>
                 <Skeleton
                   variant='rectangular'
-                  width={88}
-                  height={88}
+                  width={220} // Matched desktop size upgrade
+                  height={220} // Matched desktop size upgrade
                   sx={{ bgcolor: '#2a2a2a', borderRadius: 2, flex: '0 0 auto' }}
                 />
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Skeleton
-                    variant='text'
-                    animation='wave'
-                    width='70%'
-                    sx={{ bgcolor: '#2a2a2a' }}
-                  />
-                  <Skeleton
-                    variant='text'
-                    animation='wave'
-                    width='90%'
-                    sx={{ bgcolor: '#2a2a2a' }}
-                  />
-                  <Skeleton
-                    variant='text'
-                    animation='wave'
-                    width='40%'
-                    sx={{ bgcolor: '#2a2a2a' }}
-                  />
+                  <Skeleton variant='text' animation='wave' width='70%' sx={{ bgcolor: '#2a2a2a' }} />
+                  <Skeleton variant='text' animation='wave' width='90%' sx={{ bgcolor: '#2a2a2a' }} />
+                  <Skeleton variant='text' animation='wave' width='40%' sx={{ bgcolor: '#2a2a2a' }} />
                 </Box>
               </Box>
             </Card>
@@ -138,16 +132,45 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
                   flexDirection: { xs: 'column', 400: 'row' },
                 }}
               >
-                {/* Thumbnail */}
-                <FeedThumbnail
-                  url={p.file_url}
-                  title={p.title}
-                  width={120}
-                  height={120}
-                />
+                {/* BULLETPROOF CLICKABLE THUMBNAIL WITH PLAY BUTTON */}
+                <Box 
+                  onClickCapture={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setActiveVideo(p);
+                  }} 
+                  sx={{ 
+                    cursor: 'pointer', 
+                    position: 'relative',
+                    display: 'block',
+                    width: { xs: '100%', 400: 'auto' }, // Keep responsive on tiny screens
+                    '&:hover .play-icon': { opacity: 1, transform: 'translate(-50%, -50%) scale(1.1)' } 
+                  }}
+                >
+                  <FeedThumbnail
+                    url={p.file_url}
+                    title={p.title}
+                    width={220}  
+                    height={220} 
+                  />
+                  <PlayCircleOutlineIcon 
+                    className="play-icon"
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%) scale(1)',
+                      color: '#EFAF00',
+                      fontSize: 64,
+                      opacity: 0.8,
+                      transition: 'all 0.2s ease-in-out',
+                      pointerEvents: 'none'
+                    }}
+                  />
+                </Box>
 
                 {/* Text */}
-                <CardContent sx={{ p: 0, flex: 1, minWidth: 0 }}>
+                <CardContent sx={{ p: 0, flex: 1, minWidth: 0, width: '100%' }}>
                   <Typography
                     sx={{ color: '#C9C9C9', fontWeight: 700, fontSize: 12 }}
                   >
@@ -193,7 +216,7 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
                       columnGap: 1.25,
                       rowGap: 0.75,
                       mt: 0.75,
-                      flexWrap: 'wrap', // ⬅️ allow wrapping
+                      flexWrap: 'wrap', // allow wrapping
                     }}
                   >
                     <Typography
@@ -251,8 +274,8 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
                         fontWeight: 700,
                         px: 0,
                         minWidth: 0,
-                        whiteSpace: 'nowrap', // ⬅️ keep label intact
-                        flexShrink: 0, // ⬅️ don't let it collapse
+                        whiteSpace: 'nowrap', // keep label intact
+                        flexShrink: 0, // don't let it collapse
                       }}
                     >
                       Sponsor
@@ -305,7 +328,7 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
         </Box>
       )}
 
-      {/* ✅ SHARE MODAL */}
+      {/* SHARE MODAL */}
       <Dialog open={!!sharePost} onClose={() => setSharePost(null)}>
         <DialogContent sx={{ background: '#1A1A1A' }}>
           <Typography sx={{ color: '#fff', mb: 2, fontWeight: 700 }}>
@@ -367,6 +390,41 @@ export default function MobileTeamFeeds({ onViewPost, onSponsor }: Props) {
             </Button>
           </Stack>
         </DialogContent>
+      </Dialog>
+
+      {/* VIDEO PLAYER MODAL */}
+      <Dialog 
+        open={!!activeVideo} 
+        onClose={() => setActiveVideo(null)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: '#000',
+            border: '1px solid #3B3B3B',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            margin: 2 // Gives a little padding from screen edges on mobile
+          }
+        }}
+      >
+        <Box sx={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <IconButton
+            onClick={() => setActiveVideo(null)}
+            sx={{ position: 'absolute', top: 8, right: 8, color: '#fff', zIndex: 10, bgcolor: 'rgba(0,0,0,0.5)', '&:hover': { bgcolor: 'rgba(0,0,0,0.8)' } }}
+          >
+            <CloseIcon />
+          </IconButton>
+          
+          {activeVideo?.file_url && (
+            <video
+              src={activeVideo.file_url}
+              controls
+              autoPlay
+              style={{ width: '100%', maxHeight: '80vh', objectFit: 'contain', outline: 'none', backgroundColor: '#000' }}
+            />
+          )}
+        </Box>
       </Dialog>
     </Box>
   );

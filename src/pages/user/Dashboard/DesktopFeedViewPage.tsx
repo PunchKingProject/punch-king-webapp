@@ -28,10 +28,13 @@ const cardSx = {
 
 export default function DesktopFeedViewPage() {
   const { postId } = useParams();
-  const id = useMemo(() => Number(postId), [postId]);
+  
+  // Safely extract only the digits, ignoring any trailing slashes
+  const id = useMemo(() => parseInt(postId?.replace(/\D/g, '') || '0', 10), [postId]);
   const navigate = useNavigate();
 
-  const { data, isLoading } = usePost(id);
+  // Extract isError to handle failed requests
+  const { data, isLoading, isError } = usePost(id);
   const { mutateAsync: addComment, isPending } = useCreateComment(id);
 
   const [newComment, setNewComment] = useState('');
@@ -62,7 +65,6 @@ export default function DesktopFeedViewPage() {
         variant='outlined'
         onClick={() => {
           navigate(-1);
-
           console.log('back');
         }}
         size='small'
@@ -84,8 +86,13 @@ export default function DesktopFeedViewPage() {
         FEED VIEW
       </Typography>
 
-      {isLoading || !data ? (
+      {/* Handle loading and error states properly */}
+      {isLoading ? (
         <Typography sx={{ color: '#9a9a9a' }}>Loading…</Typography>
+      ) : isError || !data ? (
+        <Typography sx={{ color: '#ff4d4d', fontWeight: 700 }}>
+          Failed to load post data.
+        </Typography>
       ) : (
         <>
           {/* Header meta */}
@@ -130,15 +137,15 @@ export default function DesktopFeedViewPage() {
 
           {/* Media */}
           <PostMedia
-  src={data.file_url}
-  alt={data.title}
-  title={data.title}
-  height='auto'
-  maxHeight={620}
-  objectFit='contain'
-  borderRadius={3}
-  controls
-/>
+            src={data.file_url}
+            alt={data.title}
+            title={data.title}
+            height='auto'
+            maxHeight={620}
+            objectFit='contain'
+            borderRadius={3}
+            controls
+          />
 
           {/* Caption */}
           <Box sx={{ color: '#C9C9C9', mb: 2 }}>
