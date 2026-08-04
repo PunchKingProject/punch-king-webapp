@@ -136,10 +136,8 @@ export async function deleteAdminTeam(teamId: number) {
  * NEW: Updates an existing team post from the Admin dashboard.
  */
 export async function updateAdminTeamPost(postId: number, payload: any) {
-  // The backend route is registered as PATCH /post/ (no ID in URL),
-  // so we inject the ID directly into the payload.
-  const { data } = await customFetch.patch('/post/', {
-    id: postId,
+  const { data } = await customFetch.patch('/admin/team-post/', {
+    post_id: postId, // ⬅️ Change this from 'id' to 'post_id' to match your Go DTO
     ...payload
   });
   return data;
