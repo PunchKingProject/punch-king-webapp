@@ -12,22 +12,6 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import type {TeamPost} from "../api/catalogue.types.ts";
 import MediaPreview from "./MediaPreview.tsx";
 
-// type Comment = {
-//   id: number;
-//   commenter?: string | null;
-//   content: string;
-// };
-
-// type Item = {
-//   id: number;
-//   file_url: string | null;
-//   caption: string;
-//   created_at: string; // already formatted
-//   comments_count: number;
-//   comments: Comment[];
-//   sponsors: number;
-// };
-
 type Props = {
   posts: TeamPost[];
   loading?: boolean;
@@ -36,9 +20,30 @@ type Props = {
   onViewSponsors?: (postId: number) => void;
 };
 
+// NEW: Styles for the horizontal scrolling container
+const horizontalScrollSx = {
+  display: 'flex',
+  overflowX: 'auto',
+  gap: 3,
+  pb: 2,
+  scrollSnapType: 'x mandatory',
+  WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+  '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar for a cleaner look
+  scrollbarWidth: 'none', // Hide scrollbar for Firefox
+};
+
+// NEW: Styles for individual cards to snap into place
+const cardWrapSx = {
+  minWidth: '85vw', // Takes up most of the screen but lets the next card peek
+  maxWidth: '85vw',
+  scrollSnapAlign: 'center', // Snaps the card to the center of the screen
+  flexShrink: 0, // Prevents cards from squishing
+  display: 'flex',
+  flexDirection: 'column',
+};
+
 const imageFrameSx = {
   width: '100%',
-  // aspectRatio: '3 / 2',
   border: '1px solid #F0C040',
   borderRadius: '6px',
   overflow: 'hidden',
@@ -57,9 +62,9 @@ export default function MobileMyCatalogueList({
 }: Props) {
   if (loading) {
     return (
-      <Box>
-        {Array.from({ length: 2 }).map((_, i) => (
-          <Box key={i} sx={{ mb: 4 }}>
+      <Box sx={horizontalScrollSx}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Box key={i} sx={cardWrapSx}>
             <Skeleton
               variant='rectangular'
               height={220}
@@ -79,65 +84,43 @@ export default function MobileMyCatalogueList({
   }
 
   if (!posts.length) {
-  return (
-    <Box
-      sx={{
-        py: 8,
-        textAlign: "center",
-      }}
-    >
-      <Typography color="text.secondary">
-        No posts uploaded yet.
-      </Typography>
-    </Box>
-  );
-}
+    return (
+      <Box
+        sx={{
+          py: 8,
+          textAlign: "center",
+        }}
+      >
+        <Typography color="text.secondary">
+          No posts uploaded yet.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Box>
+    <Box sx={horizontalScrollSx}>
       {posts.map((p) => (
-        <Box key={p.id} sx={{ mb: 5 }}>
+        <Box key={p.id} sx={cardWrapSx}>
+          
           {/* media */}
-          {/*<Box sx={imageFrameSx}>*/}
-          {/*  {p.file_url ? (*/}
-          {/*    <img*/}
-          {/*      src={p.file_url}*/}
-          {/*      alt='post'*/}
-          {/*      style={{ width: '100%', height: '100%', objectFit: 'cover' }}*/}
-          {/*    />*/}
-          {/*  ) : (*/}
-          {/*    <Box*/}
-          {/*      sx={{*/}
-          {/*        width: '100%',*/}
-          {/*        height: '100%',*/}
-          {/*        display: 'grid',*/}
-          {/*        placeItems: 'center',*/}
-          {/*        color: '#A2A2A2',*/}
-          {/*        fontSize: 14,*/}
-          {/*      }}*/}
-          {/*    >*/}
-          {/*      No media*/}
-          {/*    </Box>*/}
-          {/*  )}*/}
-          {/*</Box>*/}
           <Box sx={imageFrameSx}>
             <MediaPreview url={p.file_url} />
           </Box>
           
-                  {/* title */}
-        <Box sx={{ mt: 1.25 }}>
-          <Typography sx={labelSx}>Title:</Typography>
-
-          <Typography
-            sx={{
-              color: "#fff",
-              fontWeight: 700,
-              mt: 0.5,
-            }}
-          >
-            {p.title}
-          </Typography>
-        </Box>
+          {/* title */}
+          <Box sx={{ mt: 1.25 }}>
+            <Typography sx={labelSx}>Title:</Typography>
+            <Typography
+              sx={{
+                color: "#fff",
+                fontWeight: 700,
+                mt: 0.5,
+              }}
+            >
+              {p.title}
+            </Typography>
+          </Box>
 
           {/* caption */}
           <Box sx={{ mt: 1.25 }}>
@@ -146,70 +129,39 @@ export default function MobileMyCatalogueList({
           </Box>
 
           <Box sx={{ mt: 1 }}>
-          <Typography sx={labelSx}>Boxer</Typography>
+            <Typography sx={labelSx}>Boxer</Typography>
+            <Typography sx={dimSx}>{p.boxer_name}</Typography>
+            <Typography sx={dimSx}>{p.weight_class}</Typography>
+            <Typography sx={dimSx}>{p.boxer_weight_kg} kg</Typography>
+          </Box>
 
-          <Typography sx={dimSx}>
-            {p.boxer_name}
-          </Typography>
+          <Box sx={{ mt: 1 }}>
+            <Typography sx={labelSx}>Opponent</Typography>
+            <Typography sx={dimSx}>{p.opponent_name}</Typography>
+            <Typography sx={dimSx}>{p.opponent_weight_kg} kg</Typography>
+          </Box>
 
-          <Typography sx={dimSx}>
-            {p.weight_class}
-          </Typography>
+          <Box sx={{ mt: 1 }}>
+            <Typography sx={labelSx}>Sparring Location</Typography>
+            <Typography sx={dimSx}>{p.sparring_location}</Typography>
+          </Box>
 
-          <Typography sx={dimSx}>
-            {p.boxer_weight_kg} kg
-          </Typography>
-        </Box>
-
-        <Box sx={{ mt: 1 }}>
-  <Typography sx={labelSx}>Opponent</Typography>
-
-  <Typography sx={dimSx}>
-    {p.opponent_name}
-  </Typography>
-
-  <Typography sx={dimSx}>
-    {p.opponent_weight_kg} kg
-  </Typography>
-</Box>
-
-<Box sx={{ mt: 1 }}>
-  <Typography sx={labelSx}>
-    Sparring Location
-  </Typography>
-
-  <Typography sx={dimSx}>
-    {p.sparring_location}
-  </Typography>
-</Box>
-
-<Box
-  sx={{
-    display: "flex",
-    justifyContent: "space-between",
-    mt: 1,
-  }}
->
-  <Box>
-    <Typography sx={labelSx}>
-      Shorts
-    </Typography>
-
-    <Typography sx={dimSx}>
-      {p.shorts_color}
-    </Typography>
-  </Box>
-
-  <Box>
-    <Typography sx={labelSx}>
-      Gloves
-    </Typography>
-
-    <Typography sx={dimSx}>
-      {p.glove_color}
-    </Typography>
-  </Box>
-</Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              mt: 1,
+            }}
+          >
+            <Box>
+              <Typography sx={labelSx}>Shorts</Typography>
+              <Typography sx={dimSx}>{p.shorts_color}</Typography>
+            </Box>
+            <Box>
+              <Typography sx={labelSx}>Gloves</Typography>
+              <Typography sx={dimSx}>{p.glove_color}</Typography>
+            </Box>
+          </Box>
 
           {/* posted date */}
           <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
@@ -274,10 +226,15 @@ export default function MobileMyCatalogueList({
             </Box>
           </Box>
 
+          {/* spacer to push actions to the bottom if content length varies */}
+          <Box sx={{ flex: 1 }} />
+
           {/* sponsors + actions */}
           <Box
             sx={{
-              mt: 1.5,
+              mt: 2,
+              pt: 2,
+              borderTop: '1px solid rgba(255,255,255,0.08)',
               display: 'flex',
               alignItems: 'center',
               gap: 1.25,

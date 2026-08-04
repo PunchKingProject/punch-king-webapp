@@ -126,7 +126,7 @@ export async function deleteTeamPost(
 export async function getPostStats(): Promise<PostStats> {
   const { data } = await customFetch.get<
     Envelope<PostStats>
-  >('/post/post-stats');
+  >('/post/team-post-stats');
 
   return data.data;
 }

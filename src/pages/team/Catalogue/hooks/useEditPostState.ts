@@ -1,5 +1,4 @@
 import { useLocation, useSearchParams } from 'react-router-dom';
-
 import { usePostById } from './usePostById';
 
 import type {
@@ -12,7 +11,7 @@ export interface EditablePost {
 
   title: string;
   caption: string;
-  file_url: string |null;
+  file_url: string | null;
 
   boxer_name: string;
   weight_class: WeightClass | '';
@@ -28,30 +27,34 @@ export interface EditablePost {
   sparring_location: string;
 }
 
-function mapPost(post: TeamPost): EditablePost {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapPost(post: any): EditablePost {
   return {
     id: post.id,
 
     title: post.title ?? '',
     caption: post.caption ?? '',
-    file_url: post.file_url ?? null,
+    
+    // FIXED: Captures 'file' properly from the API
+    file_url: post.file ?? post.file_url ?? null, 
 
-    boxer_name: post.boxer_name ?? '',
-    weight_class: post.weight_class ?? '',
+    // FIXED: Added camelCase fallbacks in case the backend formats keys differently
+    boxer_name: post.boxer_name ?? post.boxerName ?? '',
+    weight_class: post.weight_class ?? post.weightClass ?? '',
 
-    boxer_weight_kg: Number(post.boxer_weight_kg ?? 0),
+    boxer_weight_kg: Number(post.boxer_weight_kg ?? post.boxerWeightKg ?? 0),
 
-    shorts_color: post.shorts_color ?? '',
-    glove_color: post.glove_color ?? '',
+    shorts_color: post.shorts_color ?? post.shortsColor ?? '',
+    glove_color: post.glove_color ?? post.gloveColor ?? '',
 
-    opponent_name: post.opponent_name ?? '',
-    opponent_weight_kg: Number(post.opponent_weight_kg ?? 0),
+    opponent_name: post.opponent_name ?? post.opponentName ?? '',
+    opponent_weight_kg: Number(post.opponent_weight_kg ?? post.opponentWeightKg ?? 0),
 
     opponent_shorts_color:
-      post.opponent_shorts_color ?? '',
+      post.opponent_shorts_color ?? post.opponentShortsColor ?? '',
 
     sparring_location:
-      post.sparring_location ?? '',
+      post.sparring_location ?? post.sparringLocation ?? '',
   };
 }
 

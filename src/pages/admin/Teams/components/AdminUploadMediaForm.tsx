@@ -38,21 +38,21 @@ import NoticeModal from '../../../../components/modal/NoticeModal.tsx';
 import { useDisclosure } from '../../../../hooks/useDisclosure.ts';
 import { getErrorMessage } from '../../../../utils/error/error.ts';
 import { WEIGHT_CLASSES, type WeightClass } from '../../../team/Catalogue/api/catalogue.types.ts';
-import { createAdminTeamPost, updateAdminTeamPost } from '../api/teams.api.ts'; // Ensure updateAdminTeamPost is created in this file
+import { createAdminTeamPost, updateAdminTeamPost } from '../api/teams.api.ts';
 
 const GOLD = '#f0c040';
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 type Props = {
   teamId: number;
-  editData?: any | null; // NEW: Accepts the post data for editing
+  editData?: any | null; 
   onSuccessCallback: () => void;
 };
 
 type FormValues = {
   title: string;
   caption: string;
-  file: File | string | null; // Allow string to support existing image/video URLs
+  file: File | string | null; 
   boxer_name: string;
   weight_class: WeightClass | '';
   boxer_weight_kg: number | '';
@@ -68,8 +68,13 @@ const validationSchema = Yup.object({
   title: Yup.string().trim().min(2, 'Title is too short.').max(120, 'Maximum 120 characters.').required('Title is required.'),
   caption: Yup.string().trim().min(2, 'Description is too short.').max(2000, 'Maximum 2,000 characters.').required('Description is required.'),
   boxer_name: Yup.string().trim().min(2, 'Boxer name is too short.').max(120, 'Maximum 120 characters.').required('Boxer name is required.'),
-  weight_class: Yup.string().oneOf(['lightweight', 'welterweight', 'middleweight'], 'Select a valid weight class.').required('Weight class is required.'),
-  boxer_weight_kg: Yup.number().typeError('Enter the boxer weight.').positive('Boxer weight must be greater than zero.').max(72.57, 'The supported divisions currently end at 72.57kg.').required('Boxer weight is required.'),
+  
+  // FIXED: Added 'others' to the allowed array
+  weight_class: Yup.string().oneOf(['lightweight', 'welterweight', 'middleweight', 'others'], 'Select a valid weight class.').required('Weight class is required.'),
+  
+  // FIXED: Increased the max weight to 200kg to accommodate heavier fighters
+  boxer_weight_kg: Yup.number().typeError('Enter the boxer weight.').positive('Boxer weight must be greater than zero.').max(200, 'Weight exceeds reasonable limits.').required('Boxer weight is required.'),
+  
   shorts_color: Yup.string().trim().max(100, 'Maximum 100 characters.').required('Boxer clothing/shorts information is required.'),
   glove_color: Yup.string().trim().max(100, 'Maximum 100 characters.').required('Glove colour is required.'),
   opponent_name: Yup.string().trim().max(120, 'Maximum 120 characters.'),
@@ -79,11 +84,11 @@ const validationSchema = Yup.object({
   file: Yup.mixed<File | string>()
     .required('Choose a sparring video or image.')
     .test('file-type', 'Only supported images or videos are allowed.', (file) => {
-      if (typeof file === 'string') return true; // Bypass for existing URLs
+      if (typeof file === 'string') return true; 
       return file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/'));
     })
     .test('file-size', 'Maximum media size is 10MB.', (file) => {
-      if (typeof file === 'string') return true; // Bypass for existing URLs
+      if (typeof file === 'string') return true; 
       return file instanceof File && file.size <= MAX_FILE_SIZE;
     }),
 });
@@ -105,7 +110,6 @@ export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallba
   const [isUploading, setIsUploading] = useState(false);
   const successModal = useDisclosure(false);
 
-  // Sync preview if editData changes
   useEffect(() => {
     setPreview(editData?.file_url || null);
   }, [editData]);
@@ -156,7 +160,6 @@ export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallba
 
       let fileUrl = '';
 
-      // Check if file is a newly uploaded File object or an existing URL string
       if (values.file instanceof File) {
         setUploadPercent(0);
         fileUrl = await uploadTeamImage(values.file, {
@@ -168,7 +171,7 @@ export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallba
 
         if (!fileUrl) throw new Error('File upload failed.');
       } else {
-        fileUrl = values.file; // It is an existing string URL, no need to re-upload
+        fileUrl = values.file; 
       }
 
       const payload = {
@@ -211,7 +214,7 @@ export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallba
       initialValues={initialFormValues}
       validationSchema={validationSchema}
       onSubmit={submitForm}
-      enableReinitialize // Important: allows Formik to reset when editData changes
+      enableReinitialize 
     >
       {({ values, errors, touched, isSubmitting, isValid, setFieldValue, handleChange, handleBlur }) => (
         <Form noValidate>
@@ -229,18 +232,39 @@ export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallba
                   onChange={(event) => void handleFileSelection(event.currentTarget.files?.[0], setFieldValue)}
                 />
 
+                {/* FIXED: Removed outer onClick and added Change Media Overlay */}
                 <Box
-                  onClick={() => inputRef.current?.click()}
-                  sx={{ minHeight: 260, border: `1px dashed ${GOLD}`, borderRadius: 2, bgcolor: '#080808', cursor: 'pointer', overflow: 'hidden', display: 'grid', placeItems: 'center' }}
+                  sx={{ position: 'relative', minHeight: 260, border: `1px dashed ${GOLD}`, borderRadius: 2, bgcolor: '#080808', overflow: 'hidden', display: 'grid', placeItems: 'center' }}
                 >
                   {preview ? (
-                    isVideo(values.file ?? preview) ? (
-                      <Box component='video' src={preview} controls onClick={(e) => e.stopPropagation()} sx={{ width: '100%', maxHeight: 400, objectFit: 'contain', bgcolor: '#000' }} />
-                    ) : (
-                      <Box component='img' src={preview} alt='Preview' sx={{ width: '100%', maxHeight: 400, objectFit: 'contain', bgcolor: '#000' }} />
-                    )
+                    <>
+                      {isVideo(values.file ?? preview) ? (
+                        <Box component='video' src={preview} controls onClick={(e) => e.stopPropagation()} sx={{ width: '100%', maxHeight: 400, objectFit: 'contain', bgcolor: '#000' }} />
+                      ) : (
+                        <Box component='img' src={preview} alt='Preview' sx={{ width: '100%', maxHeight: 400, objectFit: 'contain', bgcolor: '#000' }} />
+                      )}
+                      
+                      <Button
+                        variant="contained"
+                        onClick={() => inputRef.current?.click()}
+                        startIcon={<CloudUploadOutlinedIcon />}
+                        sx={{
+                          position: 'absolute',
+                          top: 16,
+                          right: 16,
+                          bgcolor: 'rgba(0,0,0,0.7)',
+                          color: GOLD,
+                          backdropFilter: 'blur(4px)',
+                          '&:hover': {
+                            bgcolor: 'rgba(0,0,0,0.9)',
+                          }
+                        }}
+                      >
+                        Change Media
+                      </Button>
+                    </>
                   ) : (
-                    <Stack spacing={1.5} alignItems='center' textAlign='center' sx={{ px: 2 }}>
+                    <Stack onClick={() => inputRef.current?.click()} spacing={1.5} alignItems='center' textAlign='center' sx={{ px: 2, cursor: 'pointer', width: '100%', height: '100%', justifyContent: 'center' }}>
                       <CloudUploadOutlinedIcon sx={{ color: GOLD, fontSize: 52 }} />
                       <Typography sx={{ color: '#fff', fontWeight: 800 }}>Select sparring media</Typography>
                       <Typography sx={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Click to choose a file from your device.</Typography>
@@ -281,12 +305,29 @@ export default function AdminUploadMediaForm({ teamId, editData, onSuccessCallba
                     <Select labelId='weight-class-label' name='weight_class' label='Weight class' value={values.weight_class} onChange={handleChange} onBlur={handleBlur}>
                       {WEIGHT_CLASSES.map((wc) => <MenuItem key={wc.value} value={wc.value}>{wc.label}</MenuItem>)}
                     </Select>
-                    
+                    {touched.weight_class && errors.weight_class && <FormHelperText>{String(errors.weight_class)}</FormHelperText>}
                   </FormControl>
-                  <TextField fullWidth type='number' name='boxer_weight_kg' label='Actual boxer weight (kg)' value={values.boxer_weight_kg} onChange={handleChange} onBlur={handleBlur} />
-                  <TextField fullWidth name='sparring_location' label='Sparring location' value={values.sparring_location} onChange={handleChange} onBlur={handleBlur} />
-                  <TextField fullWidth name='shorts_color' label='Boxer shorts/clothing colour' value={values.shorts_color} onChange={handleChange} onBlur={handleBlur} />
-                  <TextField fullWidth name='glove_color' label='Boxer glove colour' value={values.glove_color} onChange={handleChange} onBlur={handleBlur} />
+
+                  {/* FIXED: Added inputProps mapping with max: 200 */}
+                  <TextField 
+                    fullWidth 
+                    type='number' 
+                    name='boxer_weight_kg' 
+                    label='Actual boxer weight (kg)' 
+                    value={values.boxer_weight_kg} 
+                    onChange={handleChange} 
+                    onBlur={handleBlur}
+                    inputProps={{
+                      min: 0.1,
+                      max: 200,
+                      step: 0.01,
+                    }}
+                    error={touched.boxer_weight_kg && Boolean(errors.boxer_weight_kg)} 
+                    helperText={touched.boxer_weight_kg && errors.boxer_weight_kg}
+                  />
+                  <TextField fullWidth name='sparring_location' label='Sparring location' value={values.sparring_location} onChange={handleChange} onBlur={handleBlur} error={touched.sparring_location && Boolean(errors.sparring_location)} helperText={touched.sparring_location && errors.sparring_location} />
+                  <TextField fullWidth name='shorts_color' label='Boxer shorts/clothing colour' value={values.shorts_color} onChange={handleChange} onBlur={handleBlur} error={touched.shorts_color && Boolean(errors.shorts_color)} helperText={touched.shorts_color && errors.shorts_color} />
+                  <TextField fullWidth name='glove_color' label='Boxer glove colour' value={values.glove_color} onChange={handleChange} onBlur={handleBlur} error={touched.glove_color && Boolean(errors.glove_color)} helperText={touched.glove_color && errors.glove_color} />
                 </Box>
               </CardContent>
             </Card>

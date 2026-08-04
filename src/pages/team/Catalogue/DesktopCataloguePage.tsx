@@ -10,8 +10,8 @@ import { toast } from 'react-toastify';
 import DesktopMyCatalogueList from './components/DesktopMyCatalogueList.tsx';
 import { useNavigate } from 'react-router-dom';
 import FreeTrialBanner from "./components/FreeTrialBanner.tsx";
-import {useDeletePost} from "./hooks/useDeletePost.ts";
-import {useState} from "react";
+import { useDeletePost } from "./hooks/useDeletePost.ts";
+import { useState } from "react";
 import ConfirmDialog from "./components/ConfirmDialog.tsx";
 import PostDetailsModal from '../../admin/Teams/components/PostDetailsModal.tsx';
 
@@ -27,7 +27,6 @@ const contentPaddingSx = {
   },
 };
 
-// DesktopCataloguePage.tsx
 export default function DesktopCataloguePage() {
   const navigate = useNavigate();
   const { data, isLoading } = usePostStats();
@@ -75,19 +74,17 @@ export default function DesktopCataloguePage() {
           posts={posts ?? []}
           loading={postsLoading}
           onUpload={() => navigate(ROUTES.CATALOGUE_UPLOAD)}
+          
+          // FIXED: Passing the entire post object (p) to the edit page state
           onUpdate={(p) => navigate(`${ROUTES.CATALOGUE_UPLOAD}?edit=${p.id}`, {
-            state: {
-              id: p.id,
-              title: p.title,
-              caption: p.caption,
-              file_url: p.file_url,
-            },
+            state: p, 
           })}
+          
           onDelete={(p) => setPendingDeleteId(p.id)}
           onViewSponsors={() => {
             // TODO: open sponsor list modal for `p`
           }}
-          onViewPost={(p) => setSelectedPost(p)} // Re-wired view link
+          onViewPost={(p) => setSelectedPost(p)}
         />
       </Box>
 

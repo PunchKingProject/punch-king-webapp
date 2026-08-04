@@ -165,19 +165,21 @@ function buildValidationSchema(
           'lightweight',
           'welterweight',
           'middleweight',
+          'others'
         ],
         'Select a valid weight class.'
       )
       .required('Weight class is required.'),
 
+    // FIXED: Increased weight to 200 to allow heavyweights in the "Others" category
     boxer_weight_kg: Yup.number()
       .typeError('Enter the boxer weight.')
       .positive(
         'Boxer weight must be greater than zero.'
       )
       .max(
-        72.57,
-        'The supported divisions currently end at 72.57kg.'
+        200, 
+        'Weight exceeds reasonable limits.'
       )
       .required('Boxer weight is required.'),
 
@@ -211,7 +213,7 @@ function buildValidationSchema(
         'Opponent weight must be greater than zero.'
       )
       .max(
-        150,
+        200, // Also increased opponent limit just in case
         'Opponent weight appears invalid.'
       )
       .optional(),
@@ -410,7 +412,7 @@ export default function UploadMediaForm({
         );
       }
 
-      if (!fileUrl) {
+      if (!fileUrl && !isEditMode) {
         throw new Error(
           'A media file is required.'
         );
@@ -457,7 +459,7 @@ export default function UploadMediaForm({
           post_id: editPost.id,
           ...commonPayload,
           ...(values.file
-            ? { file_url: fileUrl }
+            ? { file: fileUrl } 
             : {}),
         };
 
@@ -465,7 +467,7 @@ export default function UploadMediaForm({
       } else {
         const payload: CreatePostPayload = {
           ...commonPayload,
-          file_url: fileUrl,
+          file: fileUrl,
         };
 
         await createPost(payload);
@@ -556,15 +558,12 @@ export default function UploadMediaForm({
                 />
 
                 <Box
-                  onClick={() =>
-                    inputRef.current?.click()
-                  }
                   sx={{
+                    position: 'relative',
                     minHeight: 280,
                     border: `1px dashed ${GOLD}`,
                     borderRadius: 2,
                     bgcolor: '#080808',
-                    cursor: 'pointer',
                     overflow: 'hidden',
                     display: 'grid',
                     placeItems: 'center',
@@ -576,42 +575,64 @@ export default function UploadMediaForm({
                   }}
                 >
                   {preview ? (
-                    isVideo(
-                      values.file ?? preview
-                    ) ? (
-                      <Box
-                        component='video'
-                        src={preview}
-                        controls
-                        onClick={(event) =>
-                          event.stopPropagation()
-                        }
+                    <>
+                      {isVideo(
+                        values.file ?? preview
+                      ) ? (
+                        <Box
+                          component='video'
+                          src={preview}
+                          controls
+                          onClick={(event) =>
+                            event.stopPropagation()
+                          }
+                          sx={{
+                            width: '100%',
+                            maxHeight: 500,
+                            objectFit: 'contain',
+                            bgcolor: '#000',
+                          }}
+                        />
+                      ) : (
+                        <Box
+                          component='img'
+                          src={preview}
+                          alt='Selected post preview'
+                          sx={{
+                            width: '100%',
+                            maxHeight: 500,
+                            objectFit: 'contain',
+                            bgcolor: '#000',
+                          }}
+                        />
+                      )}
+                      
+                      <Button
+                        variant="contained"
+                        onClick={() => inputRef.current?.click()}
+                        startIcon={<CloudUploadOutlinedIcon />}
                         sx={{
-                          width: '100%',
-                          maxHeight: 500,
-                          objectFit: 'contain',
-                          bgcolor: '#000',
+                          position: 'absolute',
+                          top: 16,
+                          right: 16,
+                          bgcolor: 'rgba(0,0,0,0.7)',
+                          color: GOLD,
+                          backdropFilter: 'blur(4px)',
+                          '&:hover': {
+                            bgcolor: 'rgba(0,0,0,0.9)',
+                          }
                         }}
-                      />
-                    ) : (
-                      <Box
-                        component='img'
-                        src={preview}
-                        alt='Selected post preview'
-                        sx={{
-                          width: '100%',
-                          maxHeight: 500,
-                          objectFit: 'contain',
-                          bgcolor: '#000',
-                        }}
-                      />
-                    )
+                      >
+                        Change Media
+                      </Button>
+                    </>
                   ) : (
                     <Stack
+                      onClick={() => inputRef.current?.click()}
                       spacing={1.5}
                       alignItems='center'
                       textAlign='center'
-                      sx={{ px: 2 }}
+                      sx={{ px: 2, cursor: 'pointer', width: '100%', height: '100%', justifyContent: 'center' }}
                     >
                       <CloudUploadOutlinedIcon
                         sx={{
@@ -879,6 +900,7 @@ export default function UploadMediaForm({
                       )}
                   </FormControl>
 
+                  {/* FIXED: Increased max to 200 in the HTML input */}
                   <TextField
                     fullWidth
                     type='number'
@@ -891,7 +913,7 @@ export default function UploadMediaForm({
                     onBlur={handleBlur}
                     inputProps={{
                       min: 0.1,
-                      max: 72.57,
+                      max: 200, 
                       step: 0.01,
                     }}
                     error={
@@ -1041,6 +1063,7 @@ export default function UploadMediaForm({
                     }
                   />
 
+                  {/* FIXED: Increased max to 200 in the HTML input */}
                   <TextField
                     fullWidth
                     type='number'
@@ -1053,6 +1076,7 @@ export default function UploadMediaForm({
                     onBlur={handleBlur}
                     inputProps={{
                       min: 0.1,
+                      max: 200,
                       step: 0.01,
                     }}
                     error={
