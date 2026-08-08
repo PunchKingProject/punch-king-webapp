@@ -4,15 +4,46 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
-// Temporary mock data showcasing top teams meeting the criteria (complete profile & video uploaded)
-const mockTopTeams = Array.from({ length: 10 }).map((_, i) => ({
-  id: i + 1,
+// Specific top 3 teams based on your image details
+const specificTopTeams = [
+  {
+    id: 1,
+    team_name: 'Jericho Boxing Club',
+    sponsors: 60,
+    weight_class: 'Country: Nairobi Kenya',
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 2,
+    team_name: 'Ejigbo Boxing Club',
+    sponsors: 43,
+    weight_class: 'Country: Lagos Nigeria',
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 3,
+    team_name: 'Denzel Silvanus',
+    sponsors: 38,
+    weight_class: 'Country: Windhoek Namibia',
+    has_video: true,
+    profile_complete: true,
+  }
+];
+
+// Remaining 7 placeholder teams (generated with lower scores so they stay below Rank 3)
+const generatedTeams = Array.from({ length: 7 }).map((_, i) => ({
+  id: i + 4,
   team_name: `Team ${String.fromCharCode(65 + i)} Boxing Club`,
-  sponsors: Math.floor(Math.random() * 60) + 15,
+  sponsors: Math.floor(Math.random() * 35) + 1, 
   weight_class: i % 2 === 0 ? 'Professional Welterweight' : 'Professional Lightweight',
   has_video: true,
   profile_complete: true,
 })).sort((a, b) => b.sponsors - a.sponsors);
+
+// Combine them into the final list
+const mockTopTeams = [...specificTopTeams, ...generatedTeams];
 
 export default function QualificationPoll() {
   return (
