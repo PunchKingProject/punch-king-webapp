@@ -121,7 +121,7 @@ export default function QualificationPoll() {
                     Total Sponsorships
                   </Typography>
                   <Typography sx={{ color: '#EFAF00', fontSize: 18, fontWeight: 900 }}>
-                    {team.sponsors} Units
+                    {team.sponsors} Chips
                   </Typography>
                 </Box>
 
