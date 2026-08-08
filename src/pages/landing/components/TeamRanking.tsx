@@ -19,29 +19,29 @@ import ROUTES from '../../../routes/routePath.ts';
 const rankedTeams = [
   {
     rank: 1,
-    name: 'King of the Jungle Boxing Academy',
-    license: 'NBBofC/30/30',
-    country: 'Nigeria',
+    name: 'Jericho Boxing Club',
+    country: 'Nairobi Kenya',
+    countryCode: 'ke', // Added for the flag image
     sponsorships: 60,
     sponsors: 20,
     status: 'Top Ranked',
   },
   {
     rank: 2,
-    name: 'Elite Warriors Boxing Team',
-    license: 'Pending Verification',
-    country: 'Africa',
-    sponsorships: 42,
-    sponsors: 14,
+    name: 'Ejigbo Boxing Club',
+    country: 'Lagos Nigeria',
+    countryCode: 'ng', // Added for the flag image
+    sponsorships: 43,
+    sponsors: 12,
     status: 'Rising Team',
   },
   {
     rank: 3,
-    name: 'Golden Fist Boxing Club',
-    license: 'Pending Verification',
-    country: 'Africa',
-    sponsorships: 31,
-    sponsors: 9,
+    name: 'Denzel Silvanus',
+    country: 'Windhoek Namibia',
+    countryCode: 'na', // Added for the flag image
+    sponsorships: 38,
+    sponsors: 10,
     status: 'Contender',
   },
 ];
@@ -165,18 +165,38 @@ const TeamRanking = () => {
                   </Typography>
                 </Stack>
 
-                <Typography
+                {/* Updated Name Layout with CDN Flag Image */}
+                <Box
                   sx={{
-                    color: '#fff',
-                    fontWeight: 900,
-                    fontSize: '1.35rem',
-                    lineHeight: 1.25,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
                     mb: 1,
                     minHeight: { md: 68 },
                   }}
                 >
-                  {team.name}
-                </Typography>
+                  <Box
+                    component="img"
+                    src={`https://flagcdn.com/w40/${team.countryCode}.png`}
+                    srcSet={`https://flagcdn.com/w80/${team.countryCode}.png 2x`}
+                    alt={`${team.country} flag`}
+                    sx={{
+                      width: 32,
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.3)',
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      color: '#fff',
+                      fontWeight: 900,
+                      fontSize: '1.35rem',
+                      lineHeight: 1.25,
+                    }}
+                  >
+                    {team.name}
+                  </Typography>
+                </Box>
 
                 <Typography
                   sx={{
@@ -195,8 +215,6 @@ const TeamRanking = () => {
                     lineHeight: 1.6,
                   }}
                 >
-                  License: {team.license}
-                  <br />
                   Country: {team.country}
                 </Typography>
 
@@ -215,7 +233,6 @@ const TeamRanking = () => {
                   fullWidth
                   endIcon={<ArrowForwardIcon />}
                   onClick={() => 
-                    // ✅ Redirects to correct constant and passes the intended destination in the state
                     navigate(ROUTES.SIGN_IN, { 
                       state: { from: '/user/ranked-team' } 
                     })

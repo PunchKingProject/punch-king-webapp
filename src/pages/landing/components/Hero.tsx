@@ -1,3 +1,4 @@
+// src/pages/landing/components/Hero.tsx
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import { newHeroImage } from '../../../assets';
 import HeroImageWithLoader from '../../../components/images/HeroImagesWithLoader.tsx';
@@ -7,6 +8,7 @@ import TeamRanking from './TeamRanking.tsx';
 import TeamSponsorship from './TeamSponsorship.tsx';
 import TeamSubscription from './TeamSubscription.tsx';
 import WeightClassCatalogue from './WeightClassCatalogue.tsx';
+import QualificationPoll from './QualificationPoll.tsx'; // ⬅️ Imported inside Hero
 
 const Hero = () => {
   const isTabletUp = useMediaQuery('(min-width:910px)');
@@ -21,12 +23,16 @@ const Hero = () => {
         <MobileHero />
       </Box>
 
-      {/* Landing page sections */}
+      {/* Both sections placed at the top of the landing page inside Hero */}
       <WeightClassCatalogue />
+      <QualificationPoll />
+
+      {/* Rest of the hero sections */}
       <TeamRanking />
       <About />
       <TeamSponsorship />
-      <TeamSubscription />
+      {/* ⬅️ Commented out to hide subscription plans from the landing page */}
+      {/* <TeamSubscription /> */}
     </>
   );
 };

@@ -1,3 +1,4 @@
+// src/pages/landing/LandingPage.tsx
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Fab, Tooltip } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
@@ -85,13 +86,7 @@ const LandingPage = () => {
     <>
       <Navbar onNav={handleNav} />
 
-      {/* Hero includes:
-          Professional Divisions
-          Team Rankings
-          About
-          Sponsorship
-          Subscription
-      */}
+      {/* Hero now handles the header, Weight Class Catalogue, and Qualification Poll at the top */}
       <Hero />
 
       {/* Public team catalogue */}
@@ -117,20 +112,12 @@ const LandingPage = () => {
           onClick={() => setBannerOpen(true)}
           sx={{
             position: 'fixed',
-            right: {
-              xs: 16,
-              sm: 24,
-            },
-            bottom: {
-              xs: 16,
-              sm: 24,
-            },
+            right: { xs: 16, sm: 24 },
+            bottom: { xs: 16, sm: 24 },
             bgcolor: '#EFAF00',
             color: '#000',
             zIndex: 1300,
-            '&:hover': {
-              bgcolor: '#FFC533',
-            },
+            '&:hover': { bgcolor: '#FFC533' },
           }}
           aria-label='Open championship details'
         >

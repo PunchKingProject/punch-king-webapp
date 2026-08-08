@@ -61,6 +61,12 @@ const WeightClassCatalogue = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 boxShadow: '0 20px 50px rgba(0,0,0,.45)',
+                transition: 'transform 0.25s ease-in-out, border-color 0.25s ease-in-out, box-shadow 0.25s ease-in-out',
+                '&:hover': {
+                  transform: 'translateY(-6px)',
+                  borderColor: colors.Accent,
+                  boxShadow: '0 25px 60px rgba(239,175,0,0.15)',
+                },
               }}
             >
               <CardContent sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column' }}>
