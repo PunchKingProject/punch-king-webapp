@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { useMemo, useState, useEffect } from 'react';
+import { Box, Typography, Snackbar, Alert } from '@mui/material';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import type { DateRange } from 'react-day-picker';
@@ -78,12 +78,21 @@ export default function DesktopMySponsorshipsPage() {
 
   const total = history?.metadata.total_count ?? rows.length;
 
-
-
   const myUnits = data?.sponsorship_balance ?? 0;
   const spentUnits = data?.spent_units ?? 0;
   const costOfUnits = data?.total_amount_spent ?? 0;
   const sponsoredTeams = data?.distinct_teams_sponsored ?? 0;
+
+  // NEW — Welcome Bonus Notification State & Logic
+  const [showBonusMessage, setShowBonusMessage] = useState(false);
+
+  useEffect(() => {
+    const hasSeenBonus = localStorage.getItem('hasSeenSponsorshipBonus');
+    if (!hasSeenBonus) {
+      setShowBonusMessage(true);
+      localStorage.setItem('hasSeenSponsorshipBonus', 'true');
+    }
+  }, []);
 
   return (
     <>
@@ -175,6 +184,30 @@ export default function DesktopMySponsorshipsPage() {
           }}
         />
       </Box>
+
+      {/* NEW — Beautiful Welcome Bonus Snackbar on the Top Right */}
+      <Snackbar
+        open={showBonusMessage}
+        autoHideDuration={8000}
+        onClose={() => setShowBonusMessage(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        sx={{ mt: 8 }} // Adds a little margin top so it doesn't overlap the header
+      >
+        <Alert
+          onClose={() => setShowBonusMessage(false)}
+          severity="success"
+          variant="filled"
+          sx={{
+            width: '100%',
+            fontWeight: 500,
+            fontSize: '1rem',
+            boxShadow: 3, // Adds a nice shadow to make it pop
+            borderRadius: 2
+          }}
+        >
+          Welcome! 🎉 You've been rewarded with 50 sponsorship points as a registration bonus!
+        </Alert>
+      </Snackbar>
     </>
   );
 }
