@@ -144,7 +144,7 @@ export default function DesktopMySponsorshipsPage() {
           onBuy={() => {
             // plug your buy flow here
             // e.g. open modal
-            console.log('Buy sponsor units');
+            console.log('Buy sponsor Chips');
             navigate(ROUTES.USER_BUY_SPONSORS);
           }}
           // onViewSponsored={() => {
@@ -205,7 +205,7 @@ export default function DesktopMySponsorshipsPage() {
             borderRadius: 2
           }}
         >
-          Welcome! 🎉 You've been rewarded with 50 sponsorship points as a registration bonus!
+          Welcome! 🎉 You've been rewarded with 50 sponsorship Chips as a registration bonus!
         </Alert>
       </Snackbar>
     </>
