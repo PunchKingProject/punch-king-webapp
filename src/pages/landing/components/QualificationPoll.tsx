@@ -4,46 +4,89 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
-// Specific top 3 teams based on your image details
-const specificTopTeams = [
+// All 10 teams now uniformly display their Professional Weight Categories
+const mockTopTeams = [
   {
     id: 1,
     team_name: 'Jericho Boxing Club',
-    sponsors: 60,
-    weight_class: 'Country: Nairobi Kenya',
+    sponsors: 95,
+    weight_class: 'Professional Lightweight', // Updated based on DB
     has_video: true,
     profile_complete: true,
   },
   {
     id: 2,
     team_name: 'Ejigbo Boxing Club',
-    sponsors: 43,
-    weight_class: 'Country: Lagos Nigeria',
+    sponsors: 90,
+    weight_class: 'Professional Welterweight', 
     has_video: true,
     profile_complete: true,
   },
   {
     id: 3,
     team_name: 'Denzel Silvanus',
-    sponsors: 38,
-    weight_class: 'Country: Windhoek Namibia',
+    sponsors: 85,
+    weight_class: 'Professional Welterweight', // Updated based on DB
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 4,
+    team_name: 'Suleiman jafaru',
+    sponsors: 80,
+    weight_class: 'Professional Welterweight', // Updated based on DB
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 5,
+    team_name: 'Moses Malagu',
+    sponsors: 75, 
+    weight_class: 'Professional Lightweight',
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 6,
+    team_name: 'EmmieGold',
+    sponsors: 70,
+    weight_class: 'Professional Welterweight',
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 7,
+    team_name: 'Lucky Boy',
+    sponsors: 65,
+    weight_class: 'Professional Lightweight',
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 8,
+    team_name: 'Kevinso',
+    sponsors: 60,
+    weight_class: 'Professional Welterweight',
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 9,
+    team_name: 'Serikimalagu1#',
+    sponsors: 55,
+    weight_class: 'Professional Lightweight',
+    has_video: true,
+    profile_complete: true,
+  },
+  {
+    id: 10,
+    team_name: 'R_ley202',
+    sponsors: 50,
+    weight_class: 'Professional Welterweight',
     has_video: true,
     profile_complete: true,
   }
 ];
-
-// Remaining 7 placeholder teams (generated with lower scores so they stay below Rank 3)
-const generatedTeams = Array.from({ length: 7 }).map((_, i) => ({
-  id: i + 4,
-  team_name: `Team ${String.fromCharCode(65 + i)} Boxing Club`,
-  sponsors: Math.floor(Math.random() * 35) + 1, 
-  weight_class: i % 2 === 0 ? 'Professional Welterweight' : 'Professional Lightweight',
-  has_video: true,
-  profile_complete: true,
-})).sort((a, b) => b.sponsors - a.sponsors);
-
-// Combine them into the final list
-const mockTopTeams = [...specificTopTeams, ...generatedTeams];
 
 export default function QualificationPoll() {
   return (
