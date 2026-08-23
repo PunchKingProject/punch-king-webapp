@@ -115,7 +115,7 @@ export default function TeamContentUploadWarningDialog() {
               lineHeight: 1.6,
             }}
           >
-            Please note that you must upload at least one fighter/catalogue content to activate your team account and unlock full access to your dashboard features.
+            Please note that you must upload at least one fighter/video content to activate your team account and unlock full access to your dashboard features.
           </Typography>
         </Box>
       </DialogContent>
