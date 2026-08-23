@@ -24,8 +24,9 @@ export default function TeamContentUploadWarningDialog() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        // Fetch team personal stats to check 'has_content'
-        const response = await fetch('/api/team/personal-stats', {
+        // Use absolute URL or your API base url for local/production environment
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+        const response = await fetch(`${apiBaseUrl}/user/team-personal-stats`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
