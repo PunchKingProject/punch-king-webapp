@@ -19,17 +19,23 @@ import CustomAuthButton from '../../../components/buttons/CustomAuthButton.tsx';
 import { withErrorToast } from '../../../utils/error/onError.ts';
 
 function Step1() {
-  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [welcomeModalOpen, setWelcomeModalOpen] = useState(false); // ⬅️ State for the team welcome notice
   const [lastEmail, setLastEmail] = useState<string>('');
   const [sp] = useSearchParams();
 
+  const raw = sp.get('flow') ?? '';
+  const token = raw.split(/[?&]/)[0].toLowerCase();
+  const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
 
-const raw = sp.get('flow') ?? '';
-const token = raw.split(/[?&]/)[0].toLowerCase();
-const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
+  // ⬅️ Automatically trigger the NoticeModal for teams on page load
+  useEffect(() => {
+    if (flow === 'team') {
+      setWelcomeModalOpen(true);
+    }
+  }, [flow]);
 
   const initialValues = {
     email: '',
@@ -44,26 +50,18 @@ const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
   const handleSubmit = (values: typeof initialValues) => {
     console.log('Login values:', values);
     dispatch(mergeDraft({ step1: values }));
-    // navigate(`/sign-up/step2?`);
 
     setLastEmail(values.email);
 
-    // call backend to queue verification email
     mutation.mutate({
       email: values.email,
       name: values.username,
-      role: flow, // 'sponsor' | 'team'
+      role: flow,
     });
   };
 
   const handleContinueFromModal = () => {
-    // Try to open their inbox
     openInbox(lastEmail);
-
-    // Optional: also navigate to step2 right away OR leave them on step1
-    // If your flow requires email verification link to continue, don't navigate.
-    // If you want to let them proceed and guard with SignupGuard on reload, do:
-    // navigate(`/sign-up/step2?${params.toString()}`);
   };
 
   const mutation = useMutation({
@@ -79,12 +77,21 @@ const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
         'Failed to send verification email: ' + (err as Error).message
       );
     }),
-    // optional: show a toast / set form error on failure
   });
 
   return (
     <>
-      {/* Modal */}
+      {/* Team Welcome Notice Modal */}
+      <NoticeModal
+        open={welcomeModalOpen}
+        onClose={() => setWelcomeModalOpen(false)}
+        onContinue={() => setWelcomeModalOpen(false)}
+        title='IMPORTANT NOTICE'
+        message='Welcome to Punch King! To complete your team registration and get verified, you must update your profile information and upload your boxer/fighter sparring contents.'
+        continueLabel='Got It, Let’s Go!'
+      />
+
+      {/* Email Verification Notice Modal */}
       <NoticeModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -108,7 +115,6 @@ const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
         <Box
           sx={{
             width: '209px',
-            // border: '2px solid red',
             margin: '0px auto',
             marginBottom: '-50px',
           }}
@@ -131,7 +137,6 @@ const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
           enableReinitialize
         >
           {(formik) => {
-            // OPTIONAL: autosave to Redux/localStorage as they type (debounced)
             const autoSave = useMemo(
               () =>
                 debounce((vals) => dispatch(mergeDraft({ step1: vals })), 400),
@@ -146,7 +151,6 @@ const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
                   width: '100%',
                   maxWidth: 400,
                   padding: '0px 40px',
-                  // border: '2px solid red',
                 }}
               >
                 <FormikTextField
@@ -165,13 +169,7 @@ const flow: 'sponsor' | 'team' = token === 'team' ? 'team' : 'sponsor';
                   }}
                 />
 
-                <Box
-                  sx={
-                    {
-                      // border: '2px solid red',
-                    }
-                  }
-                >
+                <Box sx={{}}>
                   <CustomAuthButton
                     fullWidth
                     type='submit'

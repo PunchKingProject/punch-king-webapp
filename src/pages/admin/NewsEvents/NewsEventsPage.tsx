@@ -15,10 +15,14 @@ import {
   Paper,
   IconButton,
   MenuItem,
+  InputAdornment,
+  TablePagination,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import SearchIcon from '@mui/icons-material/Search';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Form, Formik } from 'formik';
 
 import { showError } from '../../../utils/error/toastError.ts';
@@ -35,7 +39,7 @@ interface Post {
   media_url?: string;
   caption?: string; 
   file?: string;    
-  file_url?: string; // Added to interface
+  file_url?: string; 
 }
 
 export default function NewsEventsPage() {
@@ -45,6 +49,11 @@ export default function NewsEventsPage() {
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
+  // Search and Pagination State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const fetchPosts = async () => {
     try {
       setLoading(true);
@@ -52,9 +61,9 @@ export default function NewsEventsPage() {
       
       const responseData = res.data?.data || res.data;
 
-      // FIX 1: Added p.file_url so the Admin table and Edit modal can actually see the saved image!
       const mapBackendToFrontend = (data: any[]) => data.map((p: any) => ({
         ...p,
+        category: p.category || p.Category || p.type || p.Type || p.tag || p.Tag || 'Tournament',
         content: p.content || p.caption || p.Caption || '',
         media_url: p.file_url || p.media_url || p.file || p.File || '' 
       }));
@@ -64,7 +73,6 @@ export default function NewsEventsPage() {
       } else if (responseData && Array.isArray(responseData.posts)) {
         setPosts(mapBackendToFrontend(responseData.posts));
       } else {
-        console.warn('Backend did not return an array:', res.data);
         setPosts([]); 
       }
     } catch (err) {
@@ -102,12 +110,22 @@ export default function NewsEventsPage() {
     }
   };
 
+  // --- Filtering & Sorting Logic ---
+  const filteredAndSortedPosts = posts
+    .filter((p) => 
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+    .sort((a, b) => Number(b.id) - Number(a.id)); // Sorts newest (highest ID) to top
+
+  const paginatedPosts = filteredAndSortedPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#000' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden', bgcolor: '#000' }}>
       <SideBar />
 
-      <Box sx={{ flex: 1, p: { xs: 2, md: 5 }, width: '100%', overflowX: 'hidden' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+      <Box sx={{ flex: 1, p: { xs: 2, md: 5 }, width: '100%', height: '100vh', overflowY: 'auto' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
           <Typography sx={{ color: '#fff', fontSize: 32, fontWeight: 900 }}>
             News & Events
           </Typography>
@@ -125,6 +143,33 @@ export default function NewsEventsPage() {
           >
             + Create New Post
           </Button>
+        </Box>
+
+        {/* Search Bar */}
+        <Box sx={{ mb: 3 }}>
+          <TextField
+            fullWidth
+            placeholder="Search posts by title or category..."
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(0);
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: '#888' }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ 
+              maxWidth: 500,
+              '& .MuiInputBase-root': { bgcolor: '#1A1A1A', color: '#eee', borderRadius: 2 },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#333' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: gold },
+            }}
+          />
         </Box>
 
         <TableContainer component={Paper} sx={{ bgcolor: '#1A1A1A', border: '1px solid #333', borderRadius: 2 }}>
@@ -145,17 +190,17 @@ export default function NewsEventsPage() {
                     <CircularProgress sx={{ color: gold }} />
                   </TableCell>
                 </TableRow>
-              ) : !Array.isArray(posts) || posts.length === 0 ? (
+              ) : paginatedPosts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center" sx={{ color: '#888', py: 5, borderColor: '#333' }}>
-                    No posts found. Click "Create New Post" to publish an update.
+                    {searchQuery ? 'No posts match your search.' : 'No posts found. Click "Create New Post" to publish an update.'}
                   </TableCell>
                 </TableRow>
               ) : (
-                posts.map((post) => (
+                paginatedPosts.map((post) => (
                   <TableRow key={post.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                     <TableCell sx={{ color: '#eee', borderColor: '#333' }}>{post.id}</TableCell>
-                    <TableCell sx={{ color: gold, borderColor: '#333', fontWeight: 600 }}>{post.category || 'Uncategorized'}</TableCell>
+                    <TableCell sx={{ color: gold, borderColor: '#333', fontWeight: 600 }}>{post.category || 'Tournament'}</TableCell>
                     <TableCell sx={{ color: '#eee', borderColor: '#333', fontWeight: 600 }}>{post.title}</TableCell>
                     <TableCell sx={{ color: '#aaa', borderColor: '#333' }}>
                       {post.content?.length > 60 ? `${post.content.substring(0, 60)}...` : post.content}
@@ -176,6 +221,24 @@ export default function NewsEventsPage() {
               )}
             </TableBody>
           </Table>
+          
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={filteredAndSortedPosts.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(e, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(e) => {
+              setRowsPerPage(parseInt(e.target.value, 10));
+              setPage(0);
+            }}
+            sx={{
+              color: '#eee',
+              borderTop: '1px solid #333',
+              '.MuiTablePagination-selectIcon': { color: gold },
+            }}
+          />
         </TableContainer>
       </Box>
 
@@ -203,7 +266,7 @@ export default function NewsEventsPage() {
                 />
               )}
               <Typography sx={{ color: gold, fontSize: 14, fontWeight: 800, textTransform: 'uppercase' }}>
-                {selectedPost.category || 'Uncategorized'}
+                {selectedPost.category || 'Tournament'}
               </Typography>
               <Typography sx={{ color: '#fff', fontSize: 22, fontWeight: 700, mt: -2 }}>{selectedPost.title}</Typography>
               <Typography sx={{ color: '#ccc', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{selectedPost.content}</Typography>
@@ -216,7 +279,7 @@ export default function NewsEventsPage() {
                 category: selectedPost?.category || 'Tournament', 
                 title: selectedPost?.title || '', 
                 content: selectedPost?.content || '',
-                media_url: selectedPost?.media_url || '' 
+                file: null as File | null, 
               }}
               validate={(vals) => {
                 const errs: any = {};
@@ -226,43 +289,44 @@ export default function NewsEventsPage() {
                 return errs;
               }}
               onSubmit={async (vals, { setSubmitting }) => {
-                try {
-                  // FIX 2: Send all naming variations so the Go backend Update DTO never misses it
-                  const securePayload = {
-                    ...vals,
-                    caption: vals.content,
-                    file: vals.media_url,
-                    file_url: vals.media_url 
-                  };
+  try {
+    const formData = new FormData();
+    formData.append('category', vals.category);
+    formData.append('title', vals.title);
+    formData.append('content', vals.content);
+    formData.append('caption', vals.content); 
+    
+    // Attach the raw image file if selected
+    if (vals.file) {
+      formData.append('file', vals.file); 
+    }
 
-                  if (modalMode === 'create') {
-                    await customFetch.post('/admin/news/', securePayload);
-                    alert('Post published successfully!');
-                  } else if (modalMode === 'edit' && selectedPost) {
-                    const parsedId = typeof selectedPost.id === 'string' ? parseInt(selectedPost.id, 10) : selectedPost.id;
-
-                    const updatePayload = {
-                      ...securePayload,
-                      id: parsedId,
-                      ID: parsedId,
-                      post_id: parsedId,
-                      postId: parsedId,
-                    };
-                    
-                    await customFetch.patch('/admin/news/', updatePayload);
-                    alert('Post updated successfully!');
-                  }
-                  fetchPosts();
-                  handleCloseModal();
-                } catch (err: any) {
-                  console.error('Update failed response:', err.response?.data || err);
-                  showError(err);
-                } finally {
-                  setSubmitting(false);
-                }
-              }}
+    if (modalMode === 'create') {
+      await customFetch.post('/admin/news/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      alert('Post published successfully!');
+    } else if (modalMode === 'edit' && selectedPost) {
+      const parsedId = typeof selectedPost.id === 'string' ? parseInt(selectedPost.id, 10) : selectedPost.id;
+      formData.append('id', String(parsedId));
+      
+      await customFetch.patch(`/admin/news/${parsedId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      alert('Post updated successfully!');
+    }
+    
+    fetchPosts();
+    handleCloseModal();
+  } catch (err: any) {
+    console.error('Update failed response:', err.response?.data || err);
+    showError(err);
+  } finally {
+    setSubmitting(false);
+  }
+}}
             >
-              {({ values, handleChange, handleBlur, touched, errors, isSubmitting, handleSubmit }) => (
+              {({ values, handleChange, handleBlur, touched, errors, isSubmitting, handleSubmit, setFieldValue }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <TextField
@@ -297,16 +361,37 @@ export default function NewsEventsPage() {
                       sx={{ '& .MuiInputBase-root': { bgcolor: '#101010', color: '#eee' } }}
                     />
 
-                    <TextField
-                      fullWidth
-                      name="media_url"
-                      label="Feature Image URL (Optional)"
-                      value={values.media_url}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder="https://example.com/image.jpg"
-                      sx={{ '& .MuiInputBase-root': { bgcolor: '#101010', color: '#eee' } }}
-                    />
+                    {/* Raw File Upload Button */}
+                    <Box>
+                      <Button
+                        variant="outlined"
+                        component="label"
+                        startIcon={<CloudUploadIcon />}
+                        sx={{ color: gold, borderColor: gold, py: 1.5, width: '100%' }}
+                      >
+                        Upload Feature Image
+                        <input
+                          type="file"
+                          hidden
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.currentTarget.files && e.currentTarget.files[0]) {
+                              setFieldValue('file', e.currentTarget.files[0]);
+                            }
+                          }}
+                        />
+                      </Button>
+                      
+                      {values.file ? (
+                        <Typography sx={{ color: '#aaa', mt: 1, fontSize: 13 }}>
+                          Selected: {values.file.name}
+                        </Typography>
+                      ) : selectedPost?.media_url ? (
+                        <Typography sx={{ color: '#aaa', mt: 1, fontSize: 13 }}>
+                          Current image attached. Upload a new one to replace it.
+                        </Typography>
+                      ) : null}
+                    </Box>
 
                     <TextField
                       fullWidth

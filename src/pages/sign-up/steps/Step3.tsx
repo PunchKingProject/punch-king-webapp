@@ -1,12 +1,13 @@
 import { Box } from '@mui/material';
 import { Form, Formik, useFormikContext } from 'formik';
 import debounce from 'lodash.debounce';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import CustomAuthButton from '../../../components/buttons/CustomAuthButton.tsx';
 import { GoldSelect, GoldTextField } from '../../../components/form/GoldInput.tsx';
 import GoldPhoneField from '../../../components/form/GoldPhoneField.tsx';
+import NoticeModal from '../../../components/modal/NoticeModal.tsx'; // ⬅️ Added modal reminder
 import { useAppDispatch, useAppSelector } from '../../../hooks.ts';
 import { mergeDraft } from '../../../store/registration.slice.ts';
 import { getCountryOptions, getStateOptions } from '../../../utils/geo.ts';
@@ -208,6 +209,15 @@ function Step3() {
     'sponsor';
   const isTeam = flow === 'team';
 
+  const [welcomeModalOpen, setWelcomeModalOpen] = useState(false);
+
+  // Trigger notice modal for teams on mount
+  useEffect(() => {
+    if (isTeam) {
+      setWelcomeModalOpen(true);
+    }
+  }, [isTeam]);
+
   const navigate = useNavigate();
   const [sp] = useSearchParams();
   const rid = sp.get('rid') || '';
@@ -246,15 +256,26 @@ function Step3() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={onSubmit}
-      // enableReinitialize // 👈 respect hydrated values after back/refresh
-      // validateOnMount // 👈 compute isValid immediately
-    >
-      <Step3Body isTeam={isTeam} />
-    </Formik>
+    <>
+      <NoticeModal
+        open={welcomeModalOpen}
+        onClose={() => setWelcomeModalOpen(false)}
+        onContinue={() => setWelcomeModalOpen(false)}
+        title='IMPORTANT REMINDER'
+        message='As you fill out your team information, please ensure your profile is fully updated and remember to upload your boxer/fighter sparring contents for verification.'
+        continueLabel='Got It!'
+      />
+
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        // enableReinitialize // 👈 respect hydrated values after back/refresh
+        // validateOnMount // 👈 compute isValid immediately
+      >
+        <Step3Body isTeam={isTeam} />
+      </Formik>
+    </>
   );
 }
 
@@ -342,8 +363,6 @@ function Step3Body({ isTeam }: { isTeam: boolean }) {
           placeholder='State / Region'
           options={stateOptions}
           searchable
-        
-  
         />
 
         {isTeam ? (

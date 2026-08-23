@@ -8,7 +8,7 @@ import {
 import Collapse from '@mui/material/Collapse';
 import { useMutation } from '@tanstack/react-query';
 import { Form, Formik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { punchKingLogoSignIn } from '../../../assets';
@@ -21,7 +21,7 @@ import { createUser } from '../api/registration.ts';
 import { Link as MLink } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import ROUTES from '../../../routes/routePath.ts';
-import { toast } from 'react-toastify'; // ✅ Added toast for error visibility
+import { toast } from 'react-toastify';
 
 // This adds # and other common symbols to the allowed/required list
 const passwordRules =
@@ -59,12 +59,20 @@ const DISPLAY_SYMBOLS = '!#$%^&*+,-./:;<=>?@^_~';
 
 function Step2() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [welcomeModalOpen, setWelcomeModalOpen] = useState(false); // ⬅️ State for team reminder notice
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [sp] = useSearchParams();
   const token = sp.get('token') || '';
   const flow = sp.get('flow') as 'sponsor' | 'team';
+
+  // ⬅️ Automatically trigger the reminder NoticeModal for teams on page load
+  useEffect(() => {
+    if (flow === 'team') {
+      setWelcomeModalOpen(true);
+    }
+  }, [flow]);
 
   const params = new URLSearchParams();
   if (token) params.set('token', token);
@@ -75,23 +83,20 @@ function Step2() {
   const mutation = useMutation({
     mutationFn: createUser,
     onSuccess: (res) => {
-      // ✅ Check for success
       if (res?.meta?.code === 200) {
         dispatch(setRid({ token: res.data, flow }));
         setModalOpen(true);
       } else {
-        // ✅ Catch backend rejections that return 200 HTTP status but an error code in meta
         toast.error(res?.meta?.message || 'Backend rejected the request. Please try again.');
       }
     },
     onError: (err: any) => {
-      // ✅ Catch 400/500 API network errors
       toast.error(err?.response?.data?.message || err.message || 'Network error: Failed to create password.');
     }
   });
 
   const handleSubmit = (values: Values) => {
-    console.log('Form submitting...', values); // ✅ Added log to verify button click
+    console.log('Form submitting...', values);
     dispatch(mergeDraft({ step2: { passwordSet: true } }));
     mutation.mutate({ token: token || '', password: values.password });
   };
@@ -103,12 +108,23 @@ function Step2() {
 
   return (
     <>
+      {/* Team Reminder Notice Modal */}
+      <NoticeModal
+        open={welcomeModalOpen}
+        onClose={() => setWelcomeModalOpen(false)}
+        onContinue={() => setWelcomeModalOpen(false)}
+        title='IMPORTANT REMINDER'
+        message='As you continue your registration, please remember that you must update your profile information and upload your boxer/fighter sparring contents to get verified.'
+        continueLabel='Got It!'
+      />
+
+      {/* Success Password Creation Modal */}
       <NoticeModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onContinue={handleContinueFromModal}
         title='NOTICE!!!'
-        message=' You have successfully created your password you will be logged in for your next steps'
+        message='You have successfully created your password. You will be logged in for your next steps.'
         continueLabel='Continue'
       />
 
@@ -139,7 +155,6 @@ function Step2() {
               formik.values.confirmPassword &&
               formik.values.password === formik.values.confirmPassword;
 
-            // hide rules once the current password value satisfies the regex
             const passwordPassesRules = passwordRules.test(formik.values.password);
 
             return (
@@ -152,7 +167,6 @@ function Step2() {
                   sx={{ mb: 0.5 }}
                 />
 
-                {/* Rules panel (display-only) */}
                 <Collapse in={!passwordPassesRules} unmountOnExit>
                   <Box
                     role='note'
