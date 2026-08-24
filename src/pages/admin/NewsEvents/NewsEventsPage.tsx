@@ -1,3 +1,5 @@
+// src/pages/admin/NewsEventsPage.tsx
+
 import { useEffect, useState } from 'react';
 import {
   Box,
@@ -17,9 +19,10 @@ import {
   MenuItem,
   InputAdornment,
   TablePagination,
+  Chip,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -40,6 +43,7 @@ interface Post {
   caption?: string; 
   file?: string;    
   file_url?: string; 
+  status?: string;
 }
 
 export default function NewsEventsPage() {
@@ -65,7 +69,8 @@ export default function NewsEventsPage() {
         ...p,
         category: p.category || p.Category || p.type || p.Type || p.tag || p.Tag || 'Tournament',
         content: p.content || p.caption || p.Caption || '',
-        media_url: p.file_url || p.media_url || p.file || p.File || '' 
+        media_url: p.file_url || p.media_url || p.file || p.File || '',
+        status: p.status || 'approved'
       }));
       
       if (Array.isArray(responseData)) {
@@ -98,12 +103,17 @@ export default function NewsEventsPage() {
     setSelectedPost(null);
   };
 
-  const handleDelete = async (id: string | number) => {
-    if (!window.confirm('Are you sure you want to delete this post?')) return;
+  const handleUnpublish = async (id: string | number) => {
+    const reason = prompt('Please enter a reason for unpublishing this post:');
+    if (!reason || reason.trim().length < 3) {
+      alert('Unpublish reason must contain at least 3 characters.');
+      return;
+    }
     
     try {
-      await customFetch.delete(`/admin/news/${id}`);
-      alert('Post deleted successfully!');
+      // Calls the backend delete endpoint which is now safely mapped to unpublish/hide status
+      await customFetch.delete(`/admin/news/${id}`, { data: { reason } });
+      alert('Post unpublished successfully! All categories and videos remain safe.');
       fetchPosts();
     } catch (err) {
       showError(err);
@@ -116,7 +126,7 @@ export default function NewsEventsPage() {
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
       (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase()))
     )
-    .sort((a, b) => Number(b.id) - Number(a.id)); // Sorts newest (highest ID) to top
+    .sort((a, b) => Number(b.id) - Number(a.id));
 
   const paginatedPosts = filteredAndSortedPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -179,6 +189,7 @@ export default function NewsEventsPage() {
                 <TableCell sx={{ color: gold, fontWeight: 800, borderColor: '#333' }}>ID</TableCell>
                 <TableCell sx={{ color: gold, fontWeight: 800, borderColor: '#333' }}>Category</TableCell>
                 <TableCell sx={{ color: gold, fontWeight: 800, borderColor: '#333' }}>Title</TableCell>
+                <TableCell sx={{ color: gold, fontWeight: 800, borderColor: '#333' }}>Status</TableCell>
                 <TableCell sx={{ color: gold, fontWeight: 800, borderColor: '#333' }}>Content Snippet</TableCell>
                 <TableCell align="right" sx={{ color: gold, fontWeight: 800, borderColor: '#333' }}>Actions</TableCell>
               </TableRow>
@@ -186,13 +197,13 @@ export default function NewsEventsPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 5, borderColor: '#333' }}>
+                  <TableCell colSpan={6} align="center" sx={{ py: 5, borderColor: '#333' }}>
                     <CircularProgress sx={{ color: gold }} />
                   </TableCell>
                 </TableRow>
               ) : paginatedPosts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ color: '#888', py: 5, borderColor: '#333' }}>
+                  <TableCell colSpan={6} align="center" sx={{ color: '#888', py: 5, borderColor: '#333' }}>
                     {searchQuery ? 'No posts match your search.' : 'No posts found. Click "Create New Post" to publish an update.'}
                   </TableCell>
                 </TableRow>
@@ -202,6 +213,19 @@ export default function NewsEventsPage() {
                     <TableCell sx={{ color: '#eee', borderColor: '#333' }}>{post.id}</TableCell>
                     <TableCell sx={{ color: gold, borderColor: '#333', fontWeight: 600 }}>{post.category || 'Tournament'}</TableCell>
                     <TableCell sx={{ color: '#eee', borderColor: '#333', fontWeight: 600 }}>{post.title}</TableCell>
+                    <TableCell sx={{ borderColor: '#333' }}>
+                      <Chip 
+                        label={post.status} 
+                        size="small"
+                        sx={{
+                          bgcolor: post.status === 'approved' ? 'rgba(76, 175, 80, 0.2)' : post.status === 'hidden' ? 'rgba(244, 67, 54, 0.2)' : 'rgba(255, 193, 7, 0.2)',
+                          color: post.status === 'approved' ? '#4caf50' : post.status === 'hidden' ? '#f44336' : '#ffc107',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          fontSize: '11px'
+                        }} 
+                      />
+                    </TableCell>
                     <TableCell sx={{ color: '#aaa', borderColor: '#333' }}>
                       {post.content?.length > 60 ? `${post.content.substring(0, 60)}...` : post.content}
                     </TableCell>
@@ -212,8 +236,8 @@ export default function NewsEventsPage() {
                       <IconButton onClick={() => handleOpenModal('edit', post)} sx={{ color: '#2196f3' }} title="Edit">
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(post.id)} sx={{ color: '#f44336' }} title="Delete">
-                        <DeleteIcon />
+                      <IconButton onClick={() => handleUnpublish(post.id)} sx={{ color: '#f44336' }} title="Unpublish">
+                        <VisibilityOffIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -242,6 +266,7 @@ export default function NewsEventsPage() {
         </TableContainer>
       </Box>
 
+      {/* Modal Definitions */}
       <Modal open={modalOpen} onClose={handleCloseModal} aria-labelledby="post-modal-title">
         <Box 
           sx={{ 
@@ -289,42 +314,41 @@ export default function NewsEventsPage() {
                 return errs;
               }}
               onSubmit={async (vals, { setSubmitting }) => {
-  try {
-    const formData = new FormData();
-    formData.append('category', vals.category);
-    formData.append('title', vals.title);
-    formData.append('content', vals.content);
-    formData.append('caption', vals.content); 
-    
-    // Attach the raw image file if selected
-    if (vals.file) {
-      formData.append('file', vals.file); 
-    }
+                try {
+                  const formData = new FormData();
+                  formData.append('category', vals.category);
+                  formData.append('title', vals.title);
+                  formData.append('content', vals.content);
+                  formData.append('caption', vals.content); 
+                  
+                  if (vals.file) {
+                    formData.append('file', vals.file); 
+                  }
 
-    if (modalMode === 'create') {
-      await customFetch.post('/admin/news/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      alert('Post published successfully!');
-    } else if (modalMode === 'edit' && selectedPost) {
-      const parsedId = typeof selectedPost.id === 'string' ? parseInt(selectedPost.id, 10) : selectedPost.id;
-      formData.append('id', String(parsedId));
-      
-      await customFetch.patch(`/admin/news/${parsedId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      alert('Post updated successfully!');
-    }
-    
-    fetchPosts();
-    handleCloseModal();
-  } catch (err: any) {
-    console.error('Update failed response:', err.response?.data || err);
-    showError(err);
-  } finally {
-    setSubmitting(false);
-  }
-}}
+                  if (modalMode === 'create') {
+                    await customFetch.post('/admin/news/', formData, {
+                      headers: { 'Content-Type': 'multipart/form-data' },
+                    });
+                    alert('Post published successfully!');
+                  } else if (modalMode === 'edit' && selectedPost) {
+                    const parsedId = typeof selectedPost.id === 'string' ? parseInt(selectedPost.id, 10) : selectedPost.id;
+                    formData.append('id', String(parsedId));
+                    
+                    await customFetch.patch(`/admin/news/${parsedId}`, formData, {
+                      headers: { 'Content-Type': 'multipart/form-data' },
+                    });
+                    alert('Post updated successfully!');
+                  }
+                  
+                  fetchPosts();
+                  handleCloseModal();
+                } catch (err: any) {
+                  console.error('Update failed response:', err.response?.data || err);
+                  showError(err);
+                } finally {
+                  setSubmitting(false);
+                }
+              }}
             >
               {({ values, handleChange, handleBlur, touched, errors, isSubmitting, handleSubmit, setFieldValue }) => (
                 <Form noValidate onSubmit={handleSubmit}>
