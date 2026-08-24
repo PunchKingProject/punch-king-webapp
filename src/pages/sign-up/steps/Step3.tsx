@@ -19,7 +19,7 @@ type Values = {
   address: string;
   country: string;
   state: string;
-  bio?: string;
+  bio: string;
 
   // sponsor-only
   gender?: string;
@@ -173,7 +173,7 @@ const baseCommon = {
     then: (s) => s.required('Required'),
     otherwise: (s) => s.optional(),
   }),
-  bio: Yup.string().max(280).optional(),
+  bio: Yup.string().max(280).required('Required'),
 };
 
 const sponsorSchema = Yup.object({
@@ -191,8 +191,8 @@ const teamSchema = Yup.object({
       return AFRICA_ISO2.has(v) || AFRICA_NAMES.has(v.toLowerCase());
     })
     .required('Required'),
-  coach_1: Yup.string().optional(),
-  coach_2: Yup.string().optional(),
+  coach_1: Yup.string().required('Required'),
+  coach_2: Yup.string().required('Required'),
   license_number: Yup.string().optional(),
 });
 
