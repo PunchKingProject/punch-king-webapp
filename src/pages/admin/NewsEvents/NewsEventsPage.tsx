@@ -164,13 +164,16 @@ export default function NewsEventsPage() {
     }
   };
 
-  // --- Filtering & Sorting Logic ---
+  // --- Filtering & Sorting Logic (Safe against undefined properties) ---
   const filteredAndSortedPosts = posts
-    .filter((p) => 
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase()))
-    )
-    .sort((a, b) => Number(b.id) - Number(a.id));
+    .filter((p) => {
+      const title = p.title ? String(p.title).toLowerCase() : '';
+      const category = p.category ? String(p.category).toLowerCase() : '';
+      const query = searchQuery ? searchQuery.toLowerCase() : '';
+
+      return title.includes(query) || category.includes(query);
+    })
+    .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
 
   const paginatedPosts = filteredAndSortedPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
