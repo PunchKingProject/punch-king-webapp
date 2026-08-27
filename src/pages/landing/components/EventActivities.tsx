@@ -1,3 +1,5 @@
+// src/components/Home/EventActivities.tsx (or your corresponding path)
+
 import { useEffect, useState } from 'react';
 import { 
   Box, 
@@ -13,34 +15,32 @@ import {
 } from '@mui/material';
 import { colors } from '../../../theme/colors';
 import { customFetch } from '../../../Axios.ts';
-import { heroBoxerLarge } from '../../../assets'; // Added fallback image import
+import { heroBoxerLarge } from '../../../assets';
 
 const EventActivities = () => {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     const fetchAdminNews = async () => {
       try {
-        const res = await customFetch.get('/post/all-posts?limit=10');
-        const allPosts = res.data?.data?.posts || res.data?.posts || [];
+        // ⬅️ Updated to call our dedicated isolated admin news endpoint!
+        const res = await customFetch.get('/post/admin-news?limit=10');
+        const rawPosts = res.data?.data?.posts || res.data?.posts || [];
 
-        // Filter out team sparring videos (they always have a boxer_name)
-        const adminOnlyPosts = allPosts
-          .filter((p: any) => !p.boxer_name && !p.weight_class)
-          .map((p: any) => ({
-            id: p.id || p.ID,
-            title: p.title || p.Title,
-            content: p.caption || p.Caption || '',
-            // FIX: Added p.file_url and p.media_url to catch all possible backend field names
-            media_url: p.file_url || p.media_url || p.file || p.File || '', 
-            category: p.category || (p.status === 'approved' ? 'Official News' : 'Update')
-          }));
+        const formattedPosts = rawPosts.map((p: any) => ({
+          id: p.id || p.ID,
+          title: p.title || p.Title,
+          content: p.caption || p.Caption || '',
+          media_url: p.file_url || p.media_url || p.file || p.File || '', 
+          category: p.category || 'Tournament'
+        }));
 
-        setNews(adminOnlyPosts);
+        setNews(formattedPosts);
       } catch (err) {
-        console.error('Failed to fetch news:', err);
+        console.error('Failed to fetch admin news:', err);
       } finally {
         setLoading(false);
       }
@@ -77,7 +77,10 @@ const EventActivities = () => {
             {news.slice(0, 3).map((event) => (
               <Card
                 key={event.id}
-                onClick={() => setSelectedPost(event)}
+                onClick={() => {
+                  setIsZoomed(false);
+                  setSelectedPost(event);
+                }}
                 sx={{
                   bgcolor: '#111',
                   border: '1px solid rgba(255,255,255,.08)',
@@ -93,15 +96,14 @@ const EventActivities = () => {
                   }
                 }}
               >
-                {/* FIX: Removed conditional logic to ALWAYS render CardMedia. It will use media_url if valid, or fallback to heroBoxerLarge */}
                 <CardMedia
                   component="img"
-                  height="180"
+                  height="200"
                   image={event.media_url || heroBoxerLarge}
                   alt={event.title}
-                  sx={{ objectFit: 'cover', bgcolor: '#222', borderBottom: '1px solid rgba(255,255,255,.05)' }}
+                  sx={{ objectFit: 'contain', bgcolor: '#111', p: 1, borderBottom: '1px solid rgba(255,255,255,.05)' }}
                   onError={(e: any) => {
-                    e.currentTarget.src = heroBoxerLarge; // Safety net if the URL link is broken
+                    e.currentTarget.src = heroBoxerLarge;
                   }}
                 />
                 
@@ -129,7 +131,6 @@ const EventActivities = () => {
                     </Typography>
                   </Box>
                   
-                  {/* Visual Hint for Users */}
                   <Typography 
                     sx={{ 
                       color: colors.Accent, 
@@ -158,16 +159,54 @@ const EventActivities = () => {
             maxHeight: '90vh', overflowY: 'auto'
           }}
         >
-          {/* FIX: Modal image also utilizes the fallback */}
           <Box 
-            component="img" 
-            src={selectedPost?.media_url || heroBoxerLarge} 
-            alt={selectedPost?.title} 
-            sx={{ width: '100%', maxHeight: 350, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} 
-            onError={(e: any) => {
-              e.currentTarget.src = heroBoxerLarge;
+            sx={{ 
+              position: 'relative', 
+              bgcolor: '#0a0a0a', 
+              borderTopLeftRadius: 16, 
+              borderTopRightRadius: 16,
+              overflow: isZoomed ? 'auto' : 'hidden',
+              maxHeight: isZoomed ? '70vh' : 450,
+              cursor: 'zoom-in',
+              textAlign: 'center'
             }}
-          />
+            onClick={() => setIsZoomed(!isZoomed)}
+          >
+            <Box 
+              component="img" 
+              src={selectedPost?.media_url || heroBoxerLarge} 
+              alt={selectedPost?.title} 
+              sx={{ 
+                width: isZoomed ? '180%' : '100%', 
+                maxWidth: 'none',
+                height: 'auto',
+                objectFit: 'contain', 
+                transition: 'width 0.3s ease',
+                display: 'block',
+                mx: 'auto'
+              }} 
+              onError={(e: any) => {
+                e.currentTarget.src = heroBoxerLarge;
+              }}
+            />
+            <Typography 
+              sx={{ 
+                position: 'absolute', 
+                bottom: 10, 
+                right: 10, 
+                bgcolor: 'rgba(0,0,0,0.7)', 
+                color: colors.Accent, 
+                px: 1.5, 
+                py: 0.5, 
+                borderRadius: 1, 
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                pointerEvents: 'none'
+              }}
+            >
+              {isZoomed ? 'Click to zoom out 🔍-' : 'Click to zoom in 🔍+'}
+            </Typography>
+          </Box>
           
           <Box sx={{ p: { xs: 3, md: 5 } }}>
             <Chip 

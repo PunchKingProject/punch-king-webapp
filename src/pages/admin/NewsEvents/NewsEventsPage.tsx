@@ -20,17 +20,20 @@ import {
   InputAdornment,
   TablePagination,
   Chip,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import RestoreIcon from '@mui/icons-material/Restore';
 import SearchIcon from '@mui/icons-material/Search';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Form, Formik } from 'formik';
 
 import { showError } from '../../../utils/error/toastError.ts';
 import { customFetch } from '../../../Axios.ts';
-import SideBar from '../components/SideBar.tsx'; 
+import SideBar from '../components/SideBar.tsx';
 
 const gold = '#EFAF00';
 
@@ -53,10 +56,27 @@ export default function NewsEventsPage() {
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
+  // Unpublish Modal State
+  const [unpublishModalOpen, setUnpublishModalOpen] = useState(false);
+  const [postToUnpublish, setPostToUnpublish] = useState<Post | null>(null);
+  const [unpublishReason, setUnpublishReason] = useState('');
+  const [unpublishSubmitting, setUnpublishSubmitting] = useState(false);
+
   // Search and Pagination State
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // ⬅️ Snackbar Notification State to replace browser alerts
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
+
+  const showNotification = (message: string, severity: 'success' | 'error' = 'success') => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   const fetchPosts = async () => {
     try {
@@ -67,7 +87,7 @@ export default function NewsEventsPage() {
 
       const mapBackendToFrontend = (data: any[]) => data.map((p: any) => ({
         ...p,
-        category: p.category || p.Category || p.type || p.Type || p.tag || p.Tag || 'Tournament',
+        category: p.category || p.Category || 'Tournament',
         content: p.content || p.caption || p.Caption || '',
         media_url: p.file_url || p.media_url || p.file || p.File || '',
         status: p.status || 'approved'
@@ -103,17 +123,41 @@ export default function NewsEventsPage() {
     setSelectedPost(null);
   };
 
-  const handleUnpublish = async (id: string | number) => {
-    const reason = prompt('Please enter a reason for unpublishing this post:');
-    if (!reason || reason.trim().length < 3) {
-      alert('Unpublish reason must contain at least 3 characters.');
+  const handleOpenUnpublishModal = (post: Post) => {
+    setPostToUnpublish(post);
+    setUnpublishReason('');
+    setUnpublishModalOpen(true);
+  };
+
+  const handleCloseUnpublishModal = () => {
+    setUnpublishModalOpen(false);
+    setPostToUnpublish(null);
+    setUnpublishReason('');
+  };
+
+  const handleConfirmUnpublish = async () => {
+    if (!postToUnpublish || unpublishReason.trim().length < 3) {
+      showNotification('Unpublish reason must contain at least 3 characters.', 'error');
       return;
     }
     
     try {
-      // Calls the backend delete endpoint which is now safely mapped to unpublish/hide status
-      await customFetch.delete(`/admin/news/${id}`, { data: { reason } });
-      alert('Post unpublished successfully! All categories and videos remain safe.');
+      setUnpublishSubmitting(true);
+      await customFetch.delete(`/admin/news/${postToUnpublish.id}`, { data: { reason: unpublishReason } });
+      showNotification('Post unpublished successfully! It has been hidden from the landing page.');
+      handleCloseUnpublishModal();
+      fetchPosts();
+    } catch (err) {
+      showError(err);
+    } finally {
+      setUnpublishSubmitting(false);
+    }
+  };
+
+  const handleRestore = async (id: string | number) => {
+    try {
+      await customFetch.post(`/admin/news/${id}/restore`);
+      showNotification('Post restored successfully and made visible on the landing page!');
       fetchPosts();
     } catch (err) {
       showError(err);
@@ -236,9 +280,15 @@ export default function NewsEventsPage() {
                       <IconButton onClick={() => handleOpenModal('edit', post)} sx={{ color: '#2196f3' }} title="Edit">
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleUnpublish(post.id)} sx={{ color: '#f44336' }} title="Unpublish">
-                        <VisibilityOffIcon />
-                      </IconButton>
+                      {post.status === 'hidden' ? (
+                        <IconButton onClick={() => handleRestore(post.id)} sx={{ color: '#ffc107' }} title="Restore / Publish">
+                          <RestoreIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton onClick={() => handleOpenUnpublishModal(post)} sx={{ color: '#f44336' }} title="Unpublish">
+                          <VisibilityOffIcon />
+                        </IconButton>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -266,7 +316,60 @@ export default function NewsEventsPage() {
         </TableContainer>
       </Box>
 
-      {/* Modal Definitions */}
+      {/* Unpublish Reason Modal */}
+      <Modal open={unpublishModalOpen} onClose={handleCloseUnpublishModal}>
+        <Box 
+          sx={{ 
+            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
+            width: '100%', maxWidth: 500, bgcolor: '#1A1A1A', p: 4, borderRadius: 2, 
+            border: '1px solid #333', boxShadow: 24, outline: 'none'
+          }}
+        >
+          <Typography variant="h6" sx={{ color: gold, fontWeight: 800, mb: 2, textTransform: 'uppercase' }}>
+            Unpublish Post
+          </Typography>
+          <Typography sx={{ color: '#aaa', fontSize: 14, mb: 3 }}>
+            Please provide a reason for unpublishing <strong>"{postToUnpublish?.title}"</strong>. This will hide it from the public landing page.
+          </Typography>
+          
+          <TextField
+            fullWidth
+            multiline
+            rows={3}
+            placeholder="Enter reason (at least 3 characters)..."
+            value={unpublishReason}
+            onChange={(e) => setUnpublishReason(e.target.value)}
+            sx={{ 
+              mb: 3, 
+              '& .MuiInputBase-root': { bgcolor: '#101010', color: '#eee' },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#444' }
+            }}
+          />
+
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              onClick={handleCloseUnpublishModal}
+              variant="outlined"
+              sx={{ flex: 1, color: '#eee', borderColor: '#555', fontWeight: 800, height: 45, borderRadius: '10px' }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmUnpublish}
+              variant="contained"
+              disabled={unpublishSubmitting || unpublishReason.trim().length < 3}
+              sx={{
+                flex: 1, bgcolor: '#f44336', color: '#fff', fontWeight: 800, height: 45, borderRadius: '10px',
+                '&:hover': { bgcolor: '#d32f2f' }, '&.Mui-disabled': { bgcolor: '#555', color: '#888' }
+              }}
+            >
+              {unpublishSubmitting ? <CircularProgress size={22} color="inherit" /> : 'Confirm Unpublish'}
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* Create / Edit / View Modal */}
       <Modal open={modalOpen} onClose={handleCloseModal} aria-labelledby="post-modal-title">
         <Box 
           sx={{ 
@@ -319,7 +422,6 @@ export default function NewsEventsPage() {
                   formData.append('category', vals.category);
                   formData.append('title', vals.title);
                   formData.append('content', vals.content);
-                  formData.append('caption', vals.content); 
                   
                   if (vals.file) {
                     formData.append('file', vals.file); 
@@ -329,7 +431,7 @@ export default function NewsEventsPage() {
                     await customFetch.post('/admin/news/', formData, {
                       headers: { 'Content-Type': 'multipart/form-data' },
                     });
-                    alert('Post published successfully!');
+                    showNotification('Post published successfully!');
                   } else if (modalMode === 'edit' && selectedPost) {
                     const parsedId = typeof selectedPost.id === 'string' ? parseInt(selectedPost.id, 10) : selectedPost.id;
                     formData.append('id', String(parsedId));
@@ -337,7 +439,7 @@ export default function NewsEventsPage() {
                     await customFetch.patch(`/admin/news/${parsedId}`, formData, {
                       headers: { 'Content-Type': 'multipart/form-data' },
                     });
-                    alert('Post updated successfully!');
+                    showNotification('Post updated successfully!');
                   }
                   
                   fetchPosts();
@@ -458,6 +560,23 @@ export default function NewsEventsPage() {
           )}
         </Box>
       </Modal>
+
+      {/* ⬅️ Custom Snackbar Toast Notification (Replaces Browser Alerts) */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))} 
+          severity={snackbar.severity} 
+          variant="filled"
+          sx={{ width: '100%', bgcolor: snackbar.severity === 'success' ? gold : undefined, color: snackbar.severity === 'success' ? '#000' : undefined, fontWeight: 700 }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
