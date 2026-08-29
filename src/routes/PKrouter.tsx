@@ -1,3 +1,4 @@
+// src/routes/PKrouter.tsx
 import { Box, CircularProgress } from '@mui/material';
 import { lazy, Suspense, type ComponentType } from 'react';
 import {
@@ -116,6 +117,10 @@ const Step3 = Loadable(
 
 const Step4 = Loadable(
   lazy(() => import('../pages/sign-up/steps/Step4.tsx'))
+);
+
+const Step5 = Loadable(
+  lazy(() => import('../pages/sign-up/steps/Step5.tsx'))
 );
 
 const Preview = Loadable(
@@ -339,6 +344,7 @@ const router = createBrowserRouter(
         <Route path='step2' element={<Step2 />} />
         <Route path='step3' element={<Step3 />} />
         <Route path='step4' element={<Step4 />} />
+        <Route path='step5' element={<Step5 />} />
         <Route path='complete' element={<Preview />} />
       </Route>
 

@@ -10,7 +10,7 @@ import SuccessIcon from '../../../assets/modalSuccess.svg?react';
 import { customFetch } from '../../../Axios.ts'; // your axios instance
 import CustomAuthButton from '../../../components/buttons/CustomAuthButton.tsx';
 import NoticeModal from '../../../components/modal/NoticeModal.tsx'; // ⬅️ Reminder modal
-import { useAppDispatch } from '../../../hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../../hooks.ts';
 import { mergeDraft } from '../../../store/registration.slice.ts';
 
 const MAX_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
@@ -22,20 +22,26 @@ export default function Step4() {
   const navigate = useNavigate();
 
   const rid = sp.get('rid') || localStorage.getItem('pk_rid') || '';
-  const flow = (sp.get('flow') || 'user') as 'user' | 'team';
+  const reduxFlow = useAppSelector((s) => s.registration.flow);
+  const storedFlow = (localStorage.getItem('flow') as 'sponsor' | 'team' | 'admin' | null) ?? null;
+  const flow = ((sp.get('flow') as 'sponsor' | 'team' | null)
+    || (reduxFlow as 'sponsor' | 'team' | null)
+    || (storedFlow as 'sponsor' | 'team' | null)
+    || 'sponsor') as 'sponsor' | 'team';
+  const isTeam = flow === 'team';
 
   const params = new URLSearchParams();
   if (rid) params.set('rid', rid);
   params.set('flow', flow);
 
-  const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(false);
+  const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(true);
 
   // Trigger final reminder modal on mount for teams
   React.useEffect(() => {
-    if (flow === 'team') {
+    if (isTeam) {
       setWelcomeModalOpen(true);
     }
-  }, [flow]);
+  }, [isTeam]);
 
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [file, setFile] = React.useState<File | null>(null);
@@ -100,10 +106,14 @@ export default function Step4() {
       // Optionally tell the backend to advance step:
       // await customFetch.post('/registration/advance', { step: 4 });
 
-      // navigate(`/sign-up/complete?${params.toString()}`);
-      
       toast.success('Image url generated and stored');
-      navigate(`/sign-up/complete?${params.toString()}`);
+      
+      // Branching: Team goes to Step 5 (fighter/video), sponsor goes to complete preview
+      if (isTeam) {
+        navigate(`/sign-up/step5?${params.toString()}`);
+      } else {
+        navigate(`/sign-up/complete?${params.toString()}`);
+      }
     } catch (e) {
       console.log(e);
       toast.error('Upload failed. Please try again.');
@@ -113,11 +123,15 @@ export default function Step4() {
     }
   }
 
-  // @ts-expect-error
+  // Preview screen (no upload required)
   function onPreview() {
     if (!hasImage) return;
     persistPreviewToDraft();
-    navigate(`/sign-up/complete?${params.toString()}`);
+    if (isTeam) {
+      navigate(`/sign-up/step5?${params.toString()}`);
+    } else {
+      navigate(`/sign-up/complete?${params.toString()}`);
+    }
   }
 
   return (
@@ -279,12 +293,12 @@ export default function Step4() {
                 Please wait...
               </>
             ) : (
-              'Preview'
+              isTeam ? 'Next (Fighter Details)' : 'Preview'
             )}
           </CustomAuthButton>
 
-          {/* Preview screen (no upload required) */}
-          {/* <Button
+          {/* Preview screen option */}
+          <CustomAuthButton
             onClick={onPreview}
             disabled={!hasImage}
             variant='contained'
@@ -298,7 +312,7 @@ export default function Step4() {
             }}
           >
             Preview
-          </Button> */}
+          </CustomAuthButton>
 
           {/* Back to step 3 */}
           <CustomAuthButton

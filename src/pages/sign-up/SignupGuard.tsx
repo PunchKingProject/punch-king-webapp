@@ -17,6 +17,7 @@ const STEP_LABELS: Record<number, string> = {
   2: 'Password creation',
   3: 'Complete your profile',
   4: 'Upload profile picture 2mb or below',
+  5: 'Fighter details & debut video upload (max 10MB)',
 };
 
 const TOTAL_STEPS = Object.keys(STEP_LABELS).length;
@@ -32,27 +33,26 @@ function useCurrentStep(): number {
 function SignupGuard() {
   const [sp] = useSearchParams();
   const token = sp.get('token') || localStorage.getItem('token') || '';
-  const flow = sp.get('flow') as 'sponsor' | 'team';
+  const flow = (sp.get('flow') as 'sponsor' | 'team') || 'sponsor';
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const step = useCurrentStep();
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (!token) {
+    if (!token && pathname.includes('/sign-up/step') && !pathname.includes('/sign-up/step1')) {
       console.log(token);
       dispatch(setFlow({ flow: flow || 'sponsor' }));
-      navigate(`/sign-up?flow=${flow}`, { replace: true });
-      // return <h1>he;;pw</h1>
+      // Optional: uncomment if token guard is strictly required across steps
+      // navigate(`/sign-up?flow=${flow}`, { replace: true });
     }
-  }, [dispatch, flow, navigate, token]);
+  }, [dispatch, flow, navigate, token, pathname]);
 
-  const isCompletePage = pathname.includes('/sign-up/complete'); // 👈 detect
+  const isCompletePage = pathname.includes('/sign-up/complete'); 
 
   return (
     <Box
       sx={{
-        // border: '2px solid red',
         display: 'flex',
         position: 'relative',
         width: '100%',
@@ -65,14 +65,11 @@ function SignupGuard() {
       {/* Navbar */}
       <Box
         sx={{
-          // border: '2px solid red',
           width: '100%',
           display: 'flex',
           justifyContent: 'flex-end',
           paddingRight: '24px',
           paddingTop: '24px',
-
-          //   justifySelf: 'flex-end',
         }}
       >
         <CustomButton
@@ -83,15 +80,13 @@ function SignupGuard() {
           Sign In
         </CustomButton>
       </Box>
-      {/* <div>SignupGuard</div> */}
 
       {/* Stepper */}
       <Box>
-        {(!isCompletePage) && (
+        {!isCompletePage && (
           <Box
             textAlign='center'
             mt={2}
-            // border={'2px solid red'}
           >
             <Typography
               variant='bodyTextMilkDefault'
@@ -99,7 +94,7 @@ function SignupGuard() {
             >
               {flow} signup steps
             </Typography>
-            <StepDots total={4} active={step} />
+            <StepDots total={5} active={step} />
             <Typography variant='body2' sx={{ mt: 1, color: '#C9C9C9' }}>
               {STEP_LABELS[step]}
             </Typography>
@@ -126,11 +121,11 @@ export default SignupGuard;
 /** Small, circular step indicator to match your mockups */
 function StepDots({ total, active }: { total: number; active: number }) {
   return (
-    <Box display='flex' justifyContent='center' gap={2.5} mt={1}>
+    <Box display='flex' justifyContent='center' gap={2} mt={1} px={2} flexWrap='wrap'>
       {Array.from({ length: total }, (_, i) => i + 1).map((n) => {
         const status =
           n < active ? 'complete' : n === active ? 'current' : 'upcoming';
-        const isFilled = n <= active; // 👈 fill all up to active
+        const isFilled = n <= active; 
         return (
           <Box
             key={n}
@@ -142,13 +137,12 @@ function StepDots({ total, active }: { total: number; active: number }) {
               display: 'grid',
               placeItems: 'center',
               border: '2px solid',
-              borderColor: isFilled ? colors.Milk : colors.Milk,
+              borderColor: colors.Milk,
               bgcolor: isFilled ? colors.Milk : 'transparent',
               color: isFilled ? '#0A0A0A' : colors.Milk,
               fontWeight: 500,
               fontSize: 14,
               transition: 'all .2s ease',
-              // optional subtle scale for the current step
               transform: status === 'current' ? 'scale(1.05)' : 'none',
             }}
           >
