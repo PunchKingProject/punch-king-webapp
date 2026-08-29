@@ -1,4 +1,4 @@
-// src/pages/admin/TeamPosts/TeamPostsPage.tsx
+// src/pages/admin/TeamPostsPage.tsx
 
 import { useEffect, useState } from 'react';
 import {
@@ -32,8 +32,7 @@ import { Form, Formik } from 'formik';
 
 import { showError } from '../../../utils/error/toastError.ts';
 import { customFetch } from '../../../Axios.ts';
-// ⬅️ Corrected relative path to point to src/pages/admin/components/SideBar.tsx
-import SideBar from '../components/SideBar.tsx';
+import SideBar from './components/SideBar.tsx';
 
 const gold = '#EFAF00';
 
@@ -75,6 +74,7 @@ export default function TeamPostsPage() {
   const fetchTeamPosts = async () => {
     try {
       setLoading(true);
+      // Isolated route to fetch team text/image posts without video interference
       const res = await customFetch.get('/admin/team-posts-manage/');
       const responseData = res.data?.data || res.data;
 
@@ -130,6 +130,7 @@ export default function TeamPostsPage() {
 
   const handleHide = async (id: string | number) => {
     try {
+      // Soft-delete / hide action that won't touch any video files
       await customFetch.delete(`/admin/team-posts-manage/${id}`);
       showNotification('Team post hidden successfully!');
       fetchTeamPosts();

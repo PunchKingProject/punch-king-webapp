@@ -178,7 +178,6 @@ const SubscriptionPage = Loadable(
   lazy(() => import('../pages/admin/Subscription/SubscriptionPage.tsx'))
 );
 
-// ⬇️ FIXED: Admin Plans Page is successfully declared here! ⬇️
 const AdminPlansPage = Loadable(
   lazy(() => import('../pages/admin/Subscription/AdminSubscriptionPage.tsx'))
 );
@@ -350,7 +349,7 @@ const router = createBrowserRouter(
 
       {/*
       |--------------------------------------------------------------------------
-      | Admin Routes
+      | Admin Routes (Wrapped in Adminlayout to display Sidebar)
       |--------------------------------------------------------------------------
       */}
 
@@ -374,6 +373,7 @@ const router = createBrowserRouter(
           element={<UsersDetailsPage />}
         />
 
+        {/* Team Posts Management Route */}
         <Route
           path='team-posts'
           element={<AdminTeamPostsPage />}
@@ -389,7 +389,6 @@ const router = createBrowserRouter(
           element={<LicensingPage />}
         />
 
-        {/* ⬇️ FIXED: Removed syntax error and fixed path ⬇️ */}
         <Route
           path="license-plans"
           element={<LicensingPage />}
@@ -405,7 +404,6 @@ const router = createBrowserRouter(
           element={<SubscriptionPage />}
         />
 
-        {/* ⬇️ FIXED: Added the Plans route exactly where it belongs! ⬇️ */}
         <Route 
           path='plans' 
           element={<AdminPlansPage />} 

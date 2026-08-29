@@ -1,4 +1,4 @@
-// src/components/Home/EventActivities.tsx (or your corresponding path)
+// src/components/Home/EventActivities.tsx
 
 import { useEffect, useState } from 'react';
 import { 
@@ -26,19 +26,22 @@ const EventActivities = () => {
   useEffect(() => {
     const fetchAdminNews = async () => {
       try {
-        // ⬅️ Updated to call our dedicated isolated admin news endpoint!
-        const res = await customFetch.get('/post/admin-news?limit=10');
-        const rawPosts = res.data?.data?.posts || res.data?.posts || [];
+        const res = await customFetch.get('/post/admin-news?limit=50');
+        const rawPosts = res.data?.data?.posts || res.data?.posts || res.data || [];
 
         const formattedPosts = rawPosts.map((p: any) => ({
           id: p.id || p.ID,
-          title: p.title || p.Title,
-          content: p.caption || p.Caption || '',
+          title: p.title || p.Title || '',
+          content: p.content || p.caption || p.Caption || '',
           media_url: p.file_url || p.media_url || p.file || p.File || '', 
-          category: p.category || 'Tournament'
+          category: p.category || p.Category || 'Tournament',
+          status: (p.status || p.Status || 'approved').toLowerCase()
         }));
 
-        setNews(formattedPosts);
+        // ⬅️ Filter to show ONLY approved posts on the public landing page
+        const approvedOnly = formattedPosts.filter((p: any) => p.status === 'approved');
+
+        setNews(approvedOnly);
       } catch (err) {
         console.error('Failed to fetch admin news:', err);
       } finally {
@@ -73,8 +76,9 @@ const EventActivities = () => {
             No official updates available at the moment. Check back soon.
           </Typography>
         ) : (
+          // ⬅️ Display all approved posts dynamically without restriction
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3,1fr)' }, gap: 3 }}>
-            {news.slice(0, 3).map((event) => (
+            {news.map((event) => (
               <Card
                 key={event.id}
                 onClick={() => {

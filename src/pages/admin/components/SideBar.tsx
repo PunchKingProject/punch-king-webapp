@@ -11,8 +11,8 @@ const items = [
   { label: 'Subscription', path: ROUTES.SUBSCRIPTION },
   { label: 'Sponsorships', path: ROUTES.SPONSORSHIP },
   { label: 'Plans', path: ROUTES.PLANS }, 
-  // NEW: Appended News & Events to the sidebar
   { label: 'News & Events', path: ROUTES.NEWS_EVENTS ?? '/admin/news-events' }, 
+  { label: 'Team Posts', path: ROUTES.TEAM_POSTS ?? '/admin/team-posts' }, 
 ];
 
 const SideBar = () => {

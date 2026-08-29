@@ -36,8 +36,14 @@ const TeamPost = () => {
 
   const allFetchedPosts: Post[] = infiniteData?.pages.flatMap((page) => page.posts) ?? [];
 
-  // Strictly filter out Admin News by requiring boxing-specific fields
-  const posts = allFetchedPosts.filter((post: any) => post.boxer_name || post.weight_class);
+  // Strictly filter for non-video catalogue posts (exclude mp4, mov, webm files)
+  const posts = allFetchedPosts.filter((post: any) => {
+    const fileUrl = (post.file_url || '').toLowerCase();
+    const isVideo = fileUrl.endsWith('.mp4') || fileUrl.endsWith('.mov') || fileUrl.endsWith('.webm');
+    
+    // Keep it only if it has boxing fields AND is NOT a video
+    return (post.boxer_name || post.weight_class) && !isVideo;
+  });
 
   return (
     <Box

@@ -67,7 +67,7 @@ export default function NewsEventsPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // ⬅️ Snackbar Notification State to replace browser alerts
+  // Snackbar Notification State to replace browser alerts
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
     message: '',
@@ -86,12 +86,15 @@ export default function NewsEventsPage() {
       const responseData = res.data?.data || res.data;
 
       const mapBackendToFrontend = (data: any[]) => data.map((p: any) => ({
-        ...p,
-        category: p.category || p.Category || 'Tournament',
-        content: p.content || p.caption || p.Caption || '',
-        media_url: p.file_url || p.media_url || p.file || p.File || '',
-        status: p.status || 'approved'
-      }));
+    ...p,
+    id: p.id || p.ID,
+    title: p.title || p.Title || '',
+    category: p.category || p.Category || 'Tournament',
+    content: p.content || p.caption || p.Caption || '',
+    media_url: p.file_url || p.media_url || p.file || p.File || '',
+    // ⬅️ Fix: Check all variations of status casing from backend
+    status: (p.status || p.Status || 'approved').toLowerCase()
+  }));
       
       if (Array.isArray(responseData)) {
         setPosts(mapBackendToFrontend(responseData));
@@ -124,7 +127,11 @@ export default function NewsEventsPage() {
   };
 
   const handleOpenUnpublishModal = (post: Post) => {
-    setPostToUnpublish(post);
+    setPostToUnpublish({
+      ...post,
+      id: post.id || (post as any).ID,
+      title: post.title || (post as any).Title || ''
+    });
     setUnpublishReason('');
     setUnpublishModalOpen(true);
   };
@@ -136,14 +143,19 @@ export default function NewsEventsPage() {
   };
 
   const handleConfirmUnpublish = async () => {
-    if (!postToUnpublish || unpublishReason.trim().length < 3) {
-      showNotification('Unpublish reason must contain at least 3 characters.', 'error');
+    if (!postToUnpublish || !postToUnpublish.id || unpublishReason.trim().length < 3) {
+      showNotification('Valid post ID and unpublish reason (at least 3 characters) are required.', 'error');
       return;
     }
     
     try {
       setUnpublishSubmitting(true);
-      await customFetch.delete(`/admin/news/${postToUnpublish.id}`, { data: { reason: unpublishReason } });
+      const targetId = postToUnpublish.id;
+
+      await customFetch.delete(`/admin/news/${targetId}`, { 
+        data: { reason: unpublishReason } 
+      });
+
       showNotification('Post unpublished successfully! It has been hidden from the landing page.');
       handleCloseUnpublishModal();
       fetchPosts();
@@ -564,12 +576,13 @@ export default function NewsEventsPage() {
         </Box>
       </Modal>
 
-      {/* ⬅️ Custom Snackbar Toast Notification (Replaces Browser Alerts) */}
+      {/* Custom Snackbar Toast Notification - NOW AT TOP RIGHT */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
         onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        sx={{ mt: 8 }} // Added small margin-top so it clears the very top edge of the viewport
       >
         <Alert 
           onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))} 
