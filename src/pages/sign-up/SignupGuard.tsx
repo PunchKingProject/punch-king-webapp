@@ -12,7 +12,7 @@ import { setFlow } from '../../store/registration.slice.ts';
 import { colors } from '../../theme/colors.ts';
 import Footer from '../landing/components/Footer.tsx';
 
-const STEP_LABELS: Record<number, string> = {
+const TEAM_STEP_LABELS: Record<number, string> = {
   1: 'Email verification',
   2: 'Password creation',
   3: 'Complete your profile',
@@ -20,33 +20,38 @@ const STEP_LABELS: Record<number, string> = {
   5: 'Fighter details & debut video upload (max 10MB)',
 };
 
-const TOTAL_STEPS = Object.keys(STEP_LABELS).length;
+const SPONSOR_STEP_LABELS: Record<number, string> = {
+  1: 'Email verification',
+  2: 'Password creation',
+  3: 'Complete your profile',
+  4: 'Upload profile picture 2mb or below',
+};
 
 function useCurrentStep(): number {
   const { pathname } = useLocation();
-  // Matches: /step/2  | /step2  | /step-2  | /step_2  (case-insensitive)
   const m = pathname.match(/\/step(?:[-_/]?)(\d+)/i);
   const step = m ? Number(m[1]) : 1;
-  return Math.min(Math.max(step, 1), TOTAL_STEPS);
+  return Math.max(step, 1);
 }
 
 function SignupGuard() {
   const [sp] = useSearchParams();
   const token = sp.get('token') || localStorage.getItem('token') || '';
-  const flow = (sp.get('flow') as 'sponsor' | 'team') || 'sponsor';
+  const flowParam = (sp.get('flow') as 'sponsor' | 'team') || 'sponsor';
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const step = useCurrentStep();
   const { pathname } = useLocation();
 
+  const isTeam = flowParam === 'team';
+  const totalSteps = isTeam ? 5 : 4;
+  const stepLabels = isTeam ? TEAM_STEP_LABELS : SPONSOR_STEP_LABELS;
+
   useEffect(() => {
     if (!token && pathname.includes('/sign-up/step') && !pathname.includes('/sign-up/step1')) {
-      console.log(token);
-      dispatch(setFlow({ flow: flow || 'sponsor' }));
-      // Optional: uncomment if token guard is strictly required across steps
-      // navigate(`/sign-up?flow=${flow}`, { replace: true });
+      dispatch(setFlow({ flow: flowParam || 'sponsor' }));
     }
-  }, [dispatch, flow, navigate, token, pathname]);
+  }, [dispatch, flowParam, navigate, token, pathname]);
 
   const isCompletePage = pathname.includes('/sign-up/complete'); 
 
@@ -92,11 +97,11 @@ function SignupGuard() {
               variant='bodyTextMilkDefault'
               sx={{ color: 'white', fontWeight: 700, textTransform: 'capitalize' }}
             >
-              {flow} signup steps
+              {flowParam} signup steps
             </Typography>
-            <StepDots total={5} active={step} />
+            <StepDots total={totalSteps} active={step} />
             <Typography variant='body2' sx={{ mt: 1, color: '#C9C9C9' }}>
-              {STEP_LABELS[step]}
+              {stepLabels[step] || ''}
             </Typography>
           </Box>
         )}
