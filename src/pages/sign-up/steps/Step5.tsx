@@ -103,7 +103,7 @@ export default function Step5() {
       formData.append('glove_color', values.glove_color);
       formData.append('file', file);
 
-      // Uploads directly to standard team post endpoint during onboarding
+      // Submit via standard post route
       await customFetch.post('/post/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -115,7 +115,8 @@ export default function Step5() {
       navigate(`/welcome?${params.toString()}`, { replace: true });
     } catch (err: any) {
       console.error(err);
-      toast.error(err?.response?.data?.message || 'Failed to submit fighter content. Please try again.');
+      const serverMsg = err?.response?.data?.error || err?.response?.data?.message || 'Failed to submit fighter content. Please try again.';
+      toast.error(serverMsg);
     } finally {
       setLoading(false);
     }
@@ -239,7 +240,7 @@ export default function Step5() {
                 >
                   {loading ? (
                     <>
-                      <CircularProgress size={18} sx={{ color: '#000', mr: 1 }} />
+                      <CircularProgress size={18} sx={{ color: '#000', mr: file ? 1 : 0 }} />
                       Please wait...
                     </>
                   ) : (
