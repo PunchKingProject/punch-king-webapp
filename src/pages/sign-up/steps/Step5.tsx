@@ -13,14 +13,24 @@ import NoticeModal from '../../../components/modal/NoticeModal.tsx';
 import { useAppDispatch } from '../../../hooks.ts';
 import { clearRegistrationDraft } from '../../../store/registration.slice.ts';
 
-const MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB limit as requested
+const MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB limit
 const VIDEO_ACCEPTS = ['video/mp4', 'video/mov', 'video/webm', 'image/jpeg', 'image/png', 'image/jpg'];
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Required'),
   caption: Yup.string().required('Required'),
   boxer_name: Yup.string().required('Required'),
-  weight_class: Yup.string().required('Required'),
+  weight_class: Yup.string()
+    .oneOf(
+      [
+        'lightweight',
+        'welterweight',
+        'middleweight',
+        'others'
+      ],
+      'Select a valid weight class.'
+    )
+    .required('Required'),
   boxer_weight_kg: Yup.number().required('Required').positive('Must be positive'),
   sparring_location: Yup.string().required('Required'),
   shorts_color: Yup.string().required('Required'),
@@ -93,7 +103,7 @@ export default function Step5() {
       formData.append('glove_color', values.glove_color);
       formData.append('file', file);
 
-      // Uploads directly to MinIO via your backend team post endpoint
+      // Uploads directly to MinIO via backend team post endpoint
       await customFetch.post('/admin/team-post/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -146,29 +156,26 @@ export default function Step5() {
               <GoldTextField name='caption' placeholder='Caption / Description' multiline rows={3} />
               
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-                <GoldTextField name='boxer_name' placeholder='Boxer Name' />
+                <GoldTextField name='boxer_name' placeholder='Boxer name' />
                 <GoldSelect
                   name='weight_class'
-                  placeholder='Weight Class'
+                  placeholder='Weight class'
                   options={[
-                    { label: 'Flyweight', value: 'flyweight' },
-                    { label: 'Bantamweight', value: 'bantamweight' },
-                    { label: 'Featherweight', value: 'featherweight' },
-                    { label: 'Lightweight', value: 'lightweight' },
-                    { label: 'Welterweight', value: 'welterweight' },
-                    { label: 'Middleweight', value: 'middleweight' },
-                    { label: 'Heavyweight', value: 'heavyweight' },
+                    { label: 'Lightweight – up to 61.23kg / 135lbs', value: 'lightweight' },
+                    { label: 'Welterweight – up to 66.68kg / 147lbs', value: 'welterweight' },
+                    { label: 'Middleweight – up to 72.57kg / 160lbs', value: 'middleweight' },
+                    { label: 'Other Categories – Uncategorized Weights', value: 'others' },
                   ]}
                 />
               </Box>
 
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-                <GoldTextField name='boxer_weight_kg' placeholder='Boxer Weight (kg)' type='number' />
+                <GoldTextField name='boxer_weight_kg' placeholder='Actual boxer weight (kg)' type='number' />
                 <GoldTextField name='sparring_location' placeholder='Sparring / Gym Location' />
               </Box>
 
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-                <GoldTextField name='shorts_color' placeholder='Shorts / Clothing Color' />
+                <GoldTextField name='shorts_color' placeholder='Boxer shorts/clothing colour' />
                 <GoldTextField name='glove_color' placeholder='Glove Color' />
               </Box>
 
