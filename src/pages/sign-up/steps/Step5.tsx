@@ -103,8 +103,8 @@ export default function Step5() {
       formData.append('glove_color', values.glove_color);
       formData.append('file', file);
 
-      // Uploads directly to MinIO via backend team post endpoint
-      await customFetch.post('/admin/team-post/', formData, {
+      // Uploads directly to standard team post endpoint during onboarding
+      await customFetch.post('/post/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -226,15 +226,25 @@ export default function Step5() {
 
                 <CustomAuthButton
                   type='submit'
-                  disabled={!isValid || !dirty || !file || loading}
+                  disabled={!file || loading}
                   variant='contained'
                   fullWidth
                   sx={{
                     backgroundColor: '#F6C10A',
+                    color: '#000',
+                    fontWeight: 700,
                     '&:hover': { backgroundColor: '#e0ae07' },
+                    '&:disabled': { backgroundColor: '#6f6f6f', color: '#000' },
                   }}
                 >
-                  {loading ? <CircularProgress size={18} sx={{ color: '#000' }} /> : 'Complete Registration'}
+                  {loading ? (
+                    <>
+                      <CircularProgress size={18} sx={{ color: '#000', mr: 1 }} />
+                      Please wait...
+                    </>
+                  ) : (
+                    'Complete Registration'
+                  )}
                 </CustomAuthButton>
               </Box>
             </Form>
